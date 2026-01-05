@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ "$1" == "Address" ] || [ "$1" == "address" ]; then
+	make BUILD=release SANITIZER=address
+elif [ "$1" == "Thread" ] || [ "$1" == "thread" ]; then
+	make BUILD=release SANITIZER=thread
+elif [ "$1" == "Memory" ] || [ "$1" == "memory" ]; then
+	make BUILD=release SANITIZER=memory
+elif [ "$1" == "Undefined" ] || [ "$1" == "undefined" ]; then
+	make BUILD=release SANITIZER=undefined
+else
+	make BUILD=release
+fi
