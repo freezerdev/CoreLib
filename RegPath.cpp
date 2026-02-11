@@ -1439,12 +1439,6 @@ void CRegPathSegmentW::Dealloc(void)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CHiveName8::CHiveName8(CHiveName8 &&src) noexcept
-	: CRegPathSegment8(std::move(src))
-{
-}
-
-//#################################################################################################
 CHiveName8::CHiveName8(const CHiveNameW &hive)
 {
 	Assign(hive);
@@ -1541,13 +1535,6 @@ HKEY CHiveName8::GetHive(void) const
 		hHive = HKEY_CURRENT_CONFIG;
 
 	return hHive;
-}
-
-//#################################################################################################
-CHiveName8 &CHiveName8::operator=(const CHiveName8 &hive)
-{
-	Assign(hive);
-	return *this;
 }
 
 //#################################################################################################
@@ -2513,12 +2500,6 @@ bool CHiveName8::IsValidHiveName(PCSTR sz)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CHiveNameW::CHiveNameW(CHiveNameW &&src) noexcept
-	: CRegPathSegmentW(std::move(src))
-{
-}
-
-//#################################################################################################
 CHiveNameW::CHiveNameW(const CHiveName8 &hive)
 {
 	Assign(hive);
@@ -2615,13 +2596,6 @@ HKEY CHiveNameW::GetHive(void) const
 		hHive = HKEY_CURRENT_CONFIG;
 
 	return hHive;
-}
-
-//#################################################################################################
-CHiveNameW &CHiveNameW::operator=(const CHiveNameW &hive)
-{
-	Assign(hive);
-	return *this;
 }
 
 //#################################################################################################

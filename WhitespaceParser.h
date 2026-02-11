@@ -10,7 +10,7 @@ class CWhitespaceParser final
 public:
 	CWhitespaceParser(void) = default;
 	CWhitespaceParser(const CWhitespaceParser &src) = default;
-	CWhitespaceParser(CWhitespaceParser &&src) noexcept;
+	CWhitespaceParser(CWhitespaceParser &&src) = default;
 	explicit CWhitespaceParser(PCNSTR sz);
 	explicit CWhitespaceParser(const CStr &str);
 
@@ -25,7 +25,7 @@ public:
 	CStr Get(const size_t nParam) const;
 
 	CWhitespaceParser &operator=(const CWhitespaceParser &src) = default;
-	CWhitespaceParser &operator=(CWhitespaceParser &&src) noexcept;
+	CWhitespaceParser &operator=(CWhitespaceParser &&src) = default;
 	CWhitespaceParser &operator=(PCNSTR sz);
 	CWhitespaceParser &operator=(const CStr &str);
 

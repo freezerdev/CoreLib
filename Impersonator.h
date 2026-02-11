@@ -9,7 +9,14 @@ class CImpersonator final
 {
 public:
 	CImpersonator(void);
+	// Copy and move constructors
+	CImpersonator(const CImpersonator &src) = delete;
+	CImpersonator(CImpersonator &&src) = delete;
 	~CImpersonator(void);
+
+	// Copy and move assignment operators
+	CImpersonator &operator=(const CImpersonator &src) = delete;
+	CImpersonator &operator=(CImpersonator &&src) = delete;
 
 	ERRCODE Impersonate(const uint32_t nSessionId);
 	bool IsImpersonating(void) const noexcept;

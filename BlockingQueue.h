@@ -13,10 +13,18 @@ class CBlockingQueue
 {
 public:
 	CBlockingQueue(void) : m_bQuit(false) {}
+	// Copy and move constructors
+	CBlockingQueue(const CBlockingQueue &src) = delete;
+	CBlockingQueue(CBlockingQueue &&src) = delete;
+
 	virtual ~CBlockingQueue(void)
 	{
 		Shutdown();
 	}
+
+	// Copy and move assignment operators
+	CBlockingQueue &operator=(const CBlockingQueue &src) = delete;
+	CBlockingQueue &operator=(CBlockingQueue &&src) = delete;
 
 	bool IsEmpty(void) const
 	{

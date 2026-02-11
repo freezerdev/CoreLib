@@ -2458,12 +2458,6 @@ size_t CFilePathSegmentW::ReverseFind(PCWSTR sz, const size_t nStrLen, const wch
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CMachineName8::CMachineName8(CMachineName8 &&src) noexcept
-	: CFilePathSegment8(std::move(src))
-{
-}
-
-//#################################################################################################
 CMachineName8::CMachineName8(const CMachineNameW &machine)
 {
 	Assign(machine);
@@ -2503,13 +2497,6 @@ CMachineName8::CMachineName8(const char ch)
 CMachineName8::CMachineName8(const wchar_t ch)
 {
 	Assign(ch);
-}
-
-//#################################################################################################
-CMachineName8 &CMachineName8::operator=(const CMachineName8 &src)
-{
-	Assign(src);
-	return *this;
 }
 
 //#################################################################################################
@@ -2887,12 +2874,6 @@ PCSTR CMachineName8::FindFirstNotOf(PCSTR sz, const size_t nStrLen, PCSTR szFind
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CMachineNameW::CMachineNameW(CMachineNameW &&src) noexcept
-	: CFilePathSegmentW(std::move(src))
-{
-}
-
-//#################################################################################################
 CMachineNameW::CMachineNameW(const CMachineName8 &machine)
 {
 	Assign(machine);
@@ -2932,13 +2913,6 @@ CMachineNameW::CMachineNameW(const wchar_t ch)
 CMachineNameW::CMachineNameW(const char ch)
 {
 	Assign(ch);
-}
-
-//#################################################################################################
-CMachineNameW &CMachineNameW::operator=(const CMachineNameW &src)
-{
-	Assign(src);
-	return *this;
 }
 
 //#################################################################################################

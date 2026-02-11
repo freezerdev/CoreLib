@@ -36,7 +36,12 @@ public:
 	};
 
 	explicit CSrwLocker(CSrwLock &srw, const ELockType eType = ELT_NoLock);
+	CSrwLocker(const CSrwLocker &src) = delete;
+	CSrwLocker(CSrwLocker &&src) = delete;
 	~CSrwLocker(void);
+
+	CSrwLocker &operator=(const CSrwLocker &src) = delete;
+	CSrwLocker &operator=(CSrwLocker &&src) = delete;
 
 	ELockType GetLockStatus(void) const noexcept;
 

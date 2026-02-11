@@ -10,7 +10,12 @@ class CRandom final
 {
 public:
 	CRandom(void) = delete;
+	CRandom(const CRandom &src) = delete;
+	CRandom(CRandom &&src) = delete;
 	~CRandom(void) = delete;
+
+	CRandom &operator=(const CRandom &src) = delete;
+	CRandom &operator=(CRandom &&src) = delete;
 
 	static void Init(void);
 	static void Free(void);

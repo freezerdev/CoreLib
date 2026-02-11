@@ -10,7 +10,14 @@ class CPrivilegeManager final
 {
 public:
 	CPrivilegeManager(void);
+	// Copy and move constructors
+	CPrivilegeManager(const CPrivilegeManager &src) = delete;
+	CPrivilegeManager(CPrivilegeManager &&src) = delete;
 	~CPrivilegeManager(void);
+
+	// Copy and move assignment operators
+	CPrivilegeManager &operator=(const CPrivilegeManager &src) = delete;
+	CPrivilegeManager &operator=(CPrivilegeManager &&src) = delete;
 
 	enum EGrantLevel : uint8_t
 	{

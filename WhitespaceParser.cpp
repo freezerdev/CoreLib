@@ -14,12 +14,6 @@ static PCSTR g_szWhitespace = " \t";
 #endif
 
 //#################################################################################################
-CWhitespaceParser::CWhitespaceParser(CWhitespaceParser &&src) noexcept
-	: m_vecParams(std::move(src.m_vecParams))
-{
-}
-
-//#################################################################################################
 CWhitespaceParser::CWhitespaceParser(PCNSTR sz)
 {
 	Assign(sz);
@@ -109,15 +103,6 @@ CStr CWhitespaceParser::Get(const size_t nParam) const
 		strParam = m_vecParams[nParam];
 
 	return strParam;
-}
-
-//#################################################################################################
-CWhitespaceParser &CWhitespaceParser::operator=(CWhitespaceParser &&src) noexcept
-{
-	if(this != &src)
-		m_vecParams = std::move(src.m_vecParams);
-
-	return *this;
 }
 
 //#################################################################################################

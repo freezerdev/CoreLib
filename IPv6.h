@@ -7,7 +7,7 @@ class CIPv6 final
 {
 public:
 	CIPv6(void);
-	CIPv6(const CIPv6 &src);
+	CIPv6(const CIPv6 &src) = default;
 	CIPv6(CIPv6 &&src) noexcept;
 	explicit CIPv6(PCBYTE pIP);
 	explicit CIPv6(PCNSTR szIP);
@@ -21,7 +21,7 @@ public:
 	PCBYTE Get(void) const noexcept;
 	CStr GetAsString(void) const;
 
-	CIPv6 &operator=(const CIPv6 &src);
+	CIPv6 &operator=(const CIPv6 &src) = default;
 	CIPv6 &operator=(CIPv6 &&src) noexcept;
 	void Assign(const CIPv6 &src);
 	void Assign(PCNSTR szIP);

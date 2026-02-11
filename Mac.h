@@ -7,7 +7,7 @@ class CMac final
 {
 public:
 	CMac(void);
-	CMac(const CMac &src);
+	CMac(const CMac &src) = default;
 	CMac(CMac &&src) noexcept;
 	explicit CMac(PCBYTE pMac);
 	explicit CMac(PCNSTR szMac, const NCHAR chDelim = _N(':'));
@@ -25,7 +25,7 @@ public:
 	CStr GetAsString(const NCHAR chDelim = _N(':')) const;
 	uint64_t GetAsUInt(void) const noexcept;
 
-	CMac &operator=(const CMac &src);
+	CMac &operator=(const CMac &src) = default;
 	CMac &operator=(CMac &&src) noexcept;
 	void Assign(const CMac &src);
 	void Assign(PCNSTR szMac, const NCHAR chDelim = _N(':'));

@@ -275,7 +275,7 @@ public:
 	CHiveName8(void) = default;
 	// Copy and move constructors
 	CHiveName8(const CHiveName8 &src) = default;
-	CHiveName8(CHiveName8 &&src) noexcept;
+	CHiveName8(CHiveName8 &&src) = default;
 	// Constructs an object set to the string/character
 	explicit CHiveName8(const CHiveNameW &hive);
 	explicit CHiveName8(const CStr8 &str);
@@ -295,7 +295,8 @@ public:
 	PCSTR GetShortName(void) const;
 
 	// Assigns the object to the string/character
-	CHiveName8 &operator=(const CHiveName8 &hive);
+	CHiveName8 &operator=(const CHiveName8 &hive) = default;
+	CHiveName8 &operator=(CHiveName8 &&src) = default;
 	CHiveName8 &operator=(const CHiveNameW &hive);
 	virtual CHiveName8 &operator=(const CStr8 &str) override;
 	virtual CHiveName8 &operator=(const CStrW &str) override;
@@ -387,7 +388,7 @@ public:
 	CHiveNameW(void) = default;
 	// Copy and move constructors
 	CHiveNameW(const CHiveNameW &src) = default;
-	CHiveNameW(CHiveNameW &&src) noexcept;
+	CHiveNameW(CHiveNameW &&src) = default;
 	// Constructs an object set to the string/character
 	explicit CHiveNameW(const CHiveName8 &hive);
 	explicit CHiveNameW(const CStrW &str);
@@ -407,7 +408,8 @@ public:
 	PCWSTR GetShortName(void) const;
 
 	// Assigns the object to the string/character
-	CHiveNameW &operator=(const CHiveNameW &hive);
+	CHiveNameW &operator=(const CHiveNameW &hive) = default;
+	CHiveNameW &operator=(CHiveNameW &&src) = default;
 	CHiveNameW &operator=(const CHiveName8 &hive);
 	virtual CHiveNameW &operator=(const CStrW &str) override;
 	virtual CHiveNameW &operator=(const CStr8 &str) override;

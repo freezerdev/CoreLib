@@ -357,7 +357,7 @@ public:
 	CMachineName8(void) = default;
 	// Copy and move constructors
 	CMachineName8(const CMachineName8 &src) = default;
-	CMachineName8(CMachineName8 &&src) noexcept;
+	CMachineName8(CMachineName8 &&src) = default;
 	// Constructs a string object set to the string/character
 	explicit CMachineName8(const CMachineNameW &machine);
 	explicit CMachineName8(const CStr8 &str);
@@ -369,8 +369,9 @@ public:
 
 	virtual ~CMachineName8(void) override = default;
 
-	// Copy assignment operator
-	CMachineName8 &operator=(const CMachineName8 &src);
+	// Copy and move assignment operators
+	CMachineName8 &operator=(const CMachineName8 &src) = default;
+	CMachineName8 &operator=(CMachineName8 &&src) = default;
 	// Assigns the string object to the string/character
 	CMachineName8 &operator=(const CMachineNameW &machine);
 	virtual CMachineName8 &operator=(const CStr8 &str) override;
@@ -412,7 +413,7 @@ public:
 	CMachineNameW(void) = default;
 	// Copy and move constructors
 	CMachineNameW(const CMachineNameW &src) = default;
-	CMachineNameW(CMachineNameW &&src) noexcept;
+	CMachineNameW(CMachineNameW &&src) = default;
 	// Constructs a string object set to the string/character
 	explicit CMachineNameW(const CMachineName8 &machine);
 	explicit CMachineNameW(const CStrW &str);
@@ -424,8 +425,9 @@ public:
 
 	virtual ~CMachineNameW(void) override = default;
 
-	// Copy assignment operator
-	CMachineNameW &operator=(const CMachineNameW &src);
+	// Copy and move assignment operators
+	CMachineNameW &operator=(const CMachineNameW &src) = default;
+	CMachineNameW &operator=(CMachineNameW &&src) = default;
 	// Assigns the string object to the string/character
 	CMachineNameW &operator=(const CMachineName8 &machine);
 	virtual CMachineNameW &operator=(const CStrW &str) override;

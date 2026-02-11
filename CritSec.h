@@ -28,7 +28,12 @@ class CCritSecMgr final
 {
 public:
 	explicit CCritSecMgr(CCritSec &cs, const bool bLock = true);
+	CCritSecMgr(const CCritSecMgr &src) = delete;
+	CCritSecMgr(CCritSecMgr &&src) = delete;
 	~CCritSecMgr(void);
+
+	CCritSecMgr &operator=(const CCritSecMgr &src) = delete;
+	CCritSecMgr &operator=(CCritSecMgr &&src) = delete;
 
 	void Lock(void);
 	bool TryLock(void);

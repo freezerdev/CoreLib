@@ -16,7 +16,14 @@ class CThread
 {
 public:
 	explicit CThread(const CStr &strThreadName);
+	// Copy and move constructors
+	CThread(const CThread &src) = delete;
+	CThread(CThread &&src) = delete;
 	virtual ~CThread(void);
+
+	// Copy and move assignment operators
+	CThread &operator=(const CThread &src) = delete;
+	CThread &operator=(CThread &&src) = delete;
 
 	bool Start(void);
 	bool Start(PFNPROC pfnProc, PVOID pParam = nullptr);
