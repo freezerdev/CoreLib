@@ -9,7 +9,7 @@ NS_BEGIN
 class CPrivilegeManager final
 {
 public:
-	CPrivilegeManager(void);
+	CPrivilegeManager(void) = default;
 	// Copy and move constructors
 	CPrivilegeManager(const CPrivilegeManager &src) = delete;
 	CPrivilegeManager(CPrivilegeManager &&src) = delete;
