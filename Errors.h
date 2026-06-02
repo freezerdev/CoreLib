@@ -43,7 +43,7 @@ static constexpr auto FW_ERROR_SERVER_AUTH_FAILED = 0xC023;
 static constexpr auto FW_ERROR_SERVER_EXCEPTION = 0xC024;
 static constexpr auto FW_ERROR_DISABLED = 0xC025;
 static constexpr auto FW_ERROR_NOT_EMPTY = 0xC026;
-static constexpr auto FW_ERROR_SOME_FAILED = 0xC026;
+static constexpr auto FW_ERROR_SOME_FAILED = 0xC027;
 
 static constexpr auto FW_ERROR_UNKNOWN = 0xCFFF;
 

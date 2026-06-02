@@ -115,19 +115,19 @@ bool CThread::IsActive(void) const noexcept
 }
 
 //#################################################################################################
-PCNSTR CThread::GetThreadName(const std::thread::id &id)
+CStr CThread::GetThreadName(const std::thread::id &id)
 {
-	PCNSTR szThreadName = nullptr;
+	CStr strThreadName;
 
 	size_t nThreadId = GetThreadId(id);
 
 	std::unique_lock<std::mutex> lock(s_mutexThreads);
 	auto itr = s_mapThreads.find(nThreadId);
 	if(itr != s_mapThreads.end())
-		szThreadName = itr->second;
+		strThreadName = itr->second;
 	lock.unlock();
 
-	return szThreadName;
+	return strThreadName;
 }
 
 //#################################################################################################

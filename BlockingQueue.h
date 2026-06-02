@@ -44,6 +44,7 @@ public:
 
 	void Reset(void)
 	{
+		std::lock_guard<std::mutex> lock(m_mutex);
 		Assert(m_q.empty());
 		m_bQuit = false;
 	}
@@ -85,7 +86,7 @@ public:
 
 		if(!m_q.empty())
 		{
-			t = m_q.front();
+			t = std::move(m_q.front());
 			m_q.pop();
 			bSuccess = true;
 		}
@@ -99,7 +100,7 @@ public:
 		std::lock_guard<std::mutex> lock(m_mutex);
 		if(!m_q.empty())
 		{
-			t = m_q.front();
+			t = std::move(m_q.front());
 			m_q.pop();
 			bSuccess = true;
 		}

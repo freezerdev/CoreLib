@@ -210,7 +210,7 @@ size_t CStr8::GetCount(const bool bIncludeNullTerm) const
 	{
 		size_t nSize = GetMultiByteCharSize(szScan, nRemaining);
 		szScan += nSize;
-		--nRemaining;
+		nRemaining -= nSize;
 		++nCount;
 	}
 
@@ -579,18 +579,23 @@ void CStr8::Assign(const CStrW &str, const size_t nStart, const size_t nLen)
 {
 	if(str.m_nStrLen && nStart < str.m_nStrLen && nLen)
 	{	// Alloc and copy
+		size_t nLenW;
 		size_t nNewLen;
 		if(nLen == end)
-			nNewLen = WideToUtf8(str.m_sz + nStart, str.m_nStrLen - nStart, nullptr, 0);
+		{
+			nLenW = str.m_nStrLen - nStart;
+			nNewLen = WideToUtf8(str.m_sz + nStart, nLenW, nullptr, 0);
+		}
 		else
 		{
-			size_t nNewLen8 = WideToUtf8(str.m_sz + nStart, MIN(nLen, str.m_nStrLen - nStart), nullptr, 0);
+			nLenW = MIN(nLen, str.m_nStrLen - nStart);
+			size_t nNewLen8 = WideToUtf8(str.m_sz + nStart, nLenW, nullptr, 0);
 			nNewLen = MIN(nLen, nNewLen8);
 		}
 
 		if(Alloc(nNewLen + 1))
 		{
-			WideToUtf8(str.m_sz + nStart, str.m_nStrLen - nStart, m_sz, m_nBufLen);
+			WideToUtf8(str.m_sz + nStart, nLenW, m_sz, m_nBufLen);
 			m_nStrLen = nNewLen;
 			m_sz[m_nStrLen] = g_chNull8;
 		}
@@ -639,18 +644,23 @@ void CStr8::Assign(PCWSTR sz, const size_t nStart, const size_t nLen)
 		size_t nStrLen = (nLen == CStrW::end) ? StringGetLength(sz) : CStrW::GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
+			size_t nLenW;
 			size_t nNewLen;
 			if(nLen == end)
-				nNewLen = WideToUtf8(sz + nStart, nStrLen - nStart, nullptr, 0);
+			{
+				nLenW = nStrLen - nStart;
+				nNewLen = WideToUtf8(sz + nStart, nLenW, nullptr, 0);
+			}
 			else
 			{
-				size_t nNewLenW = WideToUtf8(sz + nStart, MIN(nLen, nStrLen - nStart), nullptr, 0);
+				nLenW = MIN(nLen, nStrLen - nStart);
+				size_t nNewLenW = WideToUtf8(sz + nStart, nLenW, nullptr, 0);
 				nNewLen = MIN(nLen, nNewLenW);
 			}
 
 			if(Alloc(nNewLen + 1))
 			{
-				WideToUtf8(sz + nStart, nStrLen - nStart, m_sz, m_nBufLen);
+				WideToUtf8(sz + nStart, nLenW, m_sz, m_nBufLen);
 				m_nStrLen = nNewLen;
 				m_sz[m_nStrLen] = g_chNull8;
 			}
@@ -2250,25 +2260,29 @@ size_t CStr8::FindLastNotOf(PCSTR szFind, const size_t nStart, const bool bCaseI
 //#################################################################################################
 CStr8 CStr8::SpanIncluding(const CStr8 &strFind, const size_t nStart, const bool bCaseInsensitive) const
 {
-	return GetMid(nStart, FindFirstNotOf(strFind, nStart, bCaseInsensitive) - nStart);
+	size_t nPos = FindFirstNotOf(strFind, nStart, bCaseInsensitive);
+	return GetMid(nStart, (nPos == not_found) ? end : nPos - nStart);
 }
 
 //#################################################################################################
 CStr8 CStr8::SpanIncluding(PCSTR szFind, const size_t nStart, const bool bCaseInsensitive) const
 {
-	return GetMid(nStart, FindFirstNotOf(szFind, nStart, bCaseInsensitive) - nStart);
+	size_t nPos = FindFirstNotOf(szFind, nStart, bCaseInsensitive);
+	return GetMid(nStart, (nPos == not_found) ? end : nPos - nStart);
 }
 
 //#################################################################################################
 CStr8 CStr8::SpanExcluding(const CStr8 &strFind, const size_t nStart, const bool bCaseInsensitive) const
 {
-	return GetMid(nStart, FindFirstOf(strFind, nStart, bCaseInsensitive) - nStart);
+	size_t nPos = FindFirstOf(strFind, nStart, bCaseInsensitive);
+	return GetMid(nStart, (nPos == not_found) ? end : nPos - nStart);
 }
 
 //#################################################################################################
 CStr8 CStr8::SpanExcluding(PCSTR szFind, const size_t nStart, const bool bCaseInsensitive) const
 {
-	return GetMid(nStart, FindFirstOf(szFind, nStart, bCaseInsensitive) - nStart);
+	size_t nPos = FindFirstOf(szFind, nStart, bCaseInsensitive);
+	return GetMid(nStart, (nPos == not_found) ? end : nPos - nStart);
 }
 
 //#################################################################################################
@@ -2659,132 +2673,68 @@ size_t CStr8::Replace(const CStr8 &strOld, const CStr8 &strNew, const bool bCase
 	if(!m_nStrLen || !strOld.m_nStrLen)
 		return nCount;
 
+	using PFNFIND = PSTR (*)(PCSTR, size_t, PCSTR, size_t);
+	PFNFIND pfnFind = bCaseInsensitive ? FindStrPtrI : FindStrPtr;
+
 	if(strOld.m_nStrLen != strNew.m_nStrLen)
 	{	// The length of the string is changing
-		if(bCaseInsensitive)
+		size_t nNewStrLen = m_nStrLen;
+		PSTR szScan = pfnFind(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
+		while(szScan)
 		{
-			size_t nNewStrLen = m_nStrLen;
-			PSTR szScan = FindStrPtrI(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			while(szScan)
-			{
-				nNewStrLen -= strOld.m_nStrLen;
-				nNewStrLen += strNew.m_nStrLen;
-				szScan = FindStrPtrI(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz), strOld.m_sz, strOld.m_nStrLen);
-			}
-
-			auto szTemp = std::make_unique<char[]>(m_nStrLen);
-			std::memcpy(szTemp.get(), m_sz, m_nStrLen);
-			size_t nStrLen = m_nStrLen;
-
-			if(Alloc(nNewStrLen + 1))
-			{
-				m_nStrLen = 0;
-				PSTR szDest = m_sz;
-				PCSTR szSrc = szTemp.get();
-				do{
-					szScan = FindStrPtrI(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), strOld.m_sz, strOld.m_nStrLen);
-					if(szScan == nullptr)
-					{
-						if(nStrLen != (size_t)(szSrc - szTemp.get()))
-						{
-							std::memcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
-							m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
-						}
-					}
-					else
-					{
-						if(szScan - szSrc)
-						{
-							std::memcpy(szDest, szSrc, (size_t)(szScan - szSrc));
-							m_nStrLen += (size_t)(szScan - szSrc);
-							szDest += (szScan - szSrc);
-						}
-						if(strNew.m_nStrLen)
-						{
-							std::memcpy(szDest, strNew.m_sz, strNew.m_nStrLen);
-							m_nStrLen += strNew.m_nStrLen;
-							szDest += strNew.m_nStrLen;
-						}
-						++nCount;
-						szSrc = szScan + strOld.m_nStrLen;
-					}
-				}while(szScan);
-				m_sz[m_nStrLen] = g_chNull8;
-			}
+			nNewStrLen -= strOld.m_nStrLen;
+			nNewStrLen += strNew.m_nStrLen;
+			szScan = pfnFind(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz), strOld.m_sz, strOld.m_nStrLen);
 		}
-		else
+
+		auto szTemp = std::make_unique<char[]>(m_nStrLen);
+		std::memcpy(szTemp.get(), m_sz, m_nStrLen);
+		size_t nStrLen = m_nStrLen;
+
+		if(Alloc(nNewStrLen + 1))
 		{
-			size_t nNewStrLen = m_nStrLen;
-			PSTR szScan = FindStrPtr(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			while(szScan)
-			{
-				nNewStrLen -= strOld.m_nStrLen;
-				nNewStrLen += strNew.m_nStrLen;
-				szScan = FindStrPtr(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz), strOld.m_sz, strOld.m_nStrLen);
-			}
-
-			auto szTemp = std::make_unique<char[]>(m_nStrLen);
-			std::memcpy(szTemp.get(), m_sz, m_nStrLen);
-			size_t nStrLen = m_nStrLen;
-
-			if(Alloc(nNewStrLen + 1))
-			{
-				m_nStrLen = 0;
-				PSTR szDest = m_sz;
-				PCSTR szSrc = szTemp.get();
-				do{
-					szScan = FindStrPtr(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), strOld.m_sz, strOld.m_nStrLen);
-					if(szScan == nullptr)
+			m_nStrLen = 0;
+			PSTR szDest = m_sz;
+			PCSTR szSrc = szTemp.get();
+			do{
+				szScan = pfnFind(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), strOld.m_sz, strOld.m_nStrLen);
+				if(szScan == nullptr)
+				{
+					if(nStrLen != (size_t)(szSrc - szTemp.get()))
 					{
-						if(nStrLen != (size_t)(szSrc - szTemp.get()))
-						{
-							std::memcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
-							m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
-						}
+						std::memcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
+						m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
 					}
-					else
+				}
+				else
+				{
+					if(szScan - szSrc)
 					{
-						if(szScan - szSrc)
-						{
-							std::memcpy(szDest, szSrc, (size_t)(szScan - szSrc));
-							m_nStrLen += (size_t)(szScan - szSrc);
-							szDest += (szScan - szSrc);
-						}
-						if(strNew.m_nStrLen)
-						{
-							std::memcpy(szDest, strNew.m_sz, strNew.m_nStrLen);
-							m_nStrLen += strNew.m_nStrLen;
-							szDest += strNew.m_nStrLen;
-						}
-						++nCount;
-						szSrc = szScan + strOld.m_nStrLen;
+						std::memcpy(szDest, szSrc, (size_t)(szScan - szSrc));
+						m_nStrLen += (size_t)(szScan - szSrc);
+						szDest += (szScan - szSrc);
 					}
-				}while(szScan);
-				m_sz[m_nStrLen] = g_chNull8;
-			}
+					if(strNew.m_nStrLen)
+					{
+						std::memcpy(szDest, strNew.m_sz, strNew.m_nStrLen);
+						m_nStrLen += strNew.m_nStrLen;
+						szDest += strNew.m_nStrLen;
+					}
+					++nCount;
+					szSrc = szScan + strOld.m_nStrLen;
+				}
+			}while(szScan);
+			m_sz[m_nStrLen] = g_chNull8;
 		}
 	}
 	else
 	{	// No change in length, perform the replace in the current memory
-		if(bCaseInsensitive)
+		PSTR szScan = pfnFind(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
+		while(szScan)
 		{
-			PSTR szScan = FindStrPtrI(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			while(szScan)
-			{
-				std::memcpy(szScan, strNew.m_sz, strNew.m_nStrLen);
-				++nCount;
-				szScan = FindStrPtrI(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz) - strOld.m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			}
-		}
-		else
-		{
-			PSTR szScan = FindStrPtr(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			while(szScan)
-			{
-				std::memcpy(szScan, strNew.m_sz, strNew.m_nStrLen);
-				++nCount;
-				szScan = FindStrPtr(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz) - strOld.m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			}
+			std::memcpy(szScan, strNew.m_sz, strNew.m_nStrLen);
+			++nCount;
+			szScan = pfnFind(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz) - strOld.m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
 		}
 	}
 
@@ -2799,134 +2749,70 @@ size_t CStr8::Replace(PCSTR szOld, PCSTR szNew, const bool bCaseInsensitive)
 	if(!m_nStrLen)
 		return nCount;
 
+	using PFNFIND = PSTR (*)(PCSTR, size_t, PCSTR, size_t);
+	PFNFIND pfnFind = bCaseInsensitive ? FindStrPtrI : FindStrPtr;
+
 	size_t nOldLen = StringGetLength(szOld);
 	size_t nNewLen = StringGetLength(szNew);
 	if(nOldLen != nNewLen)
 	{	// The length of the string is changing
-		if(bCaseInsensitive)
+		size_t nNewStrLen = m_nStrLen;
+		PSTR szScan = pfnFind(m_sz, m_nStrLen, szOld, nOldLen);
+		while(szScan)
 		{
-			size_t nNewStrLen = m_nStrLen;
-			PSTR szScan = FindStrPtrI(m_sz, m_nStrLen, szOld, nOldLen);
-			while(szScan)
-			{
-				nNewStrLen -= nOldLen;
-				nNewStrLen += nNewLen;
-				szScan = FindStrPtrI(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz), szOld, nOldLen);
-			}
-
-			auto szTemp = std::make_unique<char[]>(m_nStrLen);
-			std::memcpy(szTemp.get(), m_sz, m_nStrLen);
-			size_t nStrLen = m_nStrLen;
-
-			if(Alloc(nNewStrLen + 1))
-			{
-				m_nStrLen = 0;
-				PSTR szDest = m_sz;
-				PCSTR szSrc = szTemp.get();
-				do{
-					szScan = FindStrPtrI(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), szOld, nOldLen);
-					if(szScan == nullptr)
-					{
-						if(nStrLen != (size_t)(szSrc - szTemp.get()))
-						{
-							std::memcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
-							m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
-						}
-					}
-					else
-					{
-						if(szScan - szSrc)
-						{
-							std::memcpy(szDest, szSrc, (size_t)(szScan - szSrc));
-							m_nStrLen += (size_t)(szScan - szSrc);
-							szDest += (szScan - szSrc);
-						}
-						if(nNewLen)
-						{
-							std::memcpy(szDest, szNew, nNewLen);
-							m_nStrLen += nNewLen;
-							szDest += nNewLen;
-						}
-						++nCount;
-						szSrc = szScan + nOldLen;
-					}
-				}while(szScan);
-				m_sz[m_nStrLen] = g_chNull8;
-			}
+			nNewStrLen -= nOldLen;
+			nNewStrLen += nNewLen;
+			szScan = pfnFind(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz), szOld, nOldLen);
 		}
-		else
+
+		auto szTemp = std::make_unique<char[]>(m_nStrLen);
+		std::memcpy(szTemp.get(), m_sz, m_nStrLen);
+		size_t nStrLen = m_nStrLen;
+
+		if(Alloc(nNewStrLen + 1))
 		{
-			size_t nNewStrLen = m_nStrLen;
-			PSTR szScan = FindStrPtr(m_sz, m_nStrLen, szOld, nOldLen);
-			while(szScan)
-			{
-				nNewStrLen -= nOldLen;
-				nNewStrLen += nNewLen;
-				szScan = FindStrPtr(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz), szOld, nOldLen);
-			}
-
-			auto szTemp = std::make_unique<char[]>(m_nStrLen);
-			std::memcpy(szTemp.get(), m_sz, m_nStrLen);
-			size_t nStrLen = m_nStrLen;
-
-			if(Alloc(nNewStrLen + 1))
-			{
-				m_nStrLen = 0;
-				PSTR szDest = m_sz;
-				PCSTR szSrc = szTemp.get();
-				do{
-					szScan = FindStrPtr(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), szOld, nOldLen);
-					if(szScan == nullptr)
+			m_nStrLen = 0;
+			PSTR szDest = m_sz;
+			PCSTR szSrc = szTemp.get();
+			do{
+				szScan = pfnFind(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), szOld, nOldLen);
+				if(szScan == nullptr)
+				{
+					if(nStrLen != (size_t)(szSrc - szTemp.get()))
 					{
-						if(nStrLen != (size_t)(szSrc - szTemp.get()))
-						{
-							std::memcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
-							m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
-						}
+						std::memcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
+						m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
 					}
-					else
+				}
+				else
+				{
+					if(szScan - szSrc)
 					{
-						if(szScan - szSrc)
-						{
-							std::memcpy(szDest, szSrc, (size_t)(szScan - szSrc));
-							m_nStrLen += (size_t)(szScan - szSrc);
-							szDest += (szScan - szSrc);
-						}
-						if(nNewLen)
-						{
-							std::memcpy(szDest, szNew, nNewLen);
-							m_nStrLen += nNewLen;
-							szDest += nNewLen;
-						}
-						++nCount;
-						szSrc = szScan + nOldLen;
+						std::memcpy(szDest, szSrc, (size_t)(szScan - szSrc));
+						m_nStrLen += (size_t)(szScan - szSrc);
+						szDest += (szScan - szSrc);
 					}
-				}while(szScan);
-				m_sz[m_nStrLen] = g_chNull8;
-			}
+					if(nNewLen)
+					{
+						std::memcpy(szDest, szNew, nNewLen);
+						m_nStrLen += nNewLen;
+						szDest += nNewLen;
+					}
+					++nCount;
+					szSrc = szScan + nOldLen;
+				}
+			}while(szScan);
+			m_sz[m_nStrLen] = g_chNull8;
 		}
 	}
 	else
 	{	// No change in length, perform the replace in the current memory
-		if(bCaseInsensitive)
+		PSTR szScan = pfnFind(m_sz, m_nStrLen, szOld, nOldLen);
+		while(szScan)
 		{
-			PSTR szScan = FindStrPtrI(m_sz, m_nStrLen, szOld, nOldLen);
-			while(szScan)
-			{
-				std::memcpy(szScan, szNew, nNewLen);
-				++nCount;
-				szScan = FindStrPtrI(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz) - nOldLen, szOld, nOldLen);
-			}
-		}
-		else
-		{
-			PSTR szScan = FindStrPtr(m_sz, m_nStrLen, szOld, nOldLen);
-			while(szScan)
-			{
-				std::memcpy(szScan, szNew, nNewLen);
-				++nCount;
-				szScan = FindStrPtr(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz) - nOldLen, szOld, nOldLen);
-			}
+			std::memcpy(szScan, szNew, nNewLen);
+			++nCount;
+			szScan = pfnFind(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz) - nOldLen, szOld, nOldLen);
 		}
 	}
 
@@ -3600,7 +3486,8 @@ bool CStr8::PrintfV(PCSTR szFormat, va_list vaArgs)
 		va_list vaBegin;
 		va_copy(vaBegin, vaArgs);
 
-		int nResult = std::vsnprintf(GetBuffer(nStrLen), nStrLen, szFormat, vaArgs);
+		int nResult = std::vsnprintf(GetBuffer(nStrLen), nStrLen, szFormat, vaBegin);
+		va_end(vaBegin);
 		if(nResult < 0)
 		{
 			Empty();
@@ -3610,16 +3497,12 @@ bool CStr8::PrintfV(PCSTR szFormat, va_list vaArgs)
 		{
 			if((size_t)nResult > nStrLen - 1)
 			{
-				va_end(vaArgs);
-				va_copy(vaArgs, vaBegin);
 				nStrLen = (size_t)nResult + 1;
 				std::vsnprintf(GetBuffer(nStrLen), nStrLen, szFormat, vaArgs);
 			}
 
 			ReleaseBuffer();
 		}
-
-		va_end(vaBegin);
 	}
 	else
 	{
@@ -4484,18 +4367,23 @@ void CStrW::Assign(const CStr8 &str, const size_t nStart, const size_t nLen)
 {
 	if(str.m_nStrLen && nStart < str.m_nStrLen && nLen)
 	{	// Alloc and copy
+		size_t nLen8;
 		size_t nNewLen;
 		if(nLen == end)
-			nNewLen = Utf8ToWide(str.m_sz + nStart, str.m_nStrLen - nStart, nullptr, 0);
+		{
+			nLen8 = str.m_nStrLen - nStart;
+			nNewLen = Utf8ToWide(str.m_sz + nStart, nLen8, nullptr, 0);
+		}
 		else
 		{
-			size_t nNewLenW = Utf8ToWide(str.m_sz + nStart, MIN(nLen, str.m_nStrLen - nStart), nullptr, 0);
+			nLen8 = MIN(nLen, str.m_nStrLen - nStart);
+			size_t nNewLenW = Utf8ToWide(str.m_sz + nStart, nLen8, nullptr, 0);
 			nNewLen = MIN(nLen, nNewLenW);
 		}
 
 		if(Alloc(nNewLen + 1))
 		{
-			Utf8ToWide(str.m_sz + nStart, str.m_nStrLen - nStart, m_sz, m_nBufLen);
+			Utf8ToWide(str.m_sz + nStart, nLen8, m_sz, m_nBufLen);
 			m_nStrLen = nNewLen;
 			m_sz[m_nStrLen] = g_chNullW;
 		}
@@ -4544,18 +4432,23 @@ void CStrW::Assign(PCSTR sz, const size_t nStart, const size_t nLen)
 		size_t nStrLen = (nLen == CStr8::end) ? StringGetLength(sz) : CStr8::GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
+			size_t nLen8;
 			size_t nNewLen;
 			if(nLen == end)
-				nNewLen = Utf8ToWide(sz + nStart, nStrLen - nStart, nullptr, 0);
+			{
+				nLen8 = nStrLen - nStart;
+				nNewLen = Utf8ToWide(sz + nStart, nLen8, nullptr, 0);
+			}
 			else
 			{
-				size_t nNewLen8 = Utf8ToWide(sz + nStart, MIN(nLen, nStrLen - nStart), nullptr, 0);
+				nLen8 = MIN(nLen, nStrLen - nStart);
+				size_t nNewLen8 = Utf8ToWide(sz + nStart, nLen8, nullptr, 0);
 				nNewLen = MIN(nLen, nNewLen8);
 			}
 
 			if(Alloc(nNewLen + 1))
 			{
-				Utf8ToWide(sz + nStart, nStrLen - nStart, m_sz, m_nBufLen);
+				Utf8ToWide(sz + nStart, nLen8, m_sz, m_nBufLen);
 				m_nStrLen = nNewLen;
 				m_sz[m_nStrLen] = g_chNullW;
 			}
@@ -6564,132 +6457,68 @@ size_t CStrW::Replace(const CStrW &strOld, const CStrW &strNew, const bool bCase
 	if(!m_nStrLen || !strOld.m_nStrLen)
 		return nCount;
 
+	using PFNFIND = PWSTR (*)(PCWSTR, size_t, PCWSTR, size_t);
+	PFNFIND pfnFind = bCaseInsensitive ? FindStrPtrI : FindStrPtr;
+
 	if(strOld.m_nStrLen != strNew.m_nStrLen)
 	{	// The length of the string is changing
-		if(bCaseInsensitive)
+		size_t nNewStrLen = m_nStrLen;
+		PWSTR szScan = pfnFind(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
+		while(szScan)
 		{
-			size_t nNewStrLen = m_nStrLen;
-			PWSTR szScan = FindStrPtrI(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			while(szScan)
-			{
-				nNewStrLen -= strOld.m_nStrLen;
-				nNewStrLen += strNew.m_nStrLen;
-				szScan = FindStrPtrI(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz), strOld.m_sz, strOld.m_nStrLen);
-			}
-
-			auto szTemp = std::make_unique<wchar_t[]>(m_nStrLen);
-			std::wmemcpy(szTemp.get(), m_sz, m_nStrLen);
-			size_t nStrLen = m_nStrLen;
-
-			if(Alloc(nNewStrLen + 1))
-			{
-				m_nStrLen = 0;
-				PWSTR szDest = m_sz;
-				PCWSTR szSrc = szTemp.get();
-				do{
-					szScan = FindStrPtrI(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), strOld.m_sz, strOld.m_nStrLen);
-					if(szScan == nullptr)
-					{
-						if(nStrLen != (size_t)(szSrc - szTemp.get()))
-						{
-							std::wmemcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
-							m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
-						}
-					}
-					else
-					{
-						if(szScan - szSrc)
-						{
-							std::wmemcpy(szDest, szSrc, (size_t)(szScan - szSrc));
-							m_nStrLen += (size_t)(szScan - szSrc);
-							szDest += (szScan - szSrc);
-						}
-						if(strNew.m_nStrLen)
-						{
-							std::wmemcpy(szDest, strNew.m_sz, strNew.m_nStrLen);
-							m_nStrLen += strNew.m_nStrLen;
-							szDest += strNew.m_nStrLen;
-						}
-						++nCount;
-						szSrc = szScan + strOld.m_nStrLen;
-					}
-				}while(szScan);
-				m_sz[m_nStrLen] = g_chNullW;
-			}
+			nNewStrLen -= strOld.m_nStrLen;
+			nNewStrLen += strNew.m_nStrLen;
+			szScan = pfnFind(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz), strOld.m_sz, strOld.m_nStrLen);
 		}
-		else
+
+		auto szTemp = std::make_unique<wchar_t[]>(m_nStrLen);
+		std::wmemcpy(szTemp.get(), m_sz, m_nStrLen);
+		size_t nStrLen = m_nStrLen;
+
+		if(Alloc(nNewStrLen + 1))
 		{
-			size_t nNewStrLen = m_nStrLen;
-			PWSTR szScan = FindStrPtr(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			while(szScan)
-			{
-				nNewStrLen -= strOld.m_nStrLen;
-				nNewStrLen += strNew.m_nStrLen;
-				szScan = FindStrPtr(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz), strOld.m_sz, strOld.m_nStrLen);
-			}
-
-			auto szTemp = std::make_unique<wchar_t[]>(m_nStrLen);
-			std::wmemcpy(szTemp.get(), m_sz, m_nStrLen);
-			size_t nStrLen = m_nStrLen;
-
-			if(Alloc(nNewStrLen + 1))
-			{
-				m_nStrLen = 0;
-				PWSTR szDest = m_sz;
-				PCWSTR szSrc = szTemp.get();
-				do{
-					szScan = FindStrPtr(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), strOld.m_sz, strOld.m_nStrLen);
-					if(szScan == nullptr)
+			m_nStrLen = 0;
+			PWSTR szDest = m_sz;
+			PCWSTR szSrc = szTemp.get();
+			do{
+				szScan = pfnFind(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), strOld.m_sz, strOld.m_nStrLen);
+				if(szScan == nullptr)
+				{
+					if(nStrLen != (size_t)(szSrc - szTemp.get()))
 					{
-						if(nStrLen != (size_t)(szSrc - szTemp.get()))
-						{
-							std::wmemcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
-							m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
-						}
+						std::wmemcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
+						m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
 					}
-					else
+				}
+				else
+				{
+					if(szScan - szSrc)
 					{
-						if(szScan - szSrc)
-						{
-							std::wmemcpy(szDest, szSrc, (size_t)(szScan - szSrc));
-							m_nStrLen += (size_t)(szScan - szSrc);
-							szDest += (szScan - szSrc);
-						}
-						if(strNew.m_nStrLen)
-						{
-							std::wmemcpy(szDest, strNew.m_sz, strNew.m_nStrLen);
-							m_nStrLen += strNew.m_nStrLen;
-							szDest += strNew.m_nStrLen;
-						}
-						++nCount;
-						szSrc = szScan + strOld.m_nStrLen;
+						std::wmemcpy(szDest, szSrc, (size_t)(szScan - szSrc));
+						m_nStrLen += (size_t)(szScan - szSrc);
+						szDest += (szScan - szSrc);
 					}
-				}while(szScan);
-				m_sz[m_nStrLen] = g_chNullW;
-			}
+					if(strNew.m_nStrLen)
+					{
+						std::wmemcpy(szDest, strNew.m_sz, strNew.m_nStrLen);
+						m_nStrLen += strNew.m_nStrLen;
+						szDest += strNew.m_nStrLen;
+					}
+					++nCount;
+					szSrc = szScan + strOld.m_nStrLen;
+				}
+			}while(szScan);
+			m_sz[m_nStrLen] = g_chNullW;
 		}
 	}
 	else
 	{	// No change in length, perform the replace in the current memory
-		if(bCaseInsensitive)
+		PWSTR szScan = pfnFind(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
+		while(szScan)
 		{
-			PWSTR szScan = FindStrPtrI(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			while(szScan)
-			{
-				std::wmemcpy(szScan, strNew.m_sz, strNew.m_nStrLen);
-				++nCount;
-				szScan = FindStrPtrI(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz) - strOld.m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			}
-		}
-		else
-		{
-			PWSTR szScan = FindStrPtr(m_sz, m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			while(szScan)
-			{
-				std::wmemcpy(szScan, strNew.m_sz, strNew.m_nStrLen);
-				++nCount;
-				szScan = FindStrPtr(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz) - strOld.m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
-			}
+			std::wmemcpy(szScan, strNew.m_sz, strNew.m_nStrLen);
+			++nCount;
+			szScan = pfnFind(szScan + strOld.m_nStrLen, m_nStrLen - (size_t)(szScan - m_sz) - strOld.m_nStrLen, strOld.m_sz, strOld.m_nStrLen);
 		}
 	}
 
@@ -6704,134 +6533,70 @@ size_t CStrW::Replace(PCWSTR szOld, PCWSTR szNew, const bool bCaseInsensitive)
 	if(!m_nStrLen)
 		return nCount;
 
+	using PFNFIND = PWSTR (*)(PCWSTR, size_t, PCWSTR, size_t);
+	PFNFIND pfnFind = bCaseInsensitive ? FindStrPtrI : FindStrPtr;
+
 	size_t nOldLen = StringGetLength(szOld);
 	size_t nNewLen = StringGetLength(szNew);
 	if(nOldLen != nNewLen)
 	{	// The length of the string is changing
-		if(bCaseInsensitive)
+		size_t nNewStrLen = m_nStrLen;
+		PWSTR szScan = pfnFind(m_sz, m_nStrLen, szOld, nOldLen);
+		while(szScan)
 		{
-			size_t nNewStrLen = m_nStrLen;
-			PWSTR szScan = FindStrPtrI(m_sz, m_nStrLen, szOld, nOldLen);
-			while(szScan)
-			{
-				nNewStrLen -= nOldLen;
-				nNewStrLen += nNewLen;
-				szScan = FindStrPtrI(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz), szOld, nOldLen);
-			}
-
-			auto szTemp = std::make_unique<wchar_t[]>(m_nStrLen);
-			std::wmemcpy(szTemp.get(), m_sz, m_nStrLen);
-			size_t nStrLen = m_nStrLen;
-
-			if(Alloc(nNewStrLen + 1))
-			{
-				m_nStrLen = 0;
-				PWSTR szDest = m_sz;
-				PCWSTR szSrc = szTemp.get();
-				do{
-					szScan = FindStrPtrI(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), szOld, nOldLen);
-					if(szScan == nullptr)
-					{
-						if(nStrLen != (size_t)(szSrc - szTemp.get()))
-						{
-							std::wmemcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
-							m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
-						}
-					}
-					else
-					{
-						if(szScan - szSrc)
-						{
-							std::wmemcpy(szDest, szSrc, (size_t)(szScan - szSrc));
-							m_nStrLen += (size_t)(szScan - szSrc);
-							szDest += (szScan - szSrc);
-						}
-						if(nNewLen)
-						{
-							std::wmemcpy(szDest, szNew, nNewLen);
-							m_nStrLen += nNewLen;
-							szDest += nNewLen;
-						}
-						++nCount;
-						szSrc = szScan + nOldLen;
-					}
-				}while(szScan);
-				m_sz[m_nStrLen] = g_chNullW;
-			}
+			nNewStrLen -= nOldLen;
+			nNewStrLen += nNewLen;
+			szScan = pfnFind(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz), szOld, nOldLen);
 		}
-		else
+
+		auto szTemp = std::make_unique<wchar_t[]>(m_nStrLen);
+		std::wmemcpy(szTemp.get(), m_sz, m_nStrLen);
+		size_t nStrLen = m_nStrLen;
+
+		if(Alloc(nNewStrLen + 1))
 		{
-			size_t nNewStrLen = m_nStrLen;
-			PWSTR szScan = FindStrPtr(m_sz, m_nStrLen, szOld, nOldLen);
-			while(szScan)
-			{
-				nNewStrLen -= nOldLen;
-				nNewStrLen += nNewLen;
-				szScan = FindStrPtr(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz), szOld, nOldLen);
-			}
-
-			auto szTemp = std::make_unique<wchar_t[]>(m_nStrLen);
-			std::wmemcpy(szTemp.get(), m_sz, m_nStrLen);
-			size_t nStrLen = m_nStrLen;
-
-			if(Alloc(nNewStrLen + 1))
-			{
-				m_nStrLen = 0;
-				PWSTR szDest = m_sz;
-				PCWSTR szSrc = szTemp.get();
-				do{
-					szScan = FindStrPtr(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), szOld, nOldLen);
-					if(szScan == nullptr)
+			m_nStrLen = 0;
+			PWSTR szDest = m_sz;
+			PCWSTR szSrc = szTemp.get();
+			do{
+				szScan = pfnFind(szSrc, nStrLen - (size_t)(szSrc - szTemp.get()), szOld, nOldLen);
+				if(szScan == nullptr)
+				{
+					if(nStrLen != (size_t)(szSrc - szTemp.get()))
 					{
-						if(nStrLen != (size_t)(szSrc - szTemp.get()))
-						{
-							std::wmemcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
-							m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
-						}
+						std::wmemcpy(szDest, szSrc, nStrLen - (size_t)(szSrc - szTemp.get()));
+						m_nStrLen += (nStrLen - (size_t)(szSrc - szTemp.get()));
 					}
-					else
+				}
+				else
+				{
+					if(szScan - szSrc)
 					{
-						if(szScan - szSrc)
-						{
-							std::wmemcpy(szDest, szSrc, (size_t)(szScan - szSrc));
-							m_nStrLen += (size_t)(szScan - szSrc);
-							szDest += (szScan - szSrc);
-						}
-						if(nNewLen)
-						{
-							std::wmemcpy(szDest, szNew, nNewLen);
-							m_nStrLen += nNewLen;
-							szDest += nNewLen;
-						}
-						++nCount;
-						szSrc = szScan + nOldLen;
+						std::wmemcpy(szDest, szSrc, (size_t)(szScan - szSrc));
+						m_nStrLen += (size_t)(szScan - szSrc);
+						szDest += (szScan - szSrc);
 					}
-				}while(szScan);
-				m_sz[m_nStrLen] = g_chNullW;
-			}
+					if(nNewLen)
+					{
+						std::wmemcpy(szDest, szNew, nNewLen);
+						m_nStrLen += nNewLen;
+						szDest += nNewLen;
+					}
+					++nCount;
+					szSrc = szScan + nOldLen;
+				}
+			}while(szScan);
+			m_sz[m_nStrLen] = g_chNullW;
 		}
 	}
 	else
 	{	// No change in length, perform the replace in the current memory
-		if(bCaseInsensitive)
+		PWSTR szScan = pfnFind(m_sz, m_nStrLen, szOld, nOldLen);
+		while(szScan)
 		{
-			PWSTR szScan = FindStrPtrI(m_sz, m_nStrLen, szOld, nOldLen);
-			while(szScan)
-			{
-				std::wmemcpy(szScan, szNew, nNewLen);
-				++nCount;
-				szScan = FindStrPtrI(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz) - nOldLen, szOld, nOldLen);
-			}
-		}
-		else
-		{
-			PWSTR szScan = FindStrPtr(m_sz, m_nStrLen, szOld, nOldLen);
-			while(szScan)
-			{
-				std::wmemcpy(szScan, szNew, nNewLen);
-				++nCount;
-				szScan = FindStrPtr(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz) - nOldLen, szOld, nOldLen);
-			}
+			std::wmemcpy(szScan, szNew, nNewLen);
+			++nCount;
+			szScan = pfnFind(szScan + nOldLen, m_nStrLen - (size_t)(szScan - m_sz) - nOldLen, szOld, nOldLen);
 		}
 	}
 

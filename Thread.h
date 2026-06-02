@@ -34,7 +34,7 @@ public:
 	std::thread::id GetId(void) const;
 	bool IsActive(void) const noexcept;
 
-	static PCNSTR GetThreadName(const std::thread::id &id = std::thread::id());
+	static CStr GetThreadName(const std::thread::id &id = std::thread::id());
 
 	static bool MonitorThread(const CStr &strThreadName, PFNPROC pfnProc, PVOID pParam = nullptr);
 

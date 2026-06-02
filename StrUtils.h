@@ -39,7 +39,7 @@ inline char CharToLower(const char ch)
 	Verify(LCMapStringA(LOCALE_SYSTEM_DEFAULT, LCMAP_LOWERCASE, &ch, 1, &chResult, 1));
 	return chResult;
 #else
-	return (char)tolower(ch);
+	return (ch > 0) : (char)tolower(ch) : ch;
 #endif
 }
 
@@ -51,7 +51,7 @@ inline char CharToUpper(const char ch)
 	Verify(LCMapStringA(LOCALE_SYSTEM_DEFAULT, LCMAP_UPPERCASE, &ch, 1, &chResult, 1));
 	return chResult;
 #else
-	return (char)toupper(ch);
+	return (ch > 0) : (char)toupper(ch) : ch;
 #endif
 }
 

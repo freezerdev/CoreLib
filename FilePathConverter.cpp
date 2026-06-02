@@ -311,7 +311,7 @@ void CFilePathConverter::InitDevObjects(void)
 			szDrive[0] = _N('A') + n;
 			strDrive = szDrive;
 
-			if(QueryDosDeviceW(strDrive, szDevice, COUNTOF(szDevice)))
+			if(QueryDosDeviceW(strDrive, szDevice, (DWORD)COUNTOF(szDevice)))
 				m_vecDevObjsLookup.emplace_back(szDevice, std::move(strDrive));
 		}
 

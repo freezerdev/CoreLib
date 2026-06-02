@@ -141,8 +141,7 @@ std::vector<ComputerUser> GetComputerUsers(void)
 //#################################################################################################
 HMODULE SystemLoadLibrary(PCWSTR szModuleName)
 {	// A process running as SYSTEM should never load a library with a relative path
-	static CFilePath pathSystem = GetSystemFolder();
-	return LoadLibraryW((pathSystem + CFilePathSegment(szModuleName)).Get());
+	return LoadLibraryExW(szModuleName, nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
 }
 
 //#################################################################################################

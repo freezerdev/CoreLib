@@ -227,28 +227,31 @@ bool CMemBuffer::Assign(PCBYTE pBuf, const size_t nDataSize)
 {
 	bool bResult = true;
 
-	if(m_nBufSize < nDataSize)
-	{	// Existing buffer is not large enough
-		PBYTE pBufTmp;
-		if(m_nBufSize)
-			pBufTmp = (PBYTE)std::realloc(m_pBuf, nDataSize);
-		else
-			pBufTmp = (PBYTE)std::malloc(nDataSize);
+	if(pBuf)
+	{
+		if(m_nBufSize < nDataSize)
+		{	// Existing buffer is not large enough
+			PBYTE pBufTmp;
+			if(m_nBufSize)
+				pBufTmp = (PBYTE)std::realloc(m_pBuf, nDataSize);
+			else
+				pBufTmp = (PBYTE)std::malloc(nDataSize);
 
-		if(pBufTmp)
-		{
-			m_pBuf = pBufTmp;
-			std::memcpy(m_pBuf, pBuf, nDataSize);
-			m_nDataSize = m_nBufSize = nDataSize;
+			if(pBufTmp)
+			{
+				m_pBuf = pBufTmp;
+				std::memcpy(m_pBuf, pBuf, nDataSize);
+				m_nDataSize = m_nBufSize = nDataSize;
+			}
+			else
+				bResult = false;
 		}
 		else
-			bResult = false;
-	}
-	else
-	{
-		if(nDataSize)
-			std::memcpy(m_pBuf, pBuf, nDataSize);
-		m_nDataSize = nDataSize;
+		{
+			if(nDataSize)
+				std::memcpy(m_pBuf, pBuf, nDataSize);
+			m_nDataSize = nDataSize;
+		}
 	}
 
 	return bResult;
@@ -315,28 +318,31 @@ bool CMemBuffer::Append(PCBYTE pBuf, const size_t nDataSize)
 {
 	bool bResult = true;
 
-	if(m_nBufSize < m_nDataSize + nDataSize)
-	{	// Existing buffer is not large enough
-		PBYTE pBufTmp;
-		if(m_nBufSize)
-			pBufTmp = (PBYTE)std::realloc(m_pBuf, m_nDataSize + nDataSize);
-		else
-			pBufTmp = (PBYTE)std::malloc(m_nDataSize + nDataSize);
+	if(pBuf)
+	{
+		if(m_nBufSize < m_nDataSize + nDataSize)
+		{	// Existing buffer is not large enough
+			PBYTE pBufTmp;
+			if(m_nBufSize)
+				pBufTmp = (PBYTE)std::realloc(m_pBuf, m_nDataSize + nDataSize);
+			else
+				pBufTmp = (PBYTE)std::malloc(m_nDataSize + nDataSize);
 
-		if(pBufTmp)
+			if(pBufTmp)
+			{
+				m_pBuf = pBufTmp;
+				std::memcpy(m_pBuf + m_nDataSize, pBuf, nDataSize);
+				m_nBufSize = m_nDataSize + nDataSize;
+				m_nDataSize += nDataSize;
+			}
+			else
+				bResult = false;
+		}
+		else if(nDataSize)
 		{
-			m_pBuf = pBufTmp;
 			std::memcpy(m_pBuf + m_nDataSize, pBuf, nDataSize);
-			m_nBufSize = m_nDataSize + nDataSize;
 			m_nDataSize += nDataSize;
 		}
-		else
-			bResult = false;
-	}
-	else if(nDataSize)
-	{
-		std::memcpy(m_pBuf + m_nDataSize, pBuf, nDataSize);
-		m_nDataSize += nDataSize;
 	}
 
 	return bResult;
@@ -396,30 +402,33 @@ bool CMemBuffer::Prepend(PCBYTE pBuf, const size_t nDataSize)
 {
 	bool bResult = true;
 
-	if(m_nBufSize < m_nDataSize + nDataSize)
-	{	// Existing buffer is not large enough
-		PBYTE pBufTmp;
-		if(m_nBufSize)
-			pBufTmp = (PBYTE)std::realloc(m_pBuf, m_nDataSize + nDataSize);
-		else
-			pBufTmp = (PBYTE)std::malloc(m_nDataSize + nDataSize);
+	if(pBuf)
+	{
+		if(m_nBufSize < m_nDataSize + nDataSize)
+		{	// Existing buffer is not large enough
+			PBYTE pBufTmp;
+			if(m_nBufSize)
+				pBufTmp = (PBYTE)std::realloc(m_pBuf, m_nDataSize + nDataSize);
+			else
+				pBufTmp = (PBYTE)std::malloc(m_nDataSize + nDataSize);
 
-		if(pBufTmp)
+			if(pBufTmp)
+			{
+				m_pBuf = pBufTmp;
+				std::memmove(m_pBuf + nDataSize, m_pBuf, m_nDataSize);
+				std::memcpy(m_pBuf, pBuf, nDataSize);
+				m_nBufSize = m_nDataSize + nDataSize;
+				m_nDataSize += nDataSize;
+			}
+			else
+				bResult = false;
+		}
+		else if(nDataSize)
 		{
-			m_pBuf = pBufTmp;
 			std::memmove(m_pBuf + nDataSize, m_pBuf, m_nDataSize);
 			std::memcpy(m_pBuf, pBuf, nDataSize);
-			m_nBufSize = m_nDataSize + nDataSize;
 			m_nDataSize += nDataSize;
 		}
-		else
-			bResult = false;
-	}
-	else if(nDataSize)
-	{
-		std::memmove(m_pBuf + nDataSize, m_pBuf, m_nDataSize);
-		std::memcpy(m_pBuf, pBuf, nDataSize);
-		m_nDataSize += nDataSize;
 	}
 
 	return bResult;

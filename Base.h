@@ -42,9 +42,9 @@ using PNSTR = wchar_t*;
 using PCNSTR = const wchar_t*;
 #define _N(x)	L ## x
 
-static PCSTR g_szEol8 = "\r\n";
-static PCWSTR g_szEolW = L"\r\n";
-static const char16_t *g_szEol16 = u"\r\n";
+static constexpr PCSTR g_szEol8 = "\r\n";
+static constexpr PCWSTR g_szEolW = L"\r\n";
+static constexpr const char16_t *g_szEol16 = u"\r\n";
 static constexpr size_t g_nEolLen = 2;
 #define g_szEol	g_szEolW
 
@@ -87,9 +87,9 @@ using PCNSTR = const char*;
 
 static constexpr auto MAX_PATH = PATH_MAX;
 
-static PCSTR g_szEol8 = "\n";
-static PCWSTR g_szEolW = L"\n";
-static const char16_t *g_szEol16 = u"\n";
+static constexpr PCSTR g_szEol8 = "\n";
+static constexpr PCWSTR g_szEolW = L"\n";
+static constexpr const char16_t *g_szEol16 = u"\n";
 static constexpr size_t g_nEolLen = 1;
 #define g_szEol	g_szEol8
 
@@ -123,6 +123,7 @@ union ULARGE_INTEGER
 #include <unistd.h>
 #include <cstdarg>
 #include <cstring>
+#include <linux/limits.h>
 
 using PCSTR = const char*;
 using PSTR = char*;
@@ -150,11 +151,11 @@ using PCNSTR = const char*;
 #define _DEBUG
 #endif
 
-static constexpr auto MAX_PATH = 256;
+static constexpr auto MAX_PATH = PATH_MAX;
 
-static PCSTR g_szEol8 = "\n";
-static PCWSTR g_szEolW = L"\n";
-static const char16_t *g_szEol16 = u"\n";
+static constexpr PCSTR g_szEol8 = "\n";
+static constexpr PCWSTR g_szEolW = L"\n";
+static constexpr const char16_t *g_szEol16 = u"\n";
 static constexpr size_t g_nEolLen = 1;
 #define g_szEol	g_szEol8
 
@@ -194,10 +195,6 @@ union ULARGE_INTEGER
 // Returns x bound by min and max. The returned value is guaranteed between min and max.
 #ifndef BOUND
 #define BOUND(x, min, max)	((x) < (min) ? (min) : ((x) > (max) ? (max) : (x)))
-#endif
-
-#ifndef COUNTOF
-#define COUNTOF(array)	(sizeof(array) / sizeof((array)[0]))
 #endif
 
 #ifndef MAKEUINT64
@@ -265,13 +262,6 @@ union ULARGE_INTEGER
 		(b) = _tmp;			\
 	}
 
-// Swap two identically sized variables without using a temporary variable (note: using a temporary variable is typically faster than this method)
-#define SWAPX(a, b)	\
-	static_assert(sizeof(a) == sizeof(b), "Mismatched variable size");\
-	(a) ^= (b);		\
-	(b) ^= (a);		\
-	(a) ^= (b);
-
 // Macro to eliminate unused variable compiler warnings
 #ifndef UNUSED
 #define UNUSED(x)	(void)(x)
@@ -286,15 +276,18 @@ static constexpr char g_chNull8 = '\0';
 static constexpr wchar_t g_chNullW = L'\0';
 static constexpr char16_t g_chNull16 = u'\0';
 
-static PCSTR g_szNull8 = "";
-static PCWSTR g_szNullW = L"";
-static const char16_t *g_szNull16 = u"";
+static constexpr PCSTR g_szNull8 = "";
+static constexpr PCWSTR g_szNullW = L"";
+static constexpr const char16_t *g_szNull16 = u"";
 
 static constexpr BYTE g_Utf8_Bom[3] = {0xEF, 0xBB, 0xBF};
 static constexpr BYTE g_Utf16LE_Bom[2] = {0xFF, 0xFE};
 static constexpr BYTE g_Utf16BE_Bom[2] = {0xFE, 0xFF};
 static constexpr BYTE g_Utf32LE_Bom[4] = {0xFF, 0xFE, 0x00, 0x00};
 static constexpr BYTE g_Utf32BE_Bom[4] = {0x00, 0x00, 0xFE, 0xFF};
+
+template<typename T, size_t N>
+constexpr size_t COUNTOF(T (&)[N]) noexcept {return N;}
 
 #ifdef _WIN32
 #define g_chNull	g_chNullW

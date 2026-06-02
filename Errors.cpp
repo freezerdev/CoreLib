@@ -125,8 +125,11 @@ ERRCODE ConvertFromNativeErrorCode(const ERRCODE nNativeErrorCode) noexcept
 		break;
 
 	case EEXIST:
-	case ENOTEMPTY:
 		nErrorCode = FW_ERROR_EXISTS;
+		break;
+
+	case ENOTEMPTY:
+		nErrorCode = FW_ERROR_NOT_EMPTY;
 		break;
 
 	case EFBIG:

@@ -111,7 +111,7 @@ CFilePath GetProcessFilename(const uint32_t nPid)
 							szDrive[0] = _N('A') + n;
 							strDrive = szDrive;
 
-							if(QueryDosDeviceW(strDrive, szDevice, COUNTOF(szDevice)))
+							if(QueryDosDeviceW(strDrive, szDevice, (DWORD)COUNTOF(szDevice)))
 								vecDevObjsLookup.emplace_back(szDevice, std::move(strDrive));
 						}
 

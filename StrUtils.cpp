@@ -224,9 +224,12 @@ size_t WideToUtf16(PCWSTR szW, const size_t nStrLenW, char16_t *sz16, const size
 	{
 #ifdef _WIN32
 		nLen16 = nStrLenW;
-		size_t nLen = MIN(nStrLenW, nStrLen16);
-		for(size_t n = 0; n < nLen; ++n)
-			sz16[n] = szW[n];
+		if(sz16 != nullptr)
+		{
+			size_t nLen = MIN(nStrLenW, nStrLen16);
+			for(size_t n = 0; n < nLen; ++n)
+				sz16[n] = szW[n];
+		}
 #else
 		iconv_t convert = iconv_open("UTF-16LE", "UTF-32LE");
 		if(convert != (iconv_t)-1)
@@ -430,6 +433,7 @@ void StringToLower(PSTR sz, const size_t nStrLen)
 {	// It is not possible to lowercase UTF8 strings one byte at a time, so convert to wide characters for processing
 	auto szW = std::make_unique<wchar_t[]>(nStrLen);
 	size_t nStrLenW = Utf8ToWide(sz, nStrLen, szW.get(), nStrLen);
+	Assert(nStrLenW <= nStrLen);
 	StringToLower(szW.get(), nStrLenW);
 	WideToUtf8(szW.get(), nStrLenW, sz, nStrLen);
 }
@@ -439,6 +443,7 @@ void StringToUpper(PSTR sz, const size_t nStrLen)
 {	// It is not possible to uppercase UTF8 strings one byte at a time, so convert to wide characters for processing
 	auto szW = std::make_unique<wchar_t[]>(nStrLen);
 	size_t nStrLenW = Utf8ToWide(sz, nStrLen, szW.get(), nStrLen);
+	Assert(nStrLenW <= nStrLen);
 	StringToUpper(szW.get(), nStrLenW);
 	WideToUtf8(szW.get(), nStrLenW, sz, nStrLen);
 }
