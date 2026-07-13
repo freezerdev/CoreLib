@@ -1,7 +1,11 @@
 #include "Base.h"
 #include "StrUtils.h"
 #ifndef _WIN32
-#include <iconv.h>
+#include "StlHelper.h"
+#include "ThreadUtils.h"
+#include <signal.h>
+#include <mutex>
+#include <unordered_map>
 #endif
 
 NS_BEGIN
@@ -13,6 +17,97 @@ NS_BEGIN
 #define IS_MB_4BYTE(x)	(((x) & 0xF8) == 0xF0)
 #define IS_MB_XBYTE(x)	(((x) & 0xC0) == 0x80)
 
+#ifndef _WIN32
+static std::unordered_map<size_t, std::unordered_map<CStr, iconv_t, CStrHashTraits>, CNumberHashTraits<size_t>> g_mapIconv;
+static std::unique_ptr<std::mutex> g_pIconvCacheMutex;
+
+//#################################################################################################
+void StrInit(void)
+{
+	if(!g_pIconvCacheMutex)
+		g_pIconvCacheMutex = std::make_unique<std::mutex>();
+}
+
+//#################################################################################################
+void StrFree(void)
+{
+	std::unique_lock<std::mutex> lock(*g_pIconvCacheMutex);
+	for(const auto &itrThread : g_mapIconv)
+	{
+		for(const auto &itr : itrThread.second)
+			iconv_close(itr.second);
+	}
+	g_mapIconv.clear();
+	lock.unlock();
+	g_pIconvCacheMutex.reset();
+}
+
+//#################################################################################################
+void StrCleanup(const size_t nThreadId)
+{
+	size_t nTID = nThreadId ? nThreadId : GetThreadId();
+
+	std::lock_guard<std::mutex> lock(*g_pIconvCacheMutex);
+	auto itrThread = g_mapIconv.begin();
+	while(itrThread != g_mapIconv.end())
+	{	// pthread_kill(tid, 0) does not kill the thread, but does check if it exists
+		if(itrThread->first == nTID || pthread_kill(itrThread->first, 0) != 0)
+		{
+			for(const auto &itr : itrThread->second)
+				iconv_close(itr.second);
+
+			itrThread = g_mapIconv.erase(itrThread);
+			continue;
+		}
+
+		++itrThread;
+	}
+}
+
+//#################################################################################################
+iconv_t StrGetIconv(PCSTR szTo, PCSTR szFrom)
+{
+	iconv_t convert;
+
+	size_t nThreadId = GetThreadId();
+
+	CStr strKey(szTo);
+	strKey += '<';
+	strKey += szFrom;
+
+	std::lock_guard<std::mutex> lock(*g_pIconvCacheMutex);
+	auto itrThread = g_mapIconv.find(nThreadId);
+	if(itrThread == g_mapIconv.end())
+	{
+		convert = iconv_open(szTo, szFrom);
+		if(convert != (iconv_t)-1)
+		{
+			std::unordered_map<CStr, iconv_t, CStrHashTraits> m;
+			m.emplace(std::move(strKey), convert);
+			g_mapIconv.emplace(nThreadId, std::move(m));
+		}
+	}
+	else
+	{
+		auto itr = itrThread->second.find(strKey);
+		if(itr == itrThread->second.end())
+		{
+			convert = iconv_open(szTo, szFrom);
+			if(convert != (iconv_t)-1)
+				itrThread->second.emplace(std::move(strKey), convert);
+		}
+		else
+		{
+			convert = itr->second;
+			// Reset the state for the next conversion
+			iconv(convert, nullptr, nullptr, nullptr, nullptr);
+		}
+	}
+
+	return convert;
+}
+#endif
+
 //#################################################################################################
 size_t Utf8ToWide(PCSTR sz8, const size_t nStrLen8, PWSTR szW, const size_t nStrLenW)
 {
@@ -23,7 +118,7 @@ size_t Utf8ToWide(PCSTR sz8, const size_t nStrLen8, PWSTR szW, const size_t nStr
 #ifdef _WIN32
 		nLenW = MultiByteToWideChar(CP_UTF8, 0, sz8, (int)nStrLen8, szW, (int)nStrLenW);
 #else
-		iconv_t convert = iconv_open("UTF-32LE", "UTF-8");
+		iconv_t convert = StrGetIconv("UTF-32LE", "UTF-8");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)sz8;
@@ -37,8 +132,6 @@ size_t Utf8ToWide(PCSTR sz8, const size_t nStrLen8, PWSTR szW, const size_t nStr
 			nLenW = (szOut - (PSTR)szTempW.get()) / sizeof(wchar_t);
 			if(szW != nullptr)
 				std::wmemcpy(szW, szTempW.get(), MIN(nStrLenW, nLenW));
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -58,7 +151,7 @@ size_t Utf8ToWide(const char ch8, PWSTR szW, const size_t nStrLenW)
 #else
 		UNUSED(nStrLenW);
 
-		iconv_t convert = iconv_open("UTF-32LE", "UTF-8");
+		iconv_t convert = StrGetIconv("UTF-32LE", "UTF-8");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)&ch8;
@@ -72,8 +165,6 @@ size_t Utf8ToWide(const char ch8, PWSTR szW, const size_t nStrLenW)
 			nLenW = (szOut - (PSTR)&chW) / sizeof(wchar_t);
 			if(szW != nullptr)
 				std::wmemcpy(szW, &chW, 1);
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -91,7 +182,7 @@ size_t Utf8ToUtf16(PCSTR sz8, const size_t nStrLen8, char16_t *sz16, const size_
 #ifdef _WIN32
 		nLen16 = MultiByteToWideChar(CP_UTF8, 0, sz8, (int)nStrLen8, (PWSTR)sz16, (int)nStrLen16);
 #else
-		iconv_t convert = iconv_open("UTF-16LE", "UTF-8");
+		iconv_t convert = StrGetIconv("UTF-16LE", "UTF-8");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)sz8;
@@ -105,8 +196,6 @@ size_t Utf8ToUtf16(PCSTR sz8, const size_t nStrLen8, char16_t *sz16, const size_
 			nLen16 = (szOut - (PSTR)szTemp16.get()) / sizeof(char16_t);
 			if(sz16 != nullptr)
 				std::memcpy(sz16, szTemp16.get(), MIN(nStrLen16, nLen16) * sizeof(char16_t));
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -126,7 +215,7 @@ size_t Utf8ToUtf16(const char ch8, char16_t *sz16, const size_t nStrLen16)
 #else
 		UNUSED(nStrLen16);
 
-		iconv_t convert = iconv_open("UTF-16LE", "UTF-8");
+		iconv_t convert = StrGetIconv("UTF-16LE", "UTF-8");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)&ch8;
@@ -140,8 +229,6 @@ size_t Utf8ToUtf16(const char ch8, char16_t *sz16, const size_t nStrLen16)
 			nLen16 = (szOut - (PSTR)&ch16) / sizeof(char16_t);
 			if(sz16 != nullptr)
 				std::memcpy(sz16, &ch16, sizeof(char16_t));
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -159,7 +246,7 @@ size_t WideToUtf8(PCWSTR szW, const size_t nStrLenW, PSTR sz8, const size_t nStr
 #ifdef _WIN32
 		nLen8 = WideCharToMultiByte(CP_UTF8, 0, szW, (int)nStrLenW, sz8, (int)nStrLen8, nullptr, nullptr);
 #else
-		iconv_t convert = iconv_open("UTF-8", "UTF-32LE");
+		iconv_t convert = StrGetIconv("UTF-8", "UTF-32LE");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)szW;
@@ -173,8 +260,6 @@ size_t WideToUtf8(PCWSTR szW, const size_t nStrLenW, PSTR sz8, const size_t nStr
 			nLen8 = szOut - szTemp8.get();
 			if(sz8 != nullptr)
 				std::memcpy(sz8, szTemp8.get(), MIN(nStrLen8, nLen8));
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -192,7 +277,7 @@ size_t WideToUtf8(const wchar_t chW, PSTR sz8, const size_t nStrLen8)
 #ifdef _WIN32
 		nLen8 = WideCharToMultiByte(CP_UTF8, 0, &chW, 1, sz8, (int)nStrLen8, nullptr, nullptr);
 #else
-		iconv_t convert = iconv_open("UTF-8", "UTF-32LE");
+		iconv_t convert = StrGetIconv("UTF-8", "UTF-32LE");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)&chW;
@@ -206,8 +291,6 @@ size_t WideToUtf8(const wchar_t chW, PSTR sz8, const size_t nStrLen8)
 			nLen8 = szOut - szTemp8.get();
 			if(sz8 != nullptr)
 				std::memcpy(sz8, szTemp8.get(), MIN(nStrLen8, nLen8));
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -231,7 +314,7 @@ size_t WideToUtf16(PCWSTR szW, const size_t nStrLenW, char16_t *sz16, const size
 				sz16[n] = szW[n];
 		}
 #else
-		iconv_t convert = iconv_open("UTF-16LE", "UTF-32LE");
+		iconv_t convert = StrGetIconv("UTF-16LE", "UTF-32LE");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)szW;
@@ -245,8 +328,6 @@ size_t WideToUtf16(PCWSTR szW, const size_t nStrLenW, char16_t *sz16, const size
 			nLen16 = (szOut - (PSTR)szTemp16.get()) / sizeof(char16_t);
 			if(sz16 != nullptr)
 				std::memcpy(sz16, szTemp16.get(), MIN(nStrLen16, nLen16) * sizeof(char16_t));
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -266,7 +347,7 @@ size_t WideToUtf16(const wchar_t chW, char16_t *sz16, const size_t nStrLen16)
 		if(nStrLen16)
 			sz16[0] = chW;
 #else
-		iconv_t convert = iconv_open("UTF-16LE", "UTF-32LE");
+		iconv_t convert = StrGetIconv("UTF-16LE", "UTF-32LE");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)&chW;
@@ -280,8 +361,6 @@ size_t WideToUtf16(const wchar_t chW, char16_t *sz16, const size_t nStrLen16)
 			nLen16 = (szOut - (PSTR)szTemp16.get()) / sizeof(char16_t);
 			if(sz16 != nullptr)
 				std::memcpy(sz16, szTemp16.get(), MIN(nStrLen16, nLen16) * sizeof(char16_t));
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -299,7 +378,7 @@ size_t Utf16ToUtf8(const char16_t *sz16, const size_t nStrLen16, PSTR sz8, const
 #ifdef _WIN32
 		nLen8 = WideCharToMultiByte(CP_UTF8, 0, (PCWSTR)sz16, (int)nStrLen16, sz8, (int)nStrLen8, nullptr, nullptr);
 #else
-		iconv_t convert = iconv_open("UTF-8", "UTF-16LE");
+		iconv_t convert = StrGetIconv("UTF-8", "UTF-16LE");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)sz16;
@@ -313,8 +392,6 @@ size_t Utf16ToUtf8(const char16_t *sz16, const size_t nStrLen16, PSTR sz8, const
 			nLen8 = szOut - szTemp8.get();
 			if(sz8 != nullptr)
 				std::memcpy(sz8, szTemp8.get(), MIN(nStrLen8, nLen8));
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -332,7 +409,7 @@ size_t Utf16ToUtf8(const char16_t ch16, PSTR sz8, const size_t nStrLen8)
 #ifdef _WIN32
 		nLen8 = WideCharToMultiByte(CP_UTF8, 0, (PCWSTR)&ch16, 1, sz8, (int)nStrLen8, nullptr, nullptr);
 #else
-		iconv_t convert = iconv_open("UTF-8", "UTF-16LE");
+		iconv_t convert = StrGetIconv("UTF-8", "UTF-16LE");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)&ch16;
@@ -346,8 +423,6 @@ size_t Utf16ToUtf8(const char16_t ch16, PSTR sz8, const size_t nStrLen8)
 			nLen8 = szOut - szTemp8.get();
 			if(sz8 != nullptr)
 				std::memcpy(sz8, szTemp8.get(), MIN(nStrLen8, nLen8));
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -368,7 +443,7 @@ size_t Utf16ToWide(const char16_t *sz16, const size_t nStrLen16, PWSTR szW, cons
 		for(size_t n = 0; n < nLen; ++n)
 			szW[n] = sz16[n];
 #else
-		iconv_t convert = iconv_open("UTF-32LE", "UTF-16LE");
+		iconv_t convert = StrGetIconv("UTF-32LE", "UTF-16LE");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)sz16;
@@ -382,8 +457,6 @@ size_t Utf16ToWide(const char16_t *sz16, const size_t nStrLen16, PWSTR szW, cons
 			nLenW = (szOut - (PSTR)szTempW.get()) / sizeof(wchar_t);
 			if(szW != nullptr)
 				std::wmemcpy(szW, szTempW.get(), MIN(nStrLenW, nLenW));
-
-			iconv_close(convert);
 		}
 #endif
 	}
@@ -405,7 +478,7 @@ size_t Utf16ToWide(const char16_t ch16, PWSTR szW, const size_t nStrLenW)
 #else
 		UNUSED(nStrLenW);
 
-		iconv_t convert = iconv_open("UTF-32LE", "UTF-16LE");
+		iconv_t convert = StrGetIconv("UTF-32LE", "UTF-16LE");
 		if(convert != (iconv_t)-1)
 		{
 			PSTR szIn = (PSTR)&ch16;
@@ -419,8 +492,6 @@ size_t Utf16ToWide(const char16_t ch16, PWSTR szW, const size_t nStrLenW)
 			nLenW = (szOut - (PSTR)&chW) / sizeof(wchar_t);
 			if(szW != nullptr)
 				std::wmemcpy(szW, &chW, 1);
-
-			iconv_close(convert);
 		}
 #endif
 	}

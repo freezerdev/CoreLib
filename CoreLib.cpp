@@ -7,6 +7,7 @@
 #include "WtsUtils.h"
 #else
 #include "NetUtils.h"
+#include "StrUtils.h"
 #include <clocale>
 #endif
 
@@ -36,6 +37,7 @@ void CoreLibInit(void)
 	WtsInit();
 #else
 	CurlInit();
+	StrInit();
 #endif
 }
 
@@ -43,6 +45,7 @@ void CoreLibInit(void)
 void CoreLibFree(void)
 {
 #ifndef _WIN32
+	StrFree();
 	CurlFree();
 #endif
 

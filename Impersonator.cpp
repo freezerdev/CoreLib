@@ -28,10 +28,17 @@ ERRCODE CImpersonator::Impersonate(const uint32_t nSessionId)
 		Verify(m_pm.Grant(SE_DELEGATE_SESSION_USER_IMPERSONATE_NAME));
 
 		HANDLE hUserToken;
-		if(WTSQueryUserToken(nSessionId, &hUserToken) && ImpersonateLoggedOnUser(hUserToken))
+		if(WTSQueryUserToken(nSessionId, &hUserToken))
 		{
-			m_bImpersonating = true;
-			nErrorCode = FW_NO_ERROR;
+			if(ImpersonateLoggedOnUser(hUserToken))
+			{
+				m_bImpersonating = true;
+				nErrorCode = FW_NO_ERROR;
+			}
+			else
+				m_pm.RevokeAll();
+
+			CloseHandle(hUserToken);
 		}
 		else
 			m_pm.RevokeAll();

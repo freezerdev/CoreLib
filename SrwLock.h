@@ -3,7 +3,7 @@
 NS_BEGIN
 
 //#################################################################################################
-class CSrwLock final
+class CSrwLock final : private SRWLOCK
 {
 public:
 	CSrwLock(void);
@@ -13,15 +13,12 @@ public:
 	CSrwLock &operator=(const CSrwLock &src) = delete;
 	CSrwLock &operator=(CSrwLock &&src) = delete;
 
-	inline void LockReader(void) {AcquireSRWLockShared(&m_srw);}
-	inline void LockWriter(void) {AcquireSRWLockExclusive(&m_srw);}
-	inline bool TryLockReader(void) {return (TryAcquireSRWLockShared(&m_srw) != FALSE);}
-	inline bool TryLockWriter(void) {return (TryAcquireSRWLockExclusive(&m_srw) != FALSE);}
-	inline void UnlockReader(void) {ReleaseSRWLockShared(&m_srw);}
-	inline void UnlockWriter(void) {ReleaseSRWLockExclusive(&m_srw);}
-
-private:
-	SRWLOCK m_srw;
+	inline void LockReader(void) {AcquireSRWLockShared(this);}
+	inline void LockWriter(void) {AcquireSRWLockExclusive(this);}
+	inline bool TryLockReader(void) {return (TryAcquireSRWLockShared(this) != FALSE);}
+	inline bool TryLockWriter(void) {return (TryAcquireSRWLockExclusive(this) != FALSE);}
+	inline void UnlockReader(void) {ReleaseSRWLockShared(this);}
+	inline void UnlockWriter(void) {ReleaseSRWLockExclusive(this);}
 };
 
 //#################################################################################################

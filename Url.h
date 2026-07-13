@@ -15,7 +15,7 @@ class CUrl8;
 class CUrlW;
 
 #ifdef _WIN32
-// Windows headers interfere with these definitions
+// Windows headers interfere with this definition
 #undef SetPort
 #endif
 

@@ -3,7 +3,7 @@
 #include "Base.h"
 #include <condition_variable>
 #include <mutex>
-#include <queue>
+#include <deque>
 
 NS_BEGIN
 
@@ -35,8 +35,7 @@ public:
 	void Shutdown(void)
 	{
 		std::unique_lock<std::mutex> lock(m_mutex);
-		while(!m_q.empty())
-			m_q.pop();
+		m_q.clear();
 		m_bQuit = true;
 		lock.unlock();
 		m_cv.notify_all();
@@ -53,7 +52,7 @@ public:
 	{
 		std::unique_lock<std::mutex> lock(m_mutex);
 		Assert(!m_bQuit);
-		m_q.push(t);
+		m_q.push_back(t);
 		lock.unlock();
 		m_cv.notify_one();
 	}
@@ -63,7 +62,7 @@ public:
 	{
 		std::unique_lock<std::mutex> lock(m_mutex);
 		Assert(!m_bQuit);
-		m_q.emplace(std::forward<ARGS>(args)...);
+		m_q.emplace_back(std::forward<ARGS>(args)...);
 		lock.unlock();
 		m_cv.notify_one();
 	}
@@ -72,7 +71,7 @@ public:
 	{
 		std::unique_lock<std::mutex> lock(m_mutex);
 		Assert(!m_bQuit);
-		m_q.push(std::move(t));
+		m_q.push_back(std::move(t));
 		lock.unlock();
 		m_cv.notify_one();
 	}
@@ -87,7 +86,7 @@ public:
 		if(!m_q.empty())
 		{
 			t = std::move(m_q.front());
-			m_q.pop();
+			m_q.pop_front();
 			bSuccess = true;
 		}
 
@@ -101,7 +100,7 @@ public:
 		if(!m_q.empty())
 		{
 			t = std::move(m_q.front());
-			m_q.pop();
+			m_q.pop_front();
 			bSuccess = true;
 		}
 
@@ -115,7 +114,7 @@ public:
 	}
 
 private:
-	std::queue<T> m_q;
+	std::deque<T> m_q;
 	mutable std::mutex m_mutex;
 	std::condition_variable m_cv;
 	bool m_bQuit;

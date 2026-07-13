@@ -10,13 +10,13 @@ NS_BEGIN
 //#################################################################################################
 CCritSec::CCritSec(void)
 {
-	InitializeCriticalSectionEx(&m_cs, 0, 0);
+	InitializeCriticalSectionEx(this, 0, 0);
 }
 
 //#################################################################################################
 CCritSec::~CCritSec(void)
 {
-	DeleteCriticalSection(&m_cs);
+	DeleteCriticalSection(this);
 }
 
 

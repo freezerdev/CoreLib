@@ -15,7 +15,7 @@ class CMemBuffer;
 #ifdef _WIN32
 HINSTANCE GetApplicationInstance(void);
 
-// Windows headers interfere with these definitions
+// Windows headers interfere with this definition
 #undef UuidToString
 #endif
 
@@ -51,7 +51,7 @@ void ConsolePrint(PCSTR szMessage);
 inline void SetMemoryZero(PVOID pDest, const size_t nSize)
 {
 #ifdef _WIN32
-	// On Windows the compiler may optimize and remove calls to std::memset, so call SecureZeroMemory instead
+	// On Windows the compiler may optimize and remove calls to std::memset or ZeroMemory, so call SecureZeroMemory instead
 	SecureZeroMemory(pDest, nSize);
 #else
 	std::memset(pDest, 0, nSize);

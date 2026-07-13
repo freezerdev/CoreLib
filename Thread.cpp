@@ -3,6 +3,7 @@
 #include "ThreadUtils.h"
 #include "ExceptionUtils.h"
 #ifndef _WIN32
+#include "StrUtils.h"
 #include "TimeUtils.h"
 #endif
 
@@ -203,6 +204,10 @@ bool CThread::AddThread(const size_t nThreadId, PCNSTR szThreadName)
 //#################################################################################################
 void CThread::RemoveThread(const size_t nThreadId)
 {
+#ifndef _WIN32
+	StrCleanup();
+#endif
+
 	std::lock_guard<std::mutex> lock(s_mutexThreads);
 	auto itr = s_mapThreads.find(nThreadId);
 	if(itr != s_mapThreads.end())

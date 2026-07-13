@@ -3,7 +3,7 @@
 NS_BEGIN
 
 //#################################################################################################
-class CCritSec final
+class CCritSec final : private CRITICAL_SECTION
 {
 public:
 	CCritSec(void);
@@ -14,12 +14,9 @@ public:
 	CCritSec &operator=(const CCritSec &src) = delete;
 	CCritSec &operator=(CCritSec &&src) = delete;
 
-	inline void Lock(void) {EnterCriticalSection(&m_cs);}
-	inline bool TryLock(void) {return (TryEnterCriticalSection(&m_cs) != FALSE);}
-	inline void Unlock(void) {LeaveCriticalSection(&m_cs);}
-
-private:
-	CRITICAL_SECTION m_cs;
+	inline void Lock(void) {EnterCriticalSection(this);}
+	inline bool TryLock(void) {return (TryEnterCriticalSection(this) != FALSE);}
+	inline void Unlock(void) {LeaveCriticalSection(this);}
 };
 
 

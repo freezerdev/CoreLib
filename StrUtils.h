@@ -2,8 +2,20 @@
 
 #include "Diagnostic.h"
 #include "Str.h"
+#ifndef _WIN32
+#include <iconv.h>
+#endif
 
 NS_BEGIN
+
+#ifndef _WIN32
+//#################################################################################################
+// The iconv library and cannot be used from multiple threads at the same time, so each thread uses a local iconv object that must be released on shutdown
+void StrInit(void);
+void StrFree(void);
+void StrCleanup(const size_t nThreadId = 0);
+iconv_t StrGetIconv(PCSTR szTo, PCSTR szFrom);
+#endif
 
 //#################################################################################################
 // Converts between char/UTF8, wchar_t/UTF16, and char16_t/UTF16. Input can be a string or character, output is always a string.
@@ -39,7 +51,7 @@ inline char CharToLower(const char ch)
 	Verify(LCMapStringA(LOCALE_SYSTEM_DEFAULT, LCMAP_LOWERCASE, &ch, 1, &chResult, 1));
 	return chResult;
 #else
-	return (ch > 0) : (char)tolower(ch) : ch;
+	return (ch > 0) ? (char)tolower(ch) : ch;
 #endif
 }
 
@@ -51,7 +63,7 @@ inline char CharToUpper(const char ch)
 	Verify(LCMapStringA(LOCALE_SYSTEM_DEFAULT, LCMAP_UPPERCASE, &ch, 1, &chResult, 1));
 	return chResult;
 #else
-	return (ch > 0) : (char)toupper(ch) : ch;
+	return (ch > 0) ? (char)toupper(ch) : ch;
 #endif
 }
 
