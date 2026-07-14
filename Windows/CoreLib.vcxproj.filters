@@ -23,6 +23,9 @@
     <ClInclude Include="..\Crc32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Defer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\Diagnostic.h">
       <Filter>Header Files</Filter>
     </ClInclude>

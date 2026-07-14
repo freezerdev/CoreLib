@@ -81,6 +81,8 @@
 		ECA939632679277C00788BBF /* MemStream.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938FE2679277C00788BBF /* MemStream.h */; };
 		ECA939642679277C00788BBF /* ThreadUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938FF2679277C00788BBF /* ThreadUtils.h */; };
 		ECA939662679277C00788BBF /* Mac.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA939012679277C00788BBF /* Mac.h */; };
+		ECA939542679277C00788BBF /* Fuzz.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938182679277B00788BBF /* Fuzz.h */; };
+		ECA939202679277C00788BBF /* Defer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938202679277B00788BBF /* Defer.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -159,6 +161,8 @@
 		ECA938FE2679277C00788BBF /* MemStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MemStream.h; path = ../MemStream.h; sourceTree = "<group>"; };
 		ECA938FF2679277C00788BBF /* ThreadUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadUtils.h; path = ../ThreadUtils.h; sourceTree = "<group>"; };
 		ECA939012679277C00788BBF /* Mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mac.h; path = ../Mac.h; sourceTree = "<group>"; };
+		ECA938182679277B00788BBF /* Fuzz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fuzz.h; path = ../Fuzz.h; sourceTree = "<group>"; };
+		ECA938202679277B00788BBF /* Defer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Defer.h; path = ../Defer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +197,7 @@
 				ECA938B12679277B00788BBF /* CoreUtils.h */,
 				ECA938DE2679277B00788BBF /* Crc32.cpp */,
 				ECA938C12679277B00788BBF /* Crc32.h */,
+				ECA938202679277B00788BBF /* Defer.h */,
 				ECA938B52679277B00788BBF /* Diagnostic.cpp */,
 				ECA938D72679277B00788BBF /* Diagnostic.h */,
 				ECA938ED2679277B00788BBF /* DoubleNullStr.cpp */,
@@ -209,6 +214,7 @@
 				ECA938FD2679277C00788BBF /* FilePathUtils.h */,
 				ECA938CB2679277B00788BBF /* FileSystemUtils.cpp */,
 				ECA938BA2679277B00788BBF /* FileSystemUtils.h */,
+				ECA938182679277B00788BBF /* Fuzz.h */,
 				ECA938E72679277B00788BBF /* IniFile.cpp */,
 				ECA938D52679277B00788BBF /* IniFile.h */,
 				ECA938D62679277B00788BBF /* IPv6.cpp */,
@@ -306,6 +312,8 @@
 				ECA939142679277C00788BBF /* Thread.h in Headers */,
 				ECA9390D2679277C00788BBF /* PlatformUtils.h in Headers */,
 				ECA9394A2679277C00788BBF /* ProcessUtils.h in Headers */,
+				ECA939542679277C00788BBF /* Fuzz.h in Headers */,
+				ECA939202679277C00788BBF /* Defer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

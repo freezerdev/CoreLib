@@ -231,6 +231,7 @@
     <ClInclude Include="..\CoreUtils.h" />
     <ClInclude Include="..\Crc32.h" />
     <ClInclude Include="..\CritSec.h" />
+    <ClInclude Include="..\Defer.h" />
     <ClInclude Include="..\Diagnostic.h" />
     <ClInclude Include="..\DoubleNullStr.h" />
     <ClInclude Include="..\Errors.h" />
