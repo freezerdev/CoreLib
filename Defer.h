@@ -9,7 +9,7 @@ struct Defer final
 {
 	Defer(F &&fnDefer) : m_fnDefer(std::move(fnDefer)) {}
 	Defer(const Defer &src) = delete;
-	Defer(Defer &&src) = default;		// Move constructor is required
+	Defer(Defer &&src) = default;		// Move constructor is required for C++14 support
 	~Defer(void) {m_fnDefer();}
 
 	Defer &operator=(const Defer &src) = delete;
@@ -29,8 +29,8 @@ Defer<F> MakeDefer(F &&fnDefer)
 #define CONCAT(a, b) CONCAT_IMPL(a, b)
 
 // C++14 version
-#define DEFER(code) auto CONCAT(_defer_, __LINE__) = MakeDefer([&](){code;})
+#define DEFER(code) const auto CONCAT(_defer_, __LINE__) = MakeDefer([&](){code;})
 // C++17 version
-//#define DEFER(code) auto CONCAT(_defer_, __LINE__) = Defer([&](){code;})
+//#define DEFER(code) const auto CONCAT(_defer_, __LINE__) = Defer([&](){code;})
 
 NS_END
