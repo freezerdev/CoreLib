@@ -51,7 +51,7 @@ void StrCleanup(const size_t nThreadId)
 	auto itrThread = g_mapIconv.begin();
 	while(itrThread != g_mapIconv.end())
 	{	// pthread_kill(tid, 0) does not kill the thread, but does check if it exists
-		if(itrThread->first == nTID || pthread_kill(itrThread->first, 0) != 0)
+		if(itrThread->first == nTID || pthread_kill((pthread_t)itrThread->first, 0) != 0)
 		{
 			for(const auto &itr : itrThread->second)
 				iconv_close(itr.second);
