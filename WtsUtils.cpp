@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "WtsUtils.h"
+#include "Defer.h"
 #include <ws2tcpip.h>
 
 NS_BEGIN
@@ -143,6 +144,8 @@ bool WtsGetRemoteAddress(CStrW &strAddress, const uint32_t nSessionId)
 	DWORD dwSize;
 	if(WTSQuerySessionInformationW(WTS_CURRENT_SERVER_HANDLE, nSessionId, WTSClientAddress, &pBuffer, &dwSize))
 	{
+		DEFER(WTSFreeMemory(pBuffer));
+
 		PWTS_CLIENT_ADDRESS pWCA = (PWTS_CLIENT_ADDRESS)pBuffer;
 		if(pWCA->AddressFamily == AF_INET)
 		{
@@ -164,8 +167,6 @@ bool WtsGetRemoteAddress(CStrW &strAddress, const uint32_t nSessionId)
 				bResult = true;
 			}
 		}
-
-		WTSFreeMemory(pBuffer);
 	}
 
 	return bResult;

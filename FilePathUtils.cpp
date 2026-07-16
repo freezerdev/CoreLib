@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "FilePathUtils.h"
+#include "Defer.h"
 #ifdef _WIN32
 #include "FileSystemUtils.h"
 #include <lm.h>
@@ -334,6 +335,8 @@ bool CanonicalizeLocalUNC(CFilePathW &path)
 		status = NetShareGetInfo(nullptr, (PWSTR)path.GetShare().Get(), 2, (PBYTE*)&psi2);
 		if(status == NERR_Success)
 		{
+			DEFER(NetApiBufferFree(psi2));
+
 			CFilePathW pathRoot;
 			if(pathRoot.Assign((PWSTR)psi2->shi2_path) == NO_ERROR)
 			{
@@ -341,7 +344,6 @@ bool CanonicalizeLocalUNC(CFilePathW &path)
 				path.Prepend(pathRoot);
 				bConverted = true;
 			}
-			NetApiBufferFree(psi2);
 		}
 	}
 
@@ -400,11 +402,15 @@ bool CanonicalizeLink(CFilePath &path)
 		HANDLE hFind = FindFirstFileExW(strPath, GetFindInfoLevel(), &w32fd, FindExSearchNameMatch, nullptr, 0);
 		if(hFind != INVALID_HANDLE_VALUE)
 		{
+			DEFER(FindClose(hFind));
+
 			if(HAS_FLAG(w32fd.dwFileAttributes, FILE_ATTRIBUTE_REPARSE_POINT) && (HAS_FLAG(w32fd.dwReserved0, IO_REPARSE_TAG_MOUNT_POINT) || HAS_FLAG(w32fd.dwReserved0, IO_REPARSE_TAG_SYMLINK)))
 			{
 				HANDLE hFile = CreateFileW(strPath, FILE_READ_EA, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, nullptr);
 				if(hFile != INVALID_HANDLE_VALUE)
 				{
+					DEFER(CloseHandle(hFile));
+
 					auto pBuffer = std::make_unique<BYTE[]>(MAXIMUM_REPARSE_DATA_BUFFER_SIZE);
 					PREPARSE_DATA_BUFFER pReparse = (PREPARSE_DATA_BUFFER)pBuffer.get();
 
@@ -433,12 +439,8 @@ bool CanonicalizeLink(CFilePath &path)
 							}
 						}
 					}
-
-					CloseHandle(hFile);
 				}
 			}
-
-			FindClose(hFind);
 		}
 
 		++nCurrentSegment;

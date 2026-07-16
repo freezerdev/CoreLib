@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "PrivilegeManager.h"
+#include "Defer.h"
 
 NS_BEGIN
 
@@ -28,6 +29,8 @@ bool CPrivilegeManager::Grant(PCNSTR szPrivilege, const EGrantLevel eLevel)
 			HANDLE hProcess;
 			if(OpenProcessToken(GetCurrentProcess(), TOKEN_DUPLICATE, &hProcess))
 			{
+				DEFER(CloseHandle(hProcess));
+
 				if(DuplicateTokenEx(hProcess, TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES, nullptr, SecurityImpersonation, TokenImpersonation, &hToken))
 				{
 					if(SetThreadToken(nullptr, hToken))
@@ -35,8 +38,6 @@ bool CPrivilegeManager::Grant(PCNSTR szPrivilege, const EGrantLevel eLevel)
 					else
 						CloseHandle(hToken);
 				}
-
-				CloseHandle(hProcess);
 			}
 		}
 	}
@@ -45,6 +46,8 @@ bool CPrivilegeManager::Grant(PCNSTR szPrivilege, const EGrantLevel eLevel)
 
 	if(bOpened)
 	{
+		DEFER(CloseHandle(hToken));
+
 		LUID luid = {0};
 		if(LookupPrivilegeValueW(nullptr, szPrivilege, &luid))
 		{
@@ -85,8 +88,6 @@ bool CPrivilegeManager::Grant(PCNSTR szPrivilege, const EGrantLevel eLevel)
 				}
 			}
 		}
-
-		CloseHandle(hToken);
 	}
 
 	return bGranted;
@@ -110,6 +111,8 @@ bool CPrivilegeManager::Revoke(PCNSTR szPrivilege, const EGrantLevel eLevel)
 
 	if(bOpened)
 	{
+		DEFER(CloseHandle(hToken));
+
 		LUID luid = {0};
 		if(LookupPrivilegeValueW(nullptr, szPrivilege, &luid))
 		{
@@ -125,8 +128,6 @@ bool CPrivilegeManager::Revoke(PCNSTR szPrivilege, const EGrantLevel eLevel)
 				bRevoked = true;
 			}
 		}
-
-		CloseHandle(hToken);
 	}
 
 	return bRevoked;
@@ -147,6 +148,8 @@ void CPrivilegeManager::RevokeAll(void)
 
 		if(bOpened)
 		{
+			DEFER(CloseHandle(hToken));
+
 			LUID luid = {0};
 			if(LookupPrivilegeValueW(nullptr, itr.first, &luid))
 			{
@@ -158,8 +161,6 @@ void CPrivilegeManager::RevokeAll(void)
 				AdjustTokenPrivileges(hToken, false, &tp, 0, nullptr, nullptr);
 				Assert(GetLastError() == NO_ERROR);
 			}
-
-			CloseHandle(hToken);
 		}
 	}
 

@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "FileSystemUtils.h"
+#include "Defer.h"
 #include "Event.h"
 #include "TimeUtils.h"
 #include <queue>
@@ -61,14 +62,14 @@ bool IsLink(PCNSTR szPath)
 	HANDLE hFind = FindFirstFileExW(szPath, g_fexil, &w32fd, FindExSearchNameMatch, nullptr, 0);
 	if(hFind != INVALID_HANDLE_VALUE)
 	{
+		DEFER(FindClose(hFind));
+
 		if(HAS_FLAG(w32fd.dwFileAttributes, FILE_ATTRIBUTE_REPARSE_POINT) &&
 			((HAS_FLAG(w32fd.dwReserved0, IO_REPARSE_TAG_MOUNT_POINT)) ||	// Junction
 			(HAS_FLAG(w32fd.dwReserved0, IO_REPARSE_TAG_SYMLINK))))			// Symbolic link
 		{
 			bLink = true;
 		}
-
-		FindClose(hFind);
 	}
 #else
 	struct stat s;
@@ -228,6 +229,8 @@ uint64_t DirGetSize(const CFilePath &path, CEvent *pAbort)
 		HANDLE hFind = FindFirstFileExW(pathSearch.Get(), g_fexil, &w32fd, FindExSearchNameMatch, nullptr, 0);
 		if(hFind != INVALID_HANDLE_VALUE)
 		{
+			DEFER(FindClose(hFind));
+
 			do{
 				pathFound = pathBase + CFilePathSegmentW(w32fd.cFileName);
 
@@ -244,7 +247,6 @@ uint64_t DirGetSize(const CFilePath &path, CEvent *pAbort)
 				else
 					nSize += MAKEUINT64(w32fd.nFileSizeHigh, w32fd.nFileSizeLow);
 			}while(FindNextFileW(hFind, &w32fd) && (pAbort == nullptr || pAbort->Wait(0) == 0));
-			FindClose(hFind);
 		}
 	}
 #else
@@ -266,6 +268,8 @@ uint64_t DirGetSize(const CFilePath &path, CEvent *pAbort)
 		DIR *pDir = opendir(pathBase.Get());
 		if(pDir)
 		{
+			DEFER(closedir(pDir));
+
 			struct dirent *pEntry = readdir(pDir);
 			while(pEntry && (pAbort == nullptr || pAbort->Wait(0) == 0))
 			{
@@ -296,8 +300,6 @@ uint64_t DirGetSize(const CFilePath &path, CEvent *pAbort)
 
 				pEntry = readdir(pDir);
 			}
-
-			closedir(pDir);
 		}
 	}
 #endif
@@ -333,6 +335,8 @@ void DirEnum(const CFilePath &path, std::vector<CFilePath> *pvecFiles, std::vect
 		HANDLE hFind = FindFirstFileExW(pathSearch.Get(), g_fexil, &w32fd, FindExSearchNameMatch, nullptr, 0);
 		if(hFind != INVALID_HANDLE_VALUE)
 		{
+			DEFER(FindClose(hFind));
+
 			do{
 				pathFound = pathBase + CFilePathSegmentW(w32fd.cFileName);
 
@@ -353,7 +357,6 @@ void DirEnum(const CFilePath &path, std::vector<CFilePath> *pvecFiles, std::vect
 				else if(pvecFiles)
 					pvecFiles->push_back(std::move(pathFound));
 			}while(FindNextFileW(hFind, &w32fd) && (pAbort == nullptr || pAbort->Wait(0) == 0));
-			FindClose(hFind);
 		}
 	}
 #else
@@ -375,6 +378,8 @@ void DirEnum(const CFilePath &path, std::vector<CFilePath> *pvecFiles, std::vect
 		DIR *pDir = opendir(pathBase.Get());
 		if(pDir)
 		{
+			DEFER(closedir(pDir));
+
 			struct dirent *pEntry = readdir(pDir);
 			while(pEntry)
 			{
@@ -411,8 +416,6 @@ void DirEnum(const CFilePath &path, std::vector<CFilePath> *pvecFiles, std::vect
 
 				pEntry = readdir(pDir);
 			}
-
-			closedir(pDir);
 		}
 	}
 #endif
@@ -907,11 +910,12 @@ ERRCODE FileSetTime(PCNSTR szPath, const time_point<system_clock> &tp)
 	HANDLE hFile = CreateFileW(szPath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 	if(hFile != INVALID_HANDLE_VALUE)
 	{
+		DEFER(CloseHandle(hFile));
+
 		FILETIME ft;
 		TimePointToFileTime(tp, ft);
 		if(!SetFileTime(hFile, nullptr, nullptr, &ft))
 			nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-		CloseHandle(hFile);
 	}
 	else
 		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
@@ -1187,9 +1191,13 @@ ERRCODE FileCopy(PCNSTR szPathSrc, PCNSTR szPathDest)
 	int nFileSrc = open(szPathSrc, O_RDONLY);
 	if(nFileSrc != -1)
 	{
+		DEFER(close(nFileSrc));
+
 		int nFileDest = open(szPathDest, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 		if(nFileDest != -1)
 		{
+			DEFER(close(nFileDest));
+
 			if(nRemainingSize != 0)
 			{
 				auto pBuffer = std::make_unique<BYTE[]>(COPY_BUFFER_SIZE);
@@ -1226,13 +1234,9 @@ ERRCODE FileCopy(PCNSTR szPathSrc, PCNSTR szPathDest)
 				if(nRemainingSize != 0)
 					nErrorCode = FW_ERROR_INTERRUPTED;
 			}
-
-			close(nFileDest);
 		}
 		else
 			nErrorCode = ConvertFromNativeErrorCode(errno);
-
-		close(nFileSrc);
 	}
 	else
 		nErrorCode = ConvertFromNativeErrorCode(errno);
@@ -1258,9 +1262,13 @@ ERRCODE FileMove(PCNSTR szPathSrc, PCNSTR szPathDest)
 	int nFileSrc = open(szPathSrc, O_RDONLY);
 	if(nFileSrc != -1)
 	{
+		DEFER(close(nFileSrc));
+
 		int nFileDest = open(szPathDest, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 		if(nFileDest != -1)
 		{
+			DEFER(close(nFileDest));
+
 			if(nRemainingSize != 0)
 			{
 				auto pBuffer = std::make_unique<BYTE[]>(COPY_BUFFER_SIZE);
@@ -1297,13 +1305,9 @@ ERRCODE FileMove(PCNSTR szPathSrc, PCNSTR szPathDest)
 				if(nRemainingSize != 0)
 					nErrorCode = FW_ERROR_INTERRUPTED;
 			}
-
-			close(nFileDest);
 		}
 		else
 			nErrorCode = ConvertFromNativeErrorCode(errno);
-
-		close(nFileSrc);
 
 		if(nErrorCode == FW_NO_ERROR)
 		{

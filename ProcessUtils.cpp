@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "ProcessUtils.h"
+#include "Defer.h"
 #include "FilePathUtils.h"
 #ifdef _WIN32
 #include "PlatformUtils.h"
@@ -75,6 +76,8 @@ CFilePath GetProcessFilename(const uint32_t nPid)
 
 	if(hProcess)
 	{
+		DEFER(CloseHandle(hProcess));
+
 		wchar_t szName[1024] = {0};
 
 		GetModuleFileNameExW(hProcess, nullptr, szName, 1024);
@@ -140,8 +143,6 @@ CFilePath GetProcessFilename(const uint32_t nPid)
 				}
 			}
 		}
-
-		CloseHandle(hProcess);
 	}
 
 	// Ensure we always have a long filename
@@ -173,6 +174,8 @@ CStr GetProcessCommandLine(const uint32_t nPid)
 	HMODULE hNtDll = SystemLoadLibrary(_N("ntdll.dll"));
 	if(hNtDll)
 	{
+		DEFER(FreeLibrary(hNtDll));
+
 		PFNNTQUERYINFORMATIONPROCESS pfnNtQueryInformationProcess = (PFNNTQUERYINFORMATIONPROCESS)GetProcAddress(hNtDll, "NtQueryInformationProcess");
 
 		if(pfnNtQueryInformationProcess)
@@ -184,6 +187,8 @@ CStr GetProcessCommandLine(const uint32_t nPid)
 
 			if(hProcess)
 			{
+				DEFER(CloseHandle(hProcess));
+
 				HANDLE hHeap = GetProcessHeap();
 				PPROCESS_BASIC_INFORMATION ppbi = (PPROCESS_BASIC_INFORMATION)HeapAlloc(hHeap, HEAP_ZERO_MEMORY, sizeof(PROCESS_BASIC_INFORMATION));
 				if(ppbi)
@@ -225,12 +230,8 @@ CStr GetProcessCommandLine(const uint32_t nPid)
 					if(ppbi)
 						HeapFree(hHeap, 0, ppbi);
 				}
-
-				CloseHandle(hProcess);
 			}
 		}
-
-		FreeLibrary(hNtDll);
 	}
 #elif __APPLE__
 	int mib[3] = {CTL_KERN, KERN_PROCARGS2, (int)nPid};
@@ -293,6 +294,8 @@ CStr GetProcessCommandLine(const uint32_t nPid)
 	ERRCODE nErrorCode = FileCreate(pathProc.Get(), EFM_ExistingReadOnly, hFile);
 	if(nErrorCode == FW_NO_ERROR)
 	{
+		DEFER(FileClose(hFile));
+
 		auto pBuffer = std::make_unique<BYTE[]>(BUFFER_SIZE);
 		std::memset(pBuffer.get(), 0, BUFFER_SIZE);
 		size_t nBytesRead;
@@ -306,8 +309,6 @@ CStr GetProcessCommandLine(const uint32_t nPid)
 			strCmdLine.Assign((PCNSTR)pBuffer.get(), 0, nBytesRead);
 			strCmdLine.Trim();
 		}
-
-		FileClose(hFile);
 	}
 #endif
 
@@ -820,6 +821,8 @@ bool WaitForProcess(const uint32_t nPid, const double dTimeoutSeconds)
 	int nQueue = kqueue();
 	if(nQueue != -1)
 	{	// Register the event
+		DEFER(close(nQueue));
+
 		struct kevent kev = {0};
 		EV_SET(&kev, nPid, EVFILT_PROC, EV_ADD | EV_ENABLE, NOTE_EXIT, 0, nullptr);
 		if(kevent(nQueue, &kev, 1, nullptr, 0, nullptr) != -1)
@@ -849,8 +852,6 @@ bool WaitForProcess(const uint32_t nPid, const double dTimeoutSeconds)
 				CFFileDescriptorInvalidate((CFFileDescriptorRef)cfFileDesc.Get());
 			}
 		}
-
-		close(nQueue);
 	}
 
 	return bResult;

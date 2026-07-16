@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "NetUtils.h"
+#include "Defer.h"
 #include "FileSystemUtils.h"
 #include "MemBuffer.h"
 #ifdef _WIN32
@@ -760,7 +761,9 @@ ERRCODE DownloadFile(const CUrl &url, const CFilePath &pathFile)
 		nErrorCode = FileCreate(pathFile.Get(), EFM_CreateWriteOnly, hFile);
 		if(nErrorCode == FW_NO_ERROR)
 		{
-			size_t nBytesToWrite = buf.GetDataSize();
+			DEFER(FileClose(hFile); if(nErrorCode != FW_NO_ERROR) FileDelete(pathFile.Get()));
+
+				size_t nBytesToWrite = buf.GetDataSize();
 			size_t nOffset = 0;
 			while(nBytesToWrite)
 			{
@@ -771,11 +774,6 @@ ERRCODE DownloadFile(const CUrl &url, const CFilePath &pathFile)
 				nBytesToWrite -= nBytesWritten;
 				nOffset += nBytesWritten;
 			}
-
-			FileClose(hFile);
-
-			if(nErrorCode != FW_NO_ERROR)
-				FileDelete(pathFile.Get());
 		}
 	}
 
@@ -823,13 +821,19 @@ ERRCODE DownloadFile(const CUrl &url, CMemBuffer &buf)
 	HINTERNET hInternet = WinHttpOpen(L"freezerware-agent/1.0", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 	if(hInternet)
 	{
+		DEFER(WinHttpCloseHandle(hInternet));
+
 		bool bHttps = (url.GetScheme().Compare(L"https", true) == 0);
 		HINTERNET hCon = WinHttpConnect(hInternet, url.GetDomain(), bHttps ? INTERNET_DEFAULT_HTTPS_PORT : INTERNET_DEFAULT_HTTP_PORT, 0);
 		if(hCon)
 		{
+			DEFER(WinHttpCloseHandle(hCon));
+
 			HINTERNET hReq = WinHttpOpenRequest(hCon, nullptr, url.GetPath(), nullptr, WINHTTP_NO_REFERER, nullptr, bHttps ? WINHTTP_FLAG_SECURE : 0);
 			if(hReq)
 			{
+				DEFER(WinHttpCloseHandle(hReq));
+
 				if(WinHttpSendRequest(hReq, nullptr, 0, nullptr, 0, 0, 0))
 				{
 					if(WinHttpReceiveResponse(hReq, nullptr))
@@ -853,6 +857,8 @@ ERRCODE DownloadFile(const CUrl &url, CMemBuffer &buf)
 								PBYTE pBuf = (PBYTE)std::malloc(dwBufSize);
 								if(pBuf)
 								{
+									DEFER(std::free(pBuf));
+
 									DWORD dwBytesReady;
 									WinHttpQueryDataAvailable(hReq, &dwBytesReady);
 									while(dwBytesRemaining && dwBytesReady)
@@ -878,8 +884,6 @@ ERRCODE DownloadFile(const CUrl &url, CMemBuffer &buf)
 										WinHttpQueryDataAvailable(hReq, &dwBytesReady);
 									}
 
-									std::free(pBuf);
-
 									if(dwBytesRemaining == 0)
 										nErrorCode = FW_NO_ERROR;
 								}
@@ -887,19 +891,15 @@ ERRCODE DownloadFile(const CUrl &url, CMemBuffer &buf)
 						}
 					}
 				}
-
-				WinHttpCloseHandle(hReq);
 			}
-
-			WinHttpCloseHandle(hCon);
 		}
-
-		WinHttpCloseHandle(hInternet);
 	}
 #else
 	CURL *pCurl = curl_easy_init();
 	if(pCurl)
 	{
+		DEFER(curl_easy_cleanup(pCurl));
+
 		Verify(curl_easy_setopt(pCurl, CURLOPT_URL, (PCSTR)url.Get()) == CURLE_OK);
 		Verify(curl_easy_setopt(pCurl, CURLOPT_WRITEFUNCTION, CurlBufferCallback) == CURLE_OK);
 		Verify(curl_easy_setopt(pCurl, CURLOPT_WRITEDATA, (PVOID)&buf) == CURLE_OK);
@@ -907,8 +907,6 @@ ERRCODE DownloadFile(const CUrl &url, CMemBuffer &buf)
 
 		if(curl_easy_perform(pCurl) == CURLE_OK)
 			nErrorCode = FW_NO_ERROR;
-
-		curl_easy_cleanup(pCurl);
 	}
 #endif
 
@@ -927,14 +925,21 @@ void GetPublicIPAddress(CStr &strIPv4, CStr &strIPv6)
 #ifdef _WIN32
 	HINTERNET hInternet = WinHttpOpen(L"freezerware-agent/1.0", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 	if(hInternet)
-	{	// IPv4
+	{
+		DEFER(WinHttpCloseHandle(hInternet));
+
+		// IPv4
 		bool bHttps = (urlV4.GetScheme().Compare(L"https", true) == 0);
 		HINTERNET hCon = WinHttpConnect(hInternet, urlV4.GetDomain(), bHttps ? INTERNET_DEFAULT_HTTPS_PORT : INTERNET_DEFAULT_HTTP_PORT, 0);
 		if(hCon)
 		{
+			DEFER(WinHttpCloseHandle(hCon));
+
 			HINTERNET hReq = WinHttpOpenRequest(hCon, nullptr, urlV4.GetPath(), nullptr, WINHTTP_NO_REFERER, nullptr, bHttps ? WINHTTP_FLAG_SECURE : 0);
 			if(hReq)
 			{
+				DEFER(WinHttpCloseHandle(hReq));
+
 				if(WinHttpSendRequest(hReq, nullptr, 0, nullptr, 0, 0, 0))
 				{
 					if(WinHttpReceiveResponse(hReq, nullptr))
@@ -962,11 +967,7 @@ void GetPublicIPAddress(CStr &strIPv4, CStr &strIPv6)
 						}
 					}
 				}
-
-				WinHttpCloseHandle(hReq);
 			}
-
-			WinHttpCloseHandle(hCon);
 		}
 
 		// IPv6
@@ -974,9 +975,13 @@ void GetPublicIPAddress(CStr &strIPv4, CStr &strIPv6)
 		hCon = WinHttpConnect(hInternet, urlV6.GetDomain(), bHttps ? INTERNET_DEFAULT_HTTPS_PORT : INTERNET_DEFAULT_HTTP_PORT, 0);
 		if(hCon)
 		{
+			DEFER(WinHttpCloseHandle(hCon));
+
 			HINTERNET hReq = WinHttpOpenRequest(hCon, nullptr, urlV6.GetPath(), nullptr, WINHTTP_NO_REFERER, nullptr, bHttps ? WINHTTP_FLAG_SECURE : 0);
 			if(hReq)
 			{
+				DEFER(WinHttpCloseHandle(hReq));
+
 				if(WinHttpSendRequest(hReq, nullptr, 0, nullptr, 0, 0, 0))
 				{
 					if(WinHttpReceiveResponse(hReq, nullptr))
@@ -1004,19 +1009,15 @@ void GetPublicIPAddress(CStr &strIPv4, CStr &strIPv6)
 						}
 					}
 				}
-
-				WinHttpCloseHandle(hReq);
 			}
-
-			WinHttpCloseHandle(hCon);
 		}
-
-		WinHttpCloseHandle(hInternet);
 	}
 #else
 	CURL *pCurl = curl_easy_init();
 	if(pCurl)
 	{
+		DEFER(curl_easy_cleanup(pCurl));
+
 		Verify(curl_easy_setopt(pCurl, CURLOPT_WRITEFUNCTION, CurlBufferCallback) == CURLE_OK);
 		Verify(curl_easy_setopt(pCurl, CURLOPT_USERAGENT, "freezerware-agent/1.0") == CURLE_OK);
 
@@ -1029,8 +1030,6 @@ void GetPublicIPAddress(CStr &strIPv4, CStr &strIPv6)
 		Verify(curl_easy_setopt(pCurl, CURLOPT_WRITEDATA, (PVOID)&strIPv6) == CURLE_OK);
 		if(curl_easy_perform(pCurl) == CURLE_OK && !IsValidIPv6(strIPv6))
 			strIPv6.Empty();
-
-		curl_easy_cleanup(pCurl);
 	}
 #endif
 }

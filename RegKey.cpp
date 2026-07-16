@@ -452,8 +452,6 @@ bool CRegKey::CreateTree(const CRegPath &path)
 				key.Attach(keyNew.Detach());
 				++nCurrentSegment;
 			}
-
-			key.Close();
 		}
 	}
 
@@ -495,8 +493,6 @@ bool CRegKey::CreateTree32(const CRegPath &path)
 				key.Attach(keyNew.Detach());
 				++nCurrentSegment;
 			}
-
-			key.Close();
 		}
 	}
 
@@ -538,8 +534,6 @@ bool CRegKey::CreateTree64(const CRegPath &path)
 				key.Attach(keyNew.Detach());
 				++nCurrentSegment;
 			}
-
-			key.Close();
 		}
 	}
 
@@ -558,8 +552,6 @@ bool CRegKey::DeleteTree(const CRegPath &path)
 		{
 			if(RegDeleteTreeW(key, path.GetLastSegment()) == ERROR_SUCCESS)
 				bResult = true;
-
-			key.Close();
 		}
 	}
 
@@ -578,8 +570,6 @@ bool CRegKey::DeleteTree32(const CRegPath &path)
 		{
 			if(RegDeleteTreeW(key, path.GetLastSegment()) == ERROR_SUCCESS)
 				bResult = true;
-
-			key.Close();
 		}
 	}
 
@@ -598,8 +588,6 @@ bool CRegKey::DeleteTree64(const CRegPath &path)
 		{
 			if(RegDeleteTreeW(key, path.GetLastSegment()) == ERROR_SUCCESS)
 				bResult = true;
-
-			key.Close();
 		}
 	}
 

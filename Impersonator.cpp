@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "Impersonator.h"
+#include "Defer.h"
 #include "PlatformUtils.h"
 #include <wtsapi32.h>
 
@@ -30,6 +31,8 @@ ERRCODE CImpersonator::Impersonate(const uint32_t nSessionId)
 		HANDLE hUserToken;
 		if(WTSQueryUserToken(nSessionId, &hUserToken))
 		{
+			DEFER(CloseHandle(hUserToken));
+
 			if(ImpersonateLoggedOnUser(hUserToken))
 			{
 				m_bImpersonating = true;
@@ -37,8 +40,6 @@ ERRCODE CImpersonator::Impersonate(const uint32_t nSessionId)
 			}
 			else
 				m_pm.RevokeAll();
-
-			CloseHandle(hUserToken);
 		}
 		else
 			m_pm.RevokeAll();

@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "Crc32.h"
+#include "Defer.h"
 #include "FileSystemUtils.h"
 
 NS_BEGIN
@@ -39,6 +40,8 @@ bool CCrc32::Crc32File(PCNSTR szFilename, uint32_t &nCrc32) const
 	NHANDLE hFile = INVALID_NHANDLE;
 	if(FileCreate(szFilename, EFM_ExistingReadOnly, hFile) == FW_NO_ERROR)
 	{
+		DEFER(FileClose(hFile));
+
 		auto pBuffer = std::make_unique<BYTE[]>(CRC_BUFFER_SIZE);
 		size_t nBytesRead;
 		bool bSuccess = (FileRead(hFile, pBuffer.get(), CRC_BUFFER_SIZE, nBytesRead) == FW_NO_ERROR);
@@ -52,8 +55,6 @@ bool CCrc32::Crc32File(PCNSTR szFilename, uint32_t &nCrc32) const
 
 		nCrc32 = ~nCrc32;
 		bResult = true;
-
-		FileClose(hFile);
 	}
 
 	return bResult;
@@ -127,6 +128,8 @@ bool CCrc32Mpeg2::Crc32File(PCNSTR szFilename, uint32_t &nCrc32) const
 	NHANDLE hFile = INVALID_NHANDLE;
 	if(FileCreate(szFilename, EFM_ExistingReadOnly, hFile) == FW_NO_ERROR)
 	{
+		DEFER(FileClose(hFile));
+
 		auto pBuffer = std::make_unique<BYTE[]>(CRC_BUFFER_SIZE);
 		size_t nBytesRead;
 		bool bSuccess = (FileRead(hFile, pBuffer.get(), CRC_BUFFER_SIZE, nBytesRead) == FW_NO_ERROR);
@@ -139,8 +142,6 @@ bool CCrc32Mpeg2::Crc32File(PCNSTR szFilename, uint32_t &nCrc32) const
 		}
 
 		bResult = true;
-
-		FileClose(hFile);
 	}
 
 	return bResult;

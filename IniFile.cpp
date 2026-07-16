@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "IniFile.h"
+#include "Defer.h"
 #include "FileSystemUtils.h"
 #include "StrUtils.h"
 
@@ -386,6 +387,8 @@ bool CIniFile::Load(PCNSTR szIniPath)
 	NHANDLE hFile = INVALID_NHANDLE;
 	if(FileCreate(szIniPath, EFM_ExistingReadOnly, hFile) == FW_NO_ERROR)
 	{
+		DEFER(FileClose(hFile));
+
 		auto pBuf = std::make_unique<BYTE[]>(BUFFER_SIZE);
 		size_t nBytesRead;
 
@@ -454,7 +457,6 @@ bool CIniFile::Load(PCNSTR szIniPath)
 				m_lstLines.emplace_back(std::move(strLine));
 		}
 
-		FileClose(hFile);
 		bLoaded = true;
 	}
 
@@ -469,6 +471,8 @@ bool CIniFile::SaveAs(PCNSTR szIniPath, const EEncodingType eType) const
 	NHANDLE hFile = INVALID_NHANDLE;
 	if(FileCreate(szIniPath, EFM_CreateWriteOnly, hFile) == FW_NO_ERROR)
 	{
+		DEFER(FileClose(hFile));
+
 		size_t nBytesWritten;
 
 		FileSetPosition(hFile, 0, EFS_Begin);
@@ -517,8 +521,6 @@ bool CIniFile::SaveAs(PCNSTR szIniPath, const EEncodingType eType) const
 		}
 
 		FileSetEnd(hFile);
-
-		FileClose(hFile);
 		bSaved = true;
 	}
 

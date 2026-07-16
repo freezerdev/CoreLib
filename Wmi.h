@@ -142,17 +142,12 @@ public:
 			strQuery += L" from ";
 			strQuery += szClassName;
 
-			BSTR bstrWql = SysAllocString(L"WQL");
+			_bstr_t bstrWql = SysAllocString(L"WQL");
 			if(bstrWql)
 			{
-				BSTR bstrQuery = SysAllocString(strQuery);
+				_bstr_t bstrQuery = SysAllocString(strQuery);
 				if(bstrQuery)
-				{
 					m_pService->ExecQuery(bstrWql, bstrQuery, WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &wmiClass.m_pClassEnumerator);
-					SysFreeString(bstrQuery);
-				}
-
-				SysFreeString(bstrWql);
 			}
 		}
 

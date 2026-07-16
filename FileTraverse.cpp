@@ -2,6 +2,7 @@
 #include "FileTraverse.h"
 #include "FileSystemUtils.h"
 #ifndef _WIN32
+#include "Defer.h"
 #ifdef __APPLE__
 #include <sys/attr.h>
 #endif
@@ -194,6 +195,8 @@ void CFileTraverse::Traverse(void)
 		DIR *pDir = opendir(pathBase.Get());
 		if(pDir)
 		{
+			DEFER(closedir(pDir));
+
 			struct dirent *pEntry = readdir(pDir);
 			while(pEntry && !m_event.Wait(0))
 			{
@@ -251,8 +254,6 @@ void CFileTraverse::Traverse(void)
 
 				pEntry = readdir(pDir);
 			}
-
-			closedir(pDir);
 		}
 	}
 #endif

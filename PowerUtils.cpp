@@ -1,6 +1,7 @@
 #include "Base.h"
 #include "PowerUtils.h"
 #ifdef _WIN32
+#include "Defer.h"
 #include "PlatformUtils.h"
 #include <dxgi.h>
 #elif __APPLE__
@@ -83,41 +84,39 @@ bool HasActiveDisplay(void)
 	HMODULE hDxgi = SystemLoadLibrary(_N("dxgi.dll"));
 	if(hDxgi)
 	{
+		DEFER(FreeLibrary(hDxgi));
+
 		PFNCREATEDXGIFACTORY pfnCreateDXGIFactory = (PFNCREATEDXGIFACTORY)GetProcAddress(hDxgi, "CreateDXGIFactory");
 		if(pfnCreateDXGIFactory)
 		{
 			IDXGIFactory *pFactory = nullptr;
 			if(SUCCEEDED(pfnCreateDXGIFactory(__uuidof(IDXGIFactory), (PVOID*)&pFactory)))
 			{
+				DEFER(pFactory->Release());
+
 				DXGI_OUTPUT_DESC od;
 				IDXGIAdapter *pAdapter = nullptr;
 				UINT nAdapterIndex = 0;
 
 				while(!bHasActiveDisplay && SUCCEEDED(pFactory->EnumAdapters(nAdapterIndex++, &pAdapter)))
 				{
+					DEFER(pAdapter->Release());
+
 					IDXGIOutput *pOutput = nullptr;
 					UINT nOutputIndex = 0;
 
 					while(SUCCEEDED(pAdapter->EnumOutputs(nOutputIndex++, &pOutput)))
 					{
+						DEFER(pOutput->Release());
 						if(SUCCEEDED(pOutput->GetDesc(&od)) && od.AttachedToDesktop)
 						{
 							bHasActiveDisplay = true;
-							pOutput->Release();
 							break;
 						}
-
-						pOutput->Release();
 					}
-
-					pAdapter->Release();
 				}
-
-				pFactory->Release();
 			}
 		}
-
-		FreeLibrary(hDxgi);
 	}
 
 	return bHasActiveDisplay;

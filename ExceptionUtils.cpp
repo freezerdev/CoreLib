@@ -127,13 +127,10 @@ void GetExceptionPointers(const DWORD dwExceptionCode, EXCEPTION_POINTERS &ep)
 	er.ExceptionCode = dwExceptionCode;
 	er.ExceptionAddress = _ReturnAddress();
 
-	PEXCEPTION_RECORD per = (PEXCEPTION_RECORD)std::malloc(sizeof(EXCEPTION_RECORD));
-	CopyMemory(per, &er, sizeof(er));
-	PCONTEXT pctx = (PCONTEXT)std::malloc(sizeof(CONTEXT));
-	CopyMemory(pctx, &ctx, sizeof(ctx));
-
-	ep.ExceptionRecord = per;
-	ep.ContextRecord = pctx;
+	ep.ExceptionRecord = (PEXCEPTION_RECORD)std::malloc(sizeof(EXCEPTION_RECORD));
+	CopyMemory(ep.ExceptionRecord, &er, sizeof(er));
+	ep.ContextRecord = (PCONTEXT)std::malloc(sizeof(CONTEXT));
+	CopyMemory(ep.ContextRecord, &ctx, sizeof(ctx));
 }
 
 //#################################################################################################

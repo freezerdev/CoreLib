@@ -462,13 +462,12 @@ CStrW CWmiInstance::GetAsString(PCWSTR szProperty) const
 
 					for(long l = nLower; l <= nUpper; ++l)
 					{
-						BSTR value;
+						_bstr_t value;
 						if(SUCCEEDED(SafeArrayGetElement(psa, &l, &value)))
 						{
 							if(!strProperty.IsEmpty())
 								strProperty += L' ';
-							strProperty += value;
-							SysFreeString(value);
+							strProperty += value.GetBSTR();
 						}
 					}
 				}
@@ -813,12 +812,9 @@ std::vector<CStrW> CWmiInstance::GetStringVector(PCWSTR szProperty) const
 				vecProperties.reserve((size_t)nUpper - (size_t)nLower + 1);
 				for(long l = nLower; l <= nUpper; ++l)
 				{
-					BSTR value;
+					_bstr_t value;
 					if(SUCCEEDED(SafeArrayGetElement(psa, &l, &value)))
-					{
-						vecProperties.emplace_back(value);
-						SysFreeString(value);
-					}
+						vecProperties.emplace_back(value.GetBSTR());
 				}
 			}
 			else if(var.vt != VT_NULL && var.vt != VT_EMPTY)
@@ -1029,12 +1025,9 @@ std::vector<bool> CWmiInstance::GetAsBoolVector(PCWSTR szProperty) const
 				vecProperties.reserve((size_t)nUpper - (size_t)nLower + 1);
 				for(long n = nLower; n <= nUpper; ++n)
 				{
-					BSTR value;
+					_bstr_t value;
 					if(SUCCEEDED(SafeArrayGetElement(psa, &n, &value)))
-					{
 						vecProperties.push_back(StringToIntegerW<int64_t>(value) != 0);
-						SysFreeString(value);
-					}
 				}
 			}
 			else if(var.vt != VT_NULL && var.vt != VT_EMPTY)
@@ -1245,12 +1238,9 @@ std::vector<int64_t> CWmiInstance::GetAsIntegerVector(PCWSTR szProperty) const
 				vecProperties.reserve((size_t)nUpper - (size_t)nLower + 1);
 				for(long n = nLower; n <= nUpper; ++n)
 				{
-					BSTR value;
+					_bstr_t value;
 					if(SUCCEEDED(SafeArrayGetElement(psa, &n, &value)))
-					{
 						vecProperties.push_back(StringToIntegerW<int64_t>(value));
-						SysFreeString(value);
-					}
 				}
 			}
 			else if(var.vt != VT_NULL && var.vt != VT_EMPTY)
@@ -1461,12 +1451,9 @@ std::vector<uint64_t> CWmiInstance::GetAsUIntegerVector(PCWSTR szProperty) const
 				vecProperties.reserve((size_t)nUpper - (size_t)nLower + 1);
 				for(long n = nLower; n <= nUpper; ++n)
 				{
-					BSTR value;
+					_bstr_t value;
 					if(SUCCEEDED(SafeArrayGetElement(psa, &n, &value)))
-					{
 						vecProperties.push_back(StringToIntegerW<uint64_t>(value));
-						SysFreeString(value);
-					}
 				}
 			}
 			else if(var.vt != VT_NULL && var.vt != VT_EMPTY)
@@ -1677,12 +1664,9 @@ std::vector<double> CWmiInstance::GetAsDoubleVector(PCWSTR szProperty) const
 				vecProperties.reserve((size_t)nUpper - (size_t)nLower + 1);
 				for(long n = nLower; n <= nUpper; ++n)
 				{
-					BSTR value;
+					_bstr_t value;
 					if(SUCCEEDED(SafeArrayGetElement(psa, &n, &value)))
-					{
 						vecProperties.push_back(StringToFloatW<double>(value));
-						SysFreeString(value);
-					}
 				}
 			}
 			else if(var.vt != VT_NULL && var.vt != VT_EMPTY)
@@ -1893,12 +1877,9 @@ std::vector<CStrW> CWmiInstance::GetAsStringVector(PCWSTR szProperty) const
 				vecProperties.reserve((size_t)nUpper - (size_t)nLower + 1);
 				for(long l = nLower; l <= nUpper; ++l)
 				{
-					BSTR value;
+					_bstr_t value;
 					if(SUCCEEDED(SafeArrayGetElement(psa, &l, &value)))
-					{
-						vecProperties.emplace_back(value);
-						SysFreeString(value);
-					}
+						vecProperties.emplace_back(value.GetBSTR());
 				}
 			}
 			else if(var.vt != VT_NULL && var.vt != VT_EMPTY)
@@ -2121,8 +2102,8 @@ HRESULT CWmiService::Open(PCWSTR szNamespace, const DWORD dwAuthnLevel)
 	HRESULT hr = CoCreateInstance(__uuidof(WbemLocator), nullptr, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (PVOID*)&m_pLocator);
 	if(SUCCEEDED(hr) && m_pLocator)
 	{
-		BSTR bstrNamespace = SysAllocString(szNamespace);
-		if(bstrNamespace)
+		_bstr_t bstrNamespace = SysAllocString(szNamespace);
+		if(!!bstrNamespace)		// _bstr_t does not have a check for valid, so you need to negate the not valid operator
 		{
 			hr = m_pLocator->ConnectServer(bstrNamespace, nullptr, nullptr, nullptr, 0, nullptr, nullptr, &m_pService);
 			if(SUCCEEDED(hr) && m_pService)
@@ -2132,8 +2113,6 @@ HRESULT CWmiService::Open(PCWSTR szNamespace, const DWORD dwAuthnLevel)
 				m_pLocator->Release();
 				m_pLocator = nullptr;
 			}
-
-			SysFreeString(bstrNamespace);
 		}
 		else
 			hr = E_OUTOFMEMORY;
@@ -2174,17 +2153,12 @@ CWmiClass CWmiService::GetClass(PCWSTR szClassName) const
 		CStrW strQuery(L"select * from ");
 		strQuery += szClassName;
 
-		BSTR bstrWql = SysAllocString(g_szWql);
-		if(bstrWql)
+		_bstr_t bstrWql = SysAllocString(g_szWql);
+		if(!!bstrWql)	// _bstr_t does not have a check for valid, so you need to negate the not valid operator
 		{
-			BSTR bstrQuery = SysAllocString(strQuery);
-			if(bstrQuery)
-			{
+			_bstr_t bstrQuery = SysAllocString(strQuery);
+			if(!!bstrQuery)
 				m_pService->ExecQuery(bstrWql, bstrQuery, WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &wmiClass.m_pClassEnumerator);
-				SysFreeString(bstrQuery);
-			}
-
-			SysFreeString(bstrWql);
 		}
 	}
 
@@ -2216,17 +2190,12 @@ CWmiClass CWmiService::GetClass(PCWSTR szClassName, const std::vector<CStrW> &ve
 		strQuery += L" from ";
 		strQuery += szClassName;
 
-		BSTR bstrWql = SysAllocString(g_szWql);
-		if(bstrWql)
+		_bstr_t bstrWql = SysAllocString(g_szWql);
+		if(!!bstrWql)	// _bstr_t does not have a check for valid, so you need to negate the not valid operator
 		{
-			BSTR bstrQuery = SysAllocString(strQuery);
-			if(bstrQuery)
-			{
+			_bstr_t bstrQuery = SysAllocString(strQuery);
+			if(!!bstrQuery)
 				m_pService->ExecQuery(bstrWql, bstrQuery, WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &wmiClass.m_pClassEnumerator);
-				SysFreeString(bstrQuery);
-			}
-
-			SysFreeString(bstrWql);
 		}
 	}
 
@@ -2240,17 +2209,12 @@ CWmiClass CWmiService::GetClassByQuery(PCWSTR szQuery) const
 
 	if(m_pService)
 	{
-		BSTR bstrWql = SysAllocString(g_szWql);
-		if(bstrWql)
+		_bstr_t bstrWql = SysAllocString(g_szWql);
+		if(!!bstrWql)	// _bstr_t does not have a check for valid, so you need to negate the not valid operator
 		{
-			BSTR bstrQuery = SysAllocString(szQuery);
-			if(bstrQuery)
-			{
+			_bstr_t bstrQuery = SysAllocString(szQuery);
+			if(!!bstrQuery)
 				m_pService->ExecQuery(bstrWql, bstrQuery, WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &wmiClass.m_pClassEnumerator);
-				SysFreeString(bstrQuery);
-			}
-
-			SysFreeString(bstrWql);
 		}
 	}
 

@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "CoreUtils.h"
+#include "Defer.h"
 #include "MemBuffer.h"
 #include "PlatformUtils.h"
 #ifdef _WIN32
@@ -62,6 +63,8 @@ std::vector<CStr> GetCommandLineArguments(void)
 	NHANDLE hFile = INVALID_NHANDLE;
 	if(FileCreate("/proc/self/cmdline", EFM_ExistingReadOnly, hFile) == FW_NO_ERROR)
 	{
+		DEFER(FileClose(hFile));
+
 		size_t nSize = 4096;
 		auto pBuffer = std::make_unique<BYTE[]>(nSize);
 		size_t nBytesRead;
@@ -78,8 +81,6 @@ std::vector<CStr> GetCommandLineArguments(void)
 				nRemaining -= (nLen + 1);
 			}
 		}
-
-		FileClose(hFile);
 	}
 #endif
 
@@ -160,14 +161,14 @@ CStr GetFQDNName(void)
 	getaddrinfo(strMachineName, "http", &aiHints, &paiResults);
 	if(paiResults)
 	{
+		DEFER(freeaddrinfo(paiResults));
+
 		addrinfo *paiScan = paiResults;
 		while(paiScan && strName.IsEmpty())
 		{
 			strName = paiScan->ai_canonname;
 			paiScan = paiScan->ai_next;
 		}
-
-		freeaddrinfo(paiResults);
 	}
 	else
 		strName = std::move(strMachineName);
@@ -227,12 +228,16 @@ EArch GetSystemArchitecture(void)
 	HMODULE hKernelDll = SystemLoadLibrary(_N("kernel32.dll"));
 	if(hKernelDll)
 	{
+		DEFER(FreeLibrary(hKernelDll));
+
 		PFNISWOW64PROCESS2 pfnIsWow64Process2 = (PFNISWOW64PROCESS2)GetProcAddress(hKernelDll, "IsWow64Process2");
 		if(pfnIsWow64Process2)
 		{
 			HANDLE hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, GetCurrentProcessId());
 			if(hProcess)
 			{
+				DEFER(CloseHandle(hProcess));
+
 				USHORT nProcess = 0;
 				USHORT nNative = 0;
 				if(pfnIsWow64Process2(hProcess, &nProcess, &nNative))
@@ -246,12 +251,8 @@ EArch GetSystemArchitecture(void)
 					else if(nNative == IMAGE_FILE_MACHINE_ARM64)
 						eArch = EA_arm64;
 				}
-
-				CloseHandle(hProcess);
 			}
 		}
-
-		FreeLibrary(hKernelDll);
 	}
 
 	if(eArch == EA_Unknown)
@@ -316,8 +317,6 @@ bool IsVirtualMachine(void)
 			if(strBios.Contains(_N("VMware")) || strBios.Contains(_N("VirtualBox")) || strBios.Contains(_N("Microsoft")) || strBios.Contains(_N("KVM")) || strBios.Contains(_N("BOCHS")))
 				bVirtualMachine = true;
 		}
-
-		key.Close();
 	}
 #endif
 
@@ -363,6 +362,8 @@ void ConsolePrint(PCWSTR szMessage, PCWSTR szCaption, PCWSTR szGuiMessage)
 {
 	if(AttachConsole(ATTACH_PARENT_PROCESS))
 	{	// Reopen STDOUT
+		DEFER(FreeConsole());
+
 		FILE *pOut = nullptr;
 		_wfreopen_s(&pOut, L"CONOUT$", L"w", stdout);
 		setvbuf(stdout, nullptr, _IONBF, 0);
@@ -379,8 +380,6 @@ void ConsolePrint(PCWSTR szMessage, PCWSTR szCaption, PCWSTR szGuiMessage)
 			i[1].ki.dwFlags = KEYEVENTF_KEYUP;
 			SendInput(2, i, sizeof(INPUT));
 		}
-
-		FreeConsole();
 	}
 	else
 	{

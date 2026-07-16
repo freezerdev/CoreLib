@@ -227,8 +227,8 @@ void CDoubleNullStr8::Append(const CDoubleNullStr8 &str)
 				std::memcpy(m_szBuffer, szTemp, m_nBufLen - 1);
 				std::memcpy(m_szBuffer + m_nBufLen - 1, str.m_szBuffer, str.m_nBufLen);
 				m_nBufLen += str.m_nBufLen - 1;
-				std::free(szTemp);
 			}
+			std::free(szTemp);
 		}
 
 		++m_nCount;
@@ -592,8 +592,8 @@ void CDoubleNullStrW::Append(const CDoubleNullStrW &str)
 				std::wmemcpy(m_szBuffer, szTemp, m_nBufLen - 1);
 				std::wmemcpy(m_szBuffer + m_nBufLen - 1, str.m_szBuffer, str.m_nBufLen);
 				m_nBufLen += str.m_nBufLen - 1;
-				std::free(szTemp);
 			}
+			std::free(szTemp);
 		}
 
 		++m_nCount;

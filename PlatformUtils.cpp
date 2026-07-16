@@ -1,6 +1,7 @@
 #include "Base.h"
 #include "PlatformUtils.h"
 #ifdef _WIN32
+#include "Defer.h"
 #include "FilePathUtils.h"
 #include "FilePathConverter.h"
 #include "FileSystemUtils.h"
@@ -53,6 +54,8 @@ CStr SidToAccountName(const CStr &strSid)
 	PSID pSid = nullptr;
 	if(ConvertStringSidToSidW(strSid, &pSid))
 	{
+		DEFER(LocalFree(pSid));
+
 		DWORD dwNameSize = 0;
 		DWORD dwDomainSize = 0;
 		SID_NAME_USE snu;
@@ -73,8 +76,6 @@ CStr SidToAccountName(const CStr &strSid)
 				strAccountName += szName.get();
 			}
 		}
-
-		LocalFree(pSid);
 	}
 
 	return strAccountName;
@@ -131,8 +132,6 @@ std::vector<ComputerUser> GetComputerUsers(void)
 				}
 			}
 		}
-
-		keyProfileList.Close();
 	}
 
 	return vecUsers;
@@ -212,14 +211,14 @@ bool GetRemoteTZOffset(const CStrW &strMachine, int16_t &nOffset)
 	PWSTR pBuffer = nullptr;
 	if(NetRemoteTOD(strMachine, (PBYTE*)&pBuffer) == NERR_Success)
 	{
+		DEFER(NetApiBufferFree(pBuffer));
+
 		PTIME_OF_DAY_INFO pToDI = (PTIME_OF_DAY_INFO)pBuffer;
 		if(pToDI->tod_timezone != -1)
 		{	// The returned timezone offset is the opposite sign from normal
 			nOffset = -(int16_t)pToDI->tod_timezone;
 			bReturn = true;
 		}
-
-		NetApiBufferFree(pBuffer);
 	}
 
 	return bReturn;
