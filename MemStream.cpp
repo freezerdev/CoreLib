@@ -5,20 +5,7 @@
 NS_BEGIN
 
 //#################################################################################################
-CMemStream::CMemStream(void)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0),
-	m_nReadPosition(0)
-{
-}
-
-//#################################################################################################
 CMemStream::CMemStream(const CMemStream &src)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0),
-	m_nReadPosition(0)
 {
 	if(src.m_nDataSize)
 	{
@@ -47,10 +34,6 @@ CMemStream::CMemStream(CMemStream &&src) noexcept
 
 //#################################################################################################
 CMemStream::CMemStream(const CMemBuffer &buf)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0),
-	m_nReadPosition(0)
 {
 	if(buf.GetDataSize())
 	{
@@ -75,20 +58,12 @@ CMemStream::CMemStream(CMemBuffer &&buf) noexcept
 
 //#################################################################################################
 CMemStream::CMemStream(const size_t nBufSize)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0),
-	m_nReadPosition(0)
 {
 	SetBufferSize(nBufSize);
 }
 
 //#################################################################################################
 CMemStream::CMemStream(PCBYTE pBuf, const size_t nDataSize, const size_t nBufSize)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0),
-	m_nReadPosition(0)
 {
 	SetBufferSize(MAX(nDataSize, nBufSize));
 	if(m_pBuf)

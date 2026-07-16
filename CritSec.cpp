@@ -26,8 +26,7 @@ CCritSec::~CCritSec(void)
 
 //#################################################################################################
 CCritSecMgr::CCritSecMgr(CCritSec &cs, const bool bLock)
-	: m_cs(cs),
-	m_bLocked(false)
+	: m_cs(cs)
 {
 	if(bLock)
 		Lock();

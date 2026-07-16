@@ -20,7 +20,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CRegPathSegment8(void);
+	CRegPathSegment8(void) = default;
 	// Copy and move constructors
 	CRegPathSegment8(const CRegPathSegment8 &src);
 	CRegPathSegment8(CRegPathSegment8 &&src) noexcept;
@@ -129,9 +129,9 @@ public:
 	static bool IsValidSegment(const char chSegment);
 
 protected:
-	PSTR m_sz;				// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	PSTR m_sz = (PSTR)g_szNull8;	// String buffer
+	size_t m_nBufLen = 0;			// Length of the buffer in characters
+	size_t m_nStrLen = 0;			// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);
@@ -146,7 +146,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CRegPathSegmentW(void);
+	CRegPathSegmentW(void) = default;
 	// Copy and move constructors
 	CRegPathSegmentW(const CRegPathSegmentW &src);
 	CRegPathSegmentW(CRegPathSegmentW &&src) noexcept;
@@ -255,9 +255,9 @@ public:
 	static bool IsValidSegment(const wchar_t chSegment);
 
 protected:
-	PWSTR m_sz;				// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	PWSTR m_sz = (PWSTR)g_szNullW;	// String buffer
+	size_t m_nBufLen = 0;			// Length of the buffer in characters
+	size_t m_nStrLen = 0;			// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);
@@ -498,7 +498,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CRegPath8(void);
+	CRegPath8(void) = default;
 	// Copy and move constructors
 	CRegPath8(const CRegPath8 &src);
 	CRegPath8(CRegPath8 &&src) noexcept;
@@ -686,7 +686,7 @@ public:
 
 private:
 	std::vector<std::unique_ptr<CRegPathSegment8>> m_vecSegments;
-	bool m_bRooted;
+	bool m_bRooted = false;
 
 	ERRCODE ParsePath(const CStr8 &strPath);
 };
@@ -700,7 +700,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CRegPathW(void);
+	CRegPathW(void) = default;
 	// Copy and move constructors
 	CRegPathW(const CRegPathW &src);
 	CRegPathW(CRegPathW &&src) noexcept;
@@ -914,7 +914,7 @@ public:
 
 private:
 	std::vector<std::unique_ptr<CRegPathSegmentW>> m_vecSegments;
-	bool m_bRooted;
+	bool m_bRooted = false;
 
 	ERRCODE ParsePath(const CStrW &strPath);
 };

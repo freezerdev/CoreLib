@@ -4,13 +4,13 @@
 NS_BEGIN
 
 // Some primes between 2^63 and 2^64
-static constexpr uint64_t g_nPrime1 = 0xC3A5C85C97CB3127;
-static constexpr uint64_t g_nPrime2 = 0xB492B66FBE98F273;
-static constexpr uint64_t g_nPrime3 = 0x9AE16A3B2F90404F;
+constexpr uint64_t g_nPrime1 = 0xC3A5C85C97CB3127;
+constexpr uint64_t g_nPrime2 = 0xB492B66FBE98F273;
+constexpr uint64_t g_nPrime3 = 0x9AE16A3B2F90404F;
 
 // Magic numbers for 32-bit hashing, copied from Murmur3
-static constexpr uint32_t g_nMagic1 = 0xCC9E2D51;
-static constexpr uint32_t g_nMagic2 = 0x1B873593;
+constexpr uint32_t g_nMagic1 = 0xCC9E2D51;
+constexpr uint32_t g_nMagic2 = 0x1B873593;
 
 #define SHIFTMIX(a)		((a) ^ ((a) >> 47))
 

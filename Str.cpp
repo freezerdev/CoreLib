@@ -17,18 +17,7 @@ const size_t CStr16::end = (size_t)-1;
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CStr8::CStr8(void)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CStr8::CStr8(const CStr8 &src)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -46,98 +35,65 @@ CStr8::CStr8(CStr8 &&src) noexcept
 
 //#################################################################################################
 CStr8::CStr8(const CStrW &str)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CStr8::CStr8(const CStr16 &str)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CStr8::CStr8(const std::string &str)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CStr8::CStr8(const std::wstring &str)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CStr8::CStr8(PCSTR sz)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CStr8::CStr8(PCWSTR sz)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CStr8::CStr8(const char ch)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CStr8::CStr8(const wchar_t ch)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CStr8::CStr8(const CStr8 &str, const size_t nStart, const size_t nLen)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str, nStart, nLen);
 }
 //#################################################################################################
 CStr8::CStr8(PCSTR sz, const size_t nStart, const size_t nLen)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz, nStart, nLen);
 }
 
 //#################################################################################################
 CStr8::CStr8(const EPrintfType eIgnored, PCSTR szFormat, ...)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	UNUSED(eIgnored);
 	Assert(eIgnored == EPT_Printf);
@@ -1453,7 +1409,7 @@ int CStr8::CompareAlphaNum(const CStr8 &str, const bool bCaseInsensitive) const
 {
 	int nCompareRtn = 0;
 
-	static PCSTR szDigits8 = "0123456789";
+	static constexpr PCSTR szDigits8 = "0123456789";
 
 	size_t nPos1 = 0;
 	size_t nPos2 = 0;
@@ -3805,18 +3761,7 @@ size_t CStr8::str2int(PCSTR sz)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CStrW::CStrW(void)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CStrW::CStrW(const CStrW &src)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -3834,98 +3779,65 @@ CStrW::CStrW(CStrW &&src) noexcept
 
 //#################################################################################################
 CStrW::CStrW(const CStr8 &str)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CStrW::CStrW(const CStr16 &str)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CStrW::CStrW(const std::wstring &str)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CStrW::CStrW(const std::string &str)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CStrW::CStrW(PCWSTR sz)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CStrW::CStrW(PCSTR sz)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CStrW::CStrW(const wchar_t ch)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CStrW::CStrW(const char ch)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CStrW::CStrW(const CStrW &str, const size_t nStart, const size_t nLen)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str, nStart, nLen);
 }
 //#################################################################################################
 CStrW::CStrW(PCWSTR sz, const size_t nStart, const size_t nLen)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz, nStart, nLen);
 }
 
 //#################################################################################################
 CStrW::CStrW(const EPrintfType eIgnored, PCWSTR szFormat, ...)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	UNUSED(eIgnored);
 	Assert(eIgnored == EPT_Printf);
@@ -3939,9 +3851,6 @@ CStrW::CStrW(const EPrintfType eIgnored, PCWSTR szFormat, ...)
 #ifdef _WIN32
 //#################################################################################################
 CStrW::CStrW(const ELoadType eIgnored, const int nId)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	UNUSED(eIgnored);
 
@@ -5241,7 +5150,7 @@ int CStrW::CompareAlphaNum(const CStrW &str, const bool bCaseInsensitive) const
 {
 	int nCompareRtn = 0;
 
-	static PCWSTR szDigitsW = L"0123456789";
+	static constexpr PCWSTR szDigitsW = L"0123456789";
 
 	size_t nPos1 = 0;
 	size_t nPos2 = 0;
@@ -7609,18 +7518,7 @@ size_t CStrW::str2int(PCWSTR sz)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CStr16::CStr16(void)
-	: m_sz((char16_t*)g_szNull16),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CStr16::CStr16(const CStr16 &src)
-	: m_sz((char16_t*)g_szNull16),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -7638,53 +7536,35 @@ CStr16::CStr16(CStr16 &&src) noexcept
 
 //#################################################################################################
 CStr16::CStr16(const CStr8 &str)
-	: m_sz((char16_t*)g_szNull16),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CStr16::CStr16(const CStrW &str)
-	: m_sz((char16_t*)g_szNull16),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CStr16::CStr16(const char16_t *sz)
-	: m_sz((char16_t*)g_szNull16),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CStr16::CStr16(const char16_t ch)
-	: m_sz((char16_t*)g_szNull16),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CStr16::CStr16(const CStr16 &str, const size_t nStart, const size_t nLen)
-	: m_sz((char16_t*)g_szNull16),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str, nStart, nLen);
 }
 //#################################################################################################
 CStr16::CStr16(const char16_t *sz, const size_t nStart, const size_t nLen)
-	: m_sz((char16_t*)g_szNull16),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz, nStart, nLen);
 }

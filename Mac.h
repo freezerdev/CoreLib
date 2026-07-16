@@ -6,7 +6,7 @@ NS_BEGIN
 class CMac final
 {
 public:
-	CMac(void);
+	CMac(void) = default;
 	CMac(const CMac &src) = default;
 	CMac(CMac &&src) noexcept;
 	explicit CMac(PCBYTE pMac);
@@ -39,7 +39,7 @@ public:
 	int Compare(const CMac &mac) const;
 
 private:
-	BYTE m_mac[6];
+	BYTE m_mac[6] = {0};
 };
 
 NS_END

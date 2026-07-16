@@ -33,8 +33,8 @@ extern PSTR *environ;
 NS_BEGIN
 
 #ifndef _WIN32
-static constexpr auto PIPE_READ = 0;
-static constexpr auto PIPE_WRITE = 1;
+constexpr auto PIPE_READ = 0;
+constexpr auto PIPE_WRITE = 1;
 
 PSTR *CreateArgs(const CStr8 &strApp, const CStr8 &strParams);
 PSTR *CreateEnvVars(const std::vector<CStr8> *pvecEnvVars);

@@ -4,13 +4,13 @@
 NS_BEGIN
 
 #ifdef _WIN32
-static wchar_t g_chDoubleQuote = L'"';
-static wchar_t g_chSpace = L' ';
-static PCWSTR g_szWhitespace = L" \t";
+constexpr wchar_t g_chDoubleQuote = L'"';
+constexpr wchar_t g_chSpace = L' ';
+constexpr PCWSTR g_szWhitespace = L" \t";
 #else
-static char g_chDoubleQuote = '"';
-static char g_chSpace = ' ';
-static PCSTR g_szWhitespace = " \t";
+constexpr char g_chDoubleQuote = '"';
+constexpr char g_chSpace = ' ';
+constexpr PCSTR g_szWhitespace = " \t";
 #endif
 
 //#################################################################################################

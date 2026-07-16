@@ -15,7 +15,7 @@ private:
 	friend class CRegKey;
 
 public:
-	CRegBuf(void);
+	CRegBuf(void) = default;
 	CRegBuf(const CRegBuf &src);
 	CRegBuf(CRegBuf &&src) noexcept;
 	explicit CRegBuf(const size_t nBufSize);
@@ -39,10 +39,10 @@ public:
 	DWORD GetDataType(void) const noexcept;
 
 private:
-	PBYTE m_pBuf;
-	size_t m_nBufSize;
-	size_t m_nDataSize;
-	DWORD m_dwDataType;
+	PBYTE m_pBuf = nullptr;
+	size_t m_nBufSize = 0;
+	size_t m_nDataSize = 0;
+	DWORD m_dwDataType = REG_NONE;
 };
 
 
@@ -50,7 +50,7 @@ private:
 class CRegKey final
 {
 public:
-	CRegKey(void);
+	CRegKey(void) = default;
 	CRegKey(const CRegKey &src);
 	CRegKey(CRegKey &&src) noexcept;
 	~CRegKey(void);
@@ -145,7 +145,7 @@ public:
 	ERRCODE Flush(void) const;
 
 private:
-	HKEY m_hKey;
+	HKEY m_hKey = nullptr;
 };
 
 NS_END

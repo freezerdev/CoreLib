@@ -9,20 +9,7 @@ NS_BEGIN
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CRegBuf::CRegBuf(void)
-	: m_pBuf(nullptr),
-	m_nBufSize(0),
-	m_nDataSize(0),
-	m_dwDataType(REG_NONE)
-{
-}
-
-//#################################################################################################
 CRegBuf::CRegBuf(const CRegBuf &src)
-	: m_pBuf(nullptr),
-	m_nBufSize(0),
-	m_nDataSize(0),
-	m_dwDataType(REG_NONE)
 {
 	if(src.m_nBufSize)
 	{
@@ -52,10 +39,6 @@ CRegBuf::CRegBuf(CRegBuf &&src) noexcept
 
 //#################################################################################################
 CRegBuf::CRegBuf(const size_t nBufSize)
-	: m_pBuf(nullptr),
-	m_nBufSize(0),
-	m_nDataSize(0),
-	m_dwDataType(REG_NONE)
 {
 	Alloc(nBufSize);
 }
@@ -197,14 +180,7 @@ DWORD CRegBuf::GetDataType(void) const noexcept
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CRegKey::CRegKey(void)
-	: m_hKey(nullptr)
-{
-}
-
-//#################################################################################################
 CRegKey::CRegKey(const CRegKey &src)
-	: m_hKey(nullptr)
 {
 	Assign(src);
 }

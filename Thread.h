@@ -42,10 +42,10 @@ private:
 	CStr m_strThreadName;
 	std::unique_ptr<std::thread> m_pThread;
 	mutable std::mutex m_mutexThread;
-	PFNPROC m_pfnProc;
-	PVOID m_pParam;
+	PFNPROC m_pfnProc = nullptr;
+	PVOID m_pParam = nullptr;
 	CEvent m_event;
-	std::atomic_bool m_bActive;
+	std::atomic_bool m_bActive{false};
 
 	static std::unordered_map<size_t, PCNSTR, CNumberHashTraits<size_t>> s_mapThreads;
 	static std::mutex s_mutexThreads;

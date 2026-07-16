@@ -2,6 +2,9 @@
 
 NS_BEGIN
 
+constexpr PCSTR g_szDoubleNull8 = "\0\0";
+constexpr PCWSTR g_szDoubleNullW = L"\0\0";
+
 // Forward declarations
 class CDoubleNullStr8;
 class CDoubleNullStrW;
@@ -11,7 +14,7 @@ class CDoubleNullStr8 final
 {
 public:
 	// Constructs an empty string object
-	CDoubleNullStr8(void);
+	CDoubleNullStr8(void) = default;
 	// Copy and move constructors
 	CDoubleNullStr8(const CDoubleNullStr8 &src);
 	CDoubleNullStr8(CDoubleNullStr8 &&src) noexcept;
@@ -68,9 +71,9 @@ public:
 	size_t GetBufferSize(void) const noexcept;
 
 private:
-	PSTR m_szBuffer;
-	size_t m_nBufLen;
-	size_t m_nCount;
+	PSTR m_szBuffer = (PSTR)g_szDoubleNull8;
+	size_t m_nBufLen = 2;
+	size_t m_nCount = 0;
 };
 
 
@@ -79,7 +82,7 @@ class CDoubleNullStrW final
 {
 public:
 	// Constructs an empty string object
-	CDoubleNullStrW(void);
+	CDoubleNullStrW(void) = default;
 	// Copy and move constructors
 	CDoubleNullStrW(const CDoubleNullStrW &src);
 	CDoubleNullStrW(CDoubleNullStrW &&src) noexcept;
@@ -136,9 +139,9 @@ public:
 	size_t GetBufferSize(void) const noexcept;
 
 private:
-	PWSTR m_szBuffer;
-	size_t m_nBufLen;
-	size_t m_nCount;
+	PWSTR m_szBuffer = (PWSTR)g_szDoubleNullW;
+	size_t m_nBufLen = 2;
+	size_t m_nCount = 0;
 };
 
 

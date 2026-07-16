@@ -4,26 +4,12 @@
 
 NS_BEGIN
 
-static PCSTR g_szDoubleNull8 = "\0\0";
-static PCWSTR g_szDoubleNullW = L"\0\0";
-
 /////////////////////////////////////////////////
 // CDoubleNullStr8
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CDoubleNullStr8::CDoubleNullStr8(void)
-	: m_szBuffer((PSTR)g_szDoubleNull8),
-	m_nBufLen(2),
-	m_nCount(0)
-{
-}
-
-//#################################################################################################
 CDoubleNullStr8::CDoubleNullStr8(const CDoubleNullStr8 &src)
-	: m_szBuffer((PSTR)g_szDoubleNull8),
-	m_nBufLen(2),
-	m_nCount(0)
 {
 	Assign(src);
 }
@@ -41,9 +27,6 @@ CDoubleNullStr8::CDoubleNullStr8(CDoubleNullStr8 &&src) noexcept
 
 //#################################################################################################
 CDoubleNullStr8::CDoubleNullStr8(PCSTR sz, const bool bDoubleNullTerm)
-	: m_szBuffer((PSTR)g_szDoubleNull8),
-	m_nBufLen(2),
-	m_nCount(0)
 {
 	Assign(sz, bDoubleNullTerm);
 }
@@ -377,18 +360,7 @@ size_t CDoubleNullStr8::GetBufferSize(void) const noexcept
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CDoubleNullStrW::CDoubleNullStrW(void)
-	: m_szBuffer((PWSTR)g_szDoubleNullW),
-	m_nBufLen(2),
-	m_nCount(0)
-{
-}
-
-//#################################################################################################
 CDoubleNullStrW::CDoubleNullStrW(const CDoubleNullStrW &src)
-	: m_szBuffer((PWSTR)g_szDoubleNullW),
-	m_nBufLen(2),
-	m_nCount(0)
 {
 	Assign(src);
 }
@@ -406,9 +378,6 @@ CDoubleNullStrW::CDoubleNullStrW(CDoubleNullStrW &&src) noexcept
 
 //#################################################################################################
 CDoubleNullStrW::CDoubleNullStrW(PCWSTR sz, const bool bDoubleNullTerm)
-	: m_szBuffer((PWSTR)g_szDoubleNullW),
-	m_nBufLen(2),
-	m_nCount(0)
 {
 	Assign(sz, bDoubleNullTerm);
 }

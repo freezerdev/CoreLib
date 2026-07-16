@@ -36,7 +36,7 @@ public:
 	static const size_t end;
 
 	// Constructs an empty string object
-	CStr8(void);
+	CStr8(void) = default;
 	// Copy and move constructors
 	CStr8(const CStr8 &src);
 	CStr8(CStr8 &&src) noexcept;
@@ -398,9 +398,9 @@ public:
 #endif
 
 private:
-	PSTR m_sz;				// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	PSTR m_sz = (PSTR)g_szNull8;	// String buffer
+	size_t m_nBufLen = 0;			// Length of the buffer in characters
+	size_t m_nStrLen = 0;			// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);
@@ -516,7 +516,7 @@ public:
 	static const size_t end;
 
 	// Constructs an empty string object
-	CStrW(void);
+	CStrW(void) = default;
 	// Copy and move constructors
 	CStrW(const CStrW &src);
 	CStrW(CStrW &&src) noexcept;
@@ -891,9 +891,9 @@ public:
 #endif
 
 private:
-	PWSTR m_sz;				// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	PWSTR m_sz = (PWSTR)g_szNullW;	// String buffer
+	size_t m_nBufLen = 0;			// Length of the buffer in characters
+	size_t m_nStrLen = 0;			// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);
@@ -999,7 +999,7 @@ public:
 	static const size_t end;
 
 	// Constructs an empty string object
-	CStr16(void);
+	CStr16(void) = default;
 	// Copy and move constructors
 	CStr16(const CStr16 &src);
 	CStr16(CStr16 &&src) noexcept;
@@ -1204,9 +1204,9 @@ public:
 #endif
 
 private:
-	char16_t *m_sz;			// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	char16_t *m_sz = (char16_t*)g_szNull16;	// String buffer
+	size_t m_nBufLen = 0;					// Length of the buffer in characters
+	size_t m_nStrLen = 0;					// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);

@@ -4,46 +4,46 @@
 NS_BEGIN
 
 #ifdef _WIN32
-static constexpr char g_chColon8 = ':';
-static constexpr wchar_t g_chColonW = L':';
-static constexpr char g_chDelimiter8 = '\\';
-static constexpr wchar_t g_chDelimiterW = L'\\';
-static PCSTR g_szDoubleDelimiter8 = "\\\\";
-static PCWSTR g_szDoubleDelimiterW = L"\\\\";
+constexpr char g_chColon8 = ':';
+constexpr wchar_t g_chColonW = L':';
+constexpr char g_chDelimiter8 = '\\';
+constexpr wchar_t g_chDelimiterW = L'\\';
+constexpr PCSTR g_szDoubleDelimiter8 = "\\\\";
+constexpr PCWSTR g_szDoubleDelimiterW = L"\\\\";
 #else
-static constexpr char g_chDelimiter8 = '/';
-static constexpr wchar_t g_chDelimiterW = L'/';
-static PCSTR g_szDoubleDelimiter8 = "//";
-static PCWSTR g_szDoubleDelimiterW = L"//";
+constexpr char g_chDelimiter8 = '/';
+constexpr wchar_t g_chDelimiterW = L'/';
+constexpr PCSTR g_szDoubleDelimiter8 = "//";
+constexpr PCWSTR g_szDoubleDelimiterW = L"//";
 #endif
 
-static constexpr char g_chPeriod8 = '.';
-static constexpr wchar_t g_chPeriodW = L'.';
-static constexpr char g_chAsterisk8 = '*';
-static constexpr wchar_t g_chAsteriskW = L'*';
-static constexpr char g_chQuestionMark8 = '?';
-static constexpr wchar_t g_chQuestionMarkW = L'?';
-static constexpr char g_chHyphen8 = '-';
-static constexpr wchar_t g_chHyphenW = L'-';
+constexpr char g_chPeriod8 = '.';
+constexpr wchar_t g_chPeriodW = L'.';
+constexpr char g_chAsterisk8 = '*';
+constexpr wchar_t g_chAsteriskW = L'*';
+constexpr char g_chQuestionMark8 = '?';
+constexpr wchar_t g_chQuestionMarkW = L'?';
+constexpr char g_chHyphen8 = '-';
+constexpr wchar_t g_chHyphenW = L'-';
 
-static PCSTR g_szDoublePeriod8 = "..";
-static PCWSTR g_szDoublePeriodW = L"..";
-static PCSTR g_szValidMachineName8 = "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-static PCWSTR g_szValidMachineNameW = L"-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-static constexpr size_t g_nValidMachineNameLen = 64;
+constexpr PCSTR g_szDoublePeriod8 = "..";
+constexpr PCWSTR g_szDoublePeriodW = L"..";
+constexpr PCSTR g_szValidMachineName8 = "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+constexpr PCWSTR g_szValidMachineNameW = L"-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+constexpr size_t g_nValidMachineNameLen = 64;
 
 #ifdef _WIN32
-static PCSTR g_szInvalidSegment8 = "\"/<>\\|";
-static PCWSTR g_szInvalidSegmentW = L"\"/<>\\|";
-static constexpr size_t g_nInvalidSegmentLen = 6;
-static PCSTR g_szKernelPrefix8 = "\\\\?\\";
-static PCWSTR g_szKernelPrefixW = L"\\\\?\\";
-static constexpr size_t g_nKernelPrefixLen = 4;
-static PCSTR g_szUNCKernelPrefix8 = "\\\\?\\UNC\\";
-static PCWSTR g_szUNCKernelPrefixW = L"\\\\?\\UNC\\";
-static constexpr size_t g_nUNCKernelPrefixLen = 8;
-static PCSTR g_szUNCKernelPartialPrefix8 = "?\\UNC\\";
-static PCWSTR g_szUNCKernelPartialPrefixW = L"?\\UNC\\";
+constexpr PCSTR g_szInvalidSegment8 = "\"/<>\\|";
+constexpr PCWSTR g_szInvalidSegmentW = L"\"/<>\\|";
+constexpr size_t g_nInvalidSegmentLen = 6;
+constexpr PCSTR g_szKernelPrefix8 = "\\\\?\\";
+constexpr PCWSTR g_szKernelPrefixW = L"\\\\?\\";
+constexpr size_t g_nKernelPrefixLen = 4;
+constexpr PCSTR g_szUNCKernelPrefix8 = "\\\\?\\UNC\\";
+constexpr PCWSTR g_szUNCKernelPrefixW = L"\\\\?\\UNC\\";
+constexpr size_t g_nUNCKernelPrefixLen = 8;
+constexpr PCSTR g_szUNCKernelPartialPrefix8 = "?\\UNC\\";
+constexpr PCWSTR g_szUNCKernelPartialPrefixW = L"?\\UNC\\";
 #endif
 
 const size_t CFilePathSegment8::not_found = (size_t)-1;
@@ -53,7 +53,7 @@ const size_t CFilePathSegmentW::end = (size_t)-1;
 
 #ifdef _WIN32
 // The upper limit is 260 for files but 247 for folders
-static constexpr auto INTERNAL_MAX_PATH = 247;
+constexpr auto INTERNAL_MAX_PATH = 247;
 #endif
 
 
@@ -62,18 +62,7 @@ static constexpr auto INTERNAL_MAX_PATH = 247;
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CFilePathSegment8::CFilePathSegment8(void)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CFilePathSegment8::CFilePathSegment8(const CFilePathSegment8 &src)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -91,63 +80,42 @@ CFilePathSegment8::CFilePathSegment8(CFilePathSegment8 &&src) noexcept
 
 //#################################################################################################
 CFilePathSegment8::CFilePathSegment8(const CFilePathSegmentW &path)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CFilePathSegment8::CFilePathSegment8(const CStr8 &str)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CFilePathSegment8::CFilePathSegment8(const CStrW &str)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CFilePathSegment8::CFilePathSegment8(PCSTR sz)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CFilePathSegment8::CFilePathSegment8(PCWSTR sz)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CFilePathSegment8::CFilePathSegment8(const char ch)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CFilePathSegment8::CFilePathSegment8(const wchar_t ch)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
@@ -1260,18 +1228,7 @@ size_t CFilePathSegment8::ReverseFind(PCSTR sz, const size_t nStrLen, const char
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CFilePathSegmentW::CFilePathSegmentW(void)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CFilePathSegmentW::CFilePathSegmentW(const CFilePathSegmentW &src)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -1289,63 +1246,42 @@ CFilePathSegmentW::CFilePathSegmentW(CFilePathSegmentW &&src) noexcept
 
 //#################################################################################################
 CFilePathSegmentW::CFilePathSegmentW(const CFilePathSegment8 &path)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CFilePathSegmentW::CFilePathSegmentW(const CStrW &str)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CFilePathSegmentW::CFilePathSegmentW(const CStr8 &str)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CFilePathSegmentW::CFilePathSegmentW(PCWSTR sz)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CFilePathSegmentW::CFilePathSegmentW(PCSTR sz)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CFilePathSegmentW::CFilePathSegmentW(const wchar_t ch)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CFilePathSegmentW::CFilePathSegmentW(const char ch)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
@@ -3290,99 +3226,81 @@ PCWSTR CMachineNameW::FindFirstNotOf(PCWSTR sz, const size_t nStrLen, PCWSTR szF
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CFilePath8::CFilePath8(void)
-	: m_eType(EPT_Empty)
-{
-}
-
-//#################################################################################################
 CFilePath8::CFilePath8(const CFilePath8 &src)
-	: m_eType(EPT_Empty)
 {
 	Assign(src);
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(CFilePath8 &&src) noexcept
-	: m_eType(src.m_eType),
-	m_vecSegments(std::move(src.m_vecSegments))
+	: m_vecSegments(std::move(src.m_vecSegments)),
+	m_eType(src.m_eType)
 {
 	src.m_eType = EPT_Empty;
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(const CFilePathW &path)
-	: m_eType(EPT_Empty)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(const CFilePathSegment8 &path)
-	: m_eType(EPT_Empty)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(const CFilePathSegmentW &path)
-	: m_eType(EPT_Empty)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(const CMachineName8 &machine)
-	: m_eType(EPT_Empty)
 {
 	Assign(machine);
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(const CMachineNameW &machine)
-	: m_eType(EPT_Empty)
 {
 	Assign(machine);
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(const CStr8 &str)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(str);
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(const CStrW &str)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(str.AsUtf8());
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(PCSTR sz)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(CStr8(sz));
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(PCWSTR sz)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(CStr8(sz));
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(const char ch)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(CStr8(ch));
 }
 
 //#################################################################################################
 CFilePath8::CFilePath8(const wchar_t ch)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(CStr8(ch));
 }
@@ -5811,99 +5729,81 @@ bool CFilePath8::SafeDotAppend(const CFilePath8 &path1, const CFilePathW &path2)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CFilePathW::CFilePathW(void)
-	: m_eType(EPT_Empty)
-{
-}
-
-//#################################################################################################
 CFilePathW::CFilePathW(const CFilePathW &src)
-	: m_eType(EPT_Empty)
 {
 	Assign(src);
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(CFilePathW &&src) noexcept
-	: m_eType(src.m_eType),
-	m_vecSegments(std::move(src.m_vecSegments))
+	: m_vecSegments(std::move(src.m_vecSegments)),
+	m_eType(src.m_eType)
 {
 	src.m_eType = EPT_Empty;
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(const CFilePath8 &path)
-	: m_eType(EPT_Empty)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(const CFilePathSegmentW &path)
-	: m_eType(EPT_Empty)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(const CFilePathSegment8 &path)
-	: m_eType(EPT_Empty)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(const CMachineNameW &machine)
-	: m_eType(EPT_Empty)
 {
 	Assign(machine);
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(const CMachineName8 &machine)
-	: m_eType(EPT_Empty)
 {
 	Assign(machine);
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(const CStrW &str)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(str);
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(const CStr8 &str)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(str.AsWide());
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(PCWSTR sz)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(CStrW(sz));
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(PCSTR sz)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(CStrW(sz));
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(const wchar_t ch)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(CStrW(ch));
 }
 
 //#################################################################################################
 CFilePathW::CFilePathW(const char ch)
-	: m_eType(EPT_Empty)
 {
 	ParsePath(CStrW(ch));
 }

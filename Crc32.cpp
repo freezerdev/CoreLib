@@ -5,7 +5,7 @@
 
 NS_BEGIN
 
-static constexpr auto CRC_BUFFER_SIZE = 8192;
+constexpr auto CRC_BUFFER_SIZE = 8192;
 
 //#################################################################################################
 CCrc32::CCrc32(const uint32_t nPolynomial)

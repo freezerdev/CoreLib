@@ -5,18 +5,7 @@
 NS_BEGIN
 
 //#################################################################################################
-CMemBuffer::CMemBuffer(void)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
-{
-}
-
-//#################################################################################################
 CMemBuffer::CMemBuffer(const CMemBuffer &src)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
 {
 	Assign(src.m_pBuf, src.m_nDataSize);
 }
@@ -34,9 +23,6 @@ CMemBuffer::CMemBuffer(CMemBuffer &&src) noexcept
 
 //#################################################################################################
 CMemBuffer::CMemBuffer(const CMemStream &buf)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
 {
 	Assign(buf.GetBuffer(), buf.GetDataSize());
 }
@@ -52,27 +38,18 @@ CMemBuffer::CMemBuffer(CMemStream &&buf) noexcept
 
 //#################################################################################################
 CMemBuffer::CMemBuffer(const size_t nBufSize)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
 {
 	SetBufferSize(nBufSize);
 }
 
 //#################################################################################################
 CMemBuffer::CMemBuffer(PCBYTE pBuf, const size_t nDataSize)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
 {
 	Assign(pBuf, nDataSize);
 }
 
 //#################################################################################################
 CMemBuffer::CMemBuffer(PCBYTE pBuf, const size_t nDataSize, const size_t nBufSize)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
 {
 	SetBufferSize(MAX(nDataSize, nBufSize));
 	Assign(pBuf, nDataSize);
@@ -80,45 +57,30 @@ CMemBuffer::CMemBuffer(PCBYTE pBuf, const size_t nDataSize, const size_t nBufSiz
 
 //#################################################################################################
 CMemBuffer::CMemBuffer(PCSTR sz, const bool bIncludeNullTerm)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
 {
 	Assign(sz, bIncludeNullTerm);
 }
 
 //#################################################################################################
 CMemBuffer::CMemBuffer(PCWSTR sz, const bool bIncludeNullTerm)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
 {
 	Assign(sz, bIncludeNullTerm);
 }
 
 //#################################################################################################
 CMemBuffer::CMemBuffer(const CStr8 &str, const bool bIncludeNullTerm)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
 {
 	Assign(str, bIncludeNullTerm);
 }
 
 //#################################################################################################
 CMemBuffer::CMemBuffer(const CStrW &str, const bool bIncludeNullTerm)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
 {
 	Assign(str, bIncludeNullTerm);
 }
 
 //#################################################################################################
 CMemBuffer::CMemBuffer(const CStr16 &str, const bool bIncludeNullTerm)
-	: m_pBuf(nullptr),
-	m_nDataSize(0),
-	m_nBufSize(0)
 {
 	Assign(str, bIncludeNullTerm);
 }

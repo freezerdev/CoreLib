@@ -38,7 +38,7 @@ public:
 
 private:
 	CCritSec &m_cs;
-	bool m_bLocked;
+	bool m_bLocked = false;
 };
 
 NS_END

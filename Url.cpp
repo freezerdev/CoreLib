@@ -4,39 +4,39 @@
 
 NS_BEGIN
 
-static PCSTR g_szValidDomainName8 = "*-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-static PCWSTR g_szValidDomainNameW = L"*-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-static constexpr size_t g_nValidDomainNameLen = 65;
-static PCSTR g_szInvalidParam8 = "/?&#";
-static PCWSTR g_szInvalidParamW = L"/?&#";
-static constexpr size_t g_nInvalidParamLen = 4;
-static PCSTR g_szSchemeSeparator8 = "://";
-static PCWSTR g_szSchemeSeparatorW = L"://";
-static constexpr size_t g_nSchemeSeparatorLen = 3;
-static PCSTR g_szDomainSeparators8 = "/?#";
-static PCWSTR g_szDomainSeparatorsW = L"/?#";
-static PCSTR g_szPathSeparators8 = "?#";
-static PCWSTR g_szPathSeparatorsW = L"?#";
+constexpr PCSTR g_szValidDomainName8 = "*-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+constexpr PCWSTR g_szValidDomainNameW = L"*-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+constexpr size_t g_nValidDomainNameLen = 65;
+constexpr PCSTR g_szInvalidParam8 = "/?&#";
+constexpr PCWSTR g_szInvalidParamW = L"/?&#";
+constexpr size_t g_nInvalidParamLen = 4;
+constexpr PCSTR g_szSchemeSeparator8 = "://";
+constexpr PCWSTR g_szSchemeSeparatorW = L"://";
+constexpr size_t g_nSchemeSeparatorLen = 3;
+constexpr PCSTR g_szDomainSeparators8 = "/?#";
+constexpr PCWSTR g_szDomainSeparatorsW = L"/?#";
+constexpr PCSTR g_szPathSeparators8 = "?#";
+constexpr PCWSTR g_szPathSeparatorsW = L"?#";
 
-static constexpr char g_chPeriod8 = '.';
-static constexpr wchar_t g_chPeriodW = L'.';
-static constexpr char g_chEqual8 = '=';
-static constexpr char g_chColon8 = ':';
-static constexpr char g_chQuestionMark8 = '?';
-static constexpr char g_chAmpersand8 = '&';
-static constexpr char g_chAt8 = '@';
-static constexpr char g_chHash8 = '#';
-static constexpr char g_chForwardSlash8 = '/';
+constexpr char g_chPeriod8 = '.';
+constexpr wchar_t g_chPeriodW = L'.';
+constexpr char g_chEqual8 = '=';
+constexpr char g_chColon8 = ':';
+constexpr char g_chQuestionMark8 = '?';
+constexpr char g_chAmpersand8 = '&';
+constexpr char g_chAt8 = '@';
+constexpr char g_chHash8 = '#';
+constexpr char g_chForwardSlash8 = '/';
 
-static constexpr wchar_t g_chEqualW = L'=';
-static constexpr wchar_t g_chColonW = L':';
-static constexpr wchar_t g_chQuestionMarkW = L'?';
-static constexpr wchar_t g_chAmpersandW = L'&';
-static constexpr wchar_t g_chAtW = L'@';
-static constexpr wchar_t g_chHashW = L'#';
-static constexpr wchar_t g_chForwardSlashW = L'/';
+constexpr wchar_t g_chEqualW = L'=';
+constexpr wchar_t g_chColonW = L':';
+constexpr wchar_t g_chQuestionMarkW = L'?';
+constexpr wchar_t g_chAmpersandW = L'&';
+constexpr wchar_t g_chAtW = L'@';
+constexpr wchar_t g_chHashW = L'#';
+constexpr wchar_t g_chForwardSlashW = L'/';
 
-static constexpr auto MAX_PORT = 0xFFFF;
+constexpr auto MAX_PORT = 0xFFFF;
 
 const uint32_t CUrl8::no_port = (uint32_t)-1;
 const uint32_t CUrlW::no_port = (uint32_t)-1;
@@ -48,18 +48,7 @@ const uint32_t CUrlW::no_port = (uint32_t)-1;
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CDomainName8::CDomainName8(void)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CDomainName8::CDomainName8(const CDomainName8 &src)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -77,63 +66,42 @@ CDomainName8::CDomainName8(CDomainName8 &&src) noexcept
 
 //#################################################################################################
 CDomainName8::CDomainName8(const CDomainNameW &domain)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(domain);
 }
 
 //#################################################################################################
 CDomainName8::CDomainName8(const CStr8 &str)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CDomainName8::CDomainName8(const CStrW &str)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CDomainName8::CDomainName8(PCSTR sz)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CDomainName8::CDomainName8(PCWSTR sz)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CDomainName8::CDomainName8(const char ch)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CDomainName8::CDomainName8(const wchar_t ch)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
@@ -817,18 +785,7 @@ PCSTR CDomainName8::FindFirstNotOf(PCSTR sz, const size_t nStrLen, PCSTR szFind,
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CDomainNameW::CDomainNameW(void)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CDomainNameW::CDomainNameW(const CDomainNameW &src)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -846,63 +803,42 @@ CDomainNameW::CDomainNameW(CDomainNameW &&src) noexcept
 
 //#################################################################################################
 CDomainNameW::CDomainNameW(const CDomainName8 &domain)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(domain);
 }
 
 //#################################################################################################
 CDomainNameW::CDomainNameW(const CStrW &str)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CDomainNameW::CDomainNameW(const CStr8 &str)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CDomainNameW::CDomainNameW(PCWSTR sz)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CDomainNameW::CDomainNameW(PCSTR sz)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CDomainNameW::CDomainNameW(const wchar_t ch)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CDomainNameW::CDomainNameW(const char ch)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
@@ -1586,18 +1522,7 @@ PCWSTR CDomainNameW::FindFirstNotOf(PCWSTR sz, const size_t nStrLen, PCWSTR szFi
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CUrlPathSegment8::CUrlPathSegment8(void)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CUrlPathSegment8::CUrlPathSegment8(const CUrlPathSegment8 &src)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -1615,63 +1540,42 @@ CUrlPathSegment8::CUrlPathSegment8(CUrlPathSegment8 &&src) noexcept
 
 //#################################################################################################
 CUrlPathSegment8::CUrlPathSegment8(const CUrlPathSegmentW &path)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CUrlPathSegment8::CUrlPathSegment8(const CStr8 &str, const bool bAlreadyEscaped)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlPathSegment8::CUrlPathSegment8(const CStrW &str, const bool bAlreadyEscaped)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlPathSegment8::CUrlPathSegment8(PCSTR sz, const bool bAlreadyEscaped)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlPathSegment8::CUrlPathSegment8(PCWSTR sz, const bool bAlreadyEscaped)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlPathSegment8::CUrlPathSegment8(const char ch)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CUrlPathSegment8::CUrlPathSegment8(const wchar_t ch)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
@@ -2320,18 +2224,7 @@ void CUrlPathSegment8::Dealloc(void)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CUrlPathSegmentW::CUrlPathSegmentW(void)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CUrlPathSegmentW::CUrlPathSegmentW(const CUrlPathSegmentW &src)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -2349,63 +2242,42 @@ CUrlPathSegmentW::CUrlPathSegmentW(CUrlPathSegmentW &&src) noexcept
 
 //#################################################################################################
 CUrlPathSegmentW::CUrlPathSegmentW(const CUrlPathSegment8 &path)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CUrlPathSegmentW::CUrlPathSegmentW(const CStrW &str, const bool bAlreadyEscaped)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlPathSegmentW::CUrlPathSegmentW(const CStr8 &str, const bool bAlreadyEscaped)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlPathSegmentW::CUrlPathSegmentW(PCWSTR sz, const bool bAlreadyEscaped)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlPathSegmentW::CUrlPathSegmentW(PCSTR sz, const bool bAlreadyEscaped)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlPathSegmentW::CUrlPathSegmentW(const wchar_t ch)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CUrlPathSegmentW::CUrlPathSegmentW(const char ch)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
@@ -3054,24 +2926,7 @@ void CUrlPathSegmentW::Dealloc(void)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CUrlParameter8::CUrlParameter8(void)
-	: m_szName((PSTR)g_szNull8),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PSTR)g_szNull8),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
-{
-}
-
-//#################################################################################################
 CUrlParameter8::CUrlParameter8(const CUrlParameter8 &src)
-	: m_szName((PSTR)g_szNull8),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PSTR)g_szNull8),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(src);
 }
@@ -3095,60 +2950,30 @@ CUrlParameter8::CUrlParameter8(CUrlParameter8 &&src) noexcept
 
 //#################################################################################################
 CUrlParameter8::CUrlParameter8(const CUrlParameterW &param)
-	: m_szName((PSTR)g_szNull8),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PSTR)g_szNull8),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(param);
 }
 
 //#################################################################################################
 CUrlParameter8::CUrlParameter8(const CStr8 &strName, const CStr8 &strValue, const bool bAlreadyEscaped)
-	: m_szName((PSTR)g_szNull8),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PSTR)g_szNull8),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(strName, strValue, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlParameter8::CUrlParameter8(const CStrW &strName, const CStrW &strValue, const bool bAlreadyEscaped)
-	: m_szName((PSTR)g_szNull8),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PSTR)g_szNull8),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(strName, strValue, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlParameter8::CUrlParameter8(PCSTR szName, PCSTR szValue, const bool bAlreadyEscaped)
-	: m_szName((PSTR)g_szNull8),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PSTR)g_szNull8),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(szName, szValue, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlParameter8::CUrlParameter8(PCWSTR szName, PCWSTR szValue, const bool bAlreadyEscaped)
-	: m_szName((PSTR)g_szNull8),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PSTR)g_szNull8),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(szName, szValue, bAlreadyEscaped);
 }
@@ -4361,24 +4186,7 @@ PCSTR CUrlParameter8::FindFirstOf(PCSTR sz, const size_t nStrLen, PCSTR szFind, 
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CUrlParameterW::CUrlParameterW(void)
-	: m_szName((PWSTR)g_szNullW),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PWSTR)g_szNullW),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
-{
-}
-
-//#################################################################################################
 CUrlParameterW::CUrlParameterW(const CUrlParameterW &src)
-	: m_szName((PWSTR)g_szNullW),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PWSTR)g_szNullW),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(src);
 }
@@ -4402,60 +4210,30 @@ CUrlParameterW::CUrlParameterW(CUrlParameterW &&src) noexcept
 
 //#################################################################################################
 CUrlParameterW::CUrlParameterW(const CUrlParameter8 &param)
-	: m_szName((PWSTR)g_szNullW),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PWSTR)g_szNullW),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(param);
 }
 
 //#################################################################################################
 CUrlParameterW::CUrlParameterW(const CStrW &strName, const CStrW &strValue, const bool bAlreadyEscaped)
-	: m_szName((PWSTR)g_szNullW),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PWSTR)g_szNullW),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(strName, strValue, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlParameterW::CUrlParameterW(const CStr8 &strName, const CStr8 &strValue, const bool bAlreadyEscaped)
-	: m_szName((PWSTR)g_szNullW),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PWSTR)g_szNullW),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(strName, strValue, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlParameterW::CUrlParameterW(PCWSTR szName, PCWSTR szValue, const bool bAlreadyEscaped)
-	: m_szName((PWSTR)g_szNullW),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PWSTR)g_szNullW),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(szName, szValue, bAlreadyEscaped);
 }
 
 //#################################################################################################
 CUrlParameterW::CUrlParameterW(PCSTR szName, PCSTR szValue, const bool bAlreadyEscaped)
-	: m_szName((PWSTR)g_szNullW),
-	m_nNameBufLen(0),
-	m_nNameStrLen(0),
-	m_szValue((PWSTR)g_szNullW),
-	m_nValueBufLen(0),
-	m_nValueStrLen(0)
 {
 	Assign(szName, szValue, bAlreadyEscaped);
 }
@@ -5668,14 +5446,7 @@ PCWSTR CUrlParameterW::FindFirstOf(PCWSTR sz, const size_t nStrLen, PCWSTR szFin
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CUrl8::CUrl8(void)
-	: m_nPort(no_port)
-{
-}
-
-//#################################################################################################
 CUrl8::CUrl8(const CUrl8 &src)
-	: m_nPort(no_port)
 {
 	Assign(src);
 }
@@ -5696,49 +5467,42 @@ CUrl8::CUrl8(CUrl8 &&src) noexcept
 
 //#################################################################################################
 CUrl8::CUrl8(const CUrlW &url)
-	: m_nPort(no_port)
 {
 	Assign(url);
 }
 
 //#################################################################################################
 CUrl8::CUrl8(const CDomainName8 &domain)
-	: m_domain(domain),
-	m_nPort(no_port)
+	: m_domain(domain)
 {
 }
 
 //#################################################################################################
 CUrl8::CUrl8(const CDomainNameW &domain)
-	: m_domain(domain),
-	m_nPort(no_port)
+	: m_domain(domain)
 {
 }
 
 //#################################################################################################
 CUrl8::CUrl8(const CStr8 &str)
-	: m_nPort(no_port)
 {
 	ParseUrl(str);
 }
 
 //#################################################################################################
 CUrl8::CUrl8(const CStrW &str)
-	: m_nPort(no_port)
 {
 	ParseUrl(str.AsUtf8());
 }
 
 //#################################################################################################
 CUrl8::CUrl8(PCSTR sz)
-	: m_nPort(no_port)
 {
 	ParseUrl(CStr8(sz));
 }
 
 //#################################################################################################
 CUrl8::CUrl8(PCWSTR sz)
-	: m_nPort(no_port)
 {
 	ParseUrl(CStr8(sz));
 }
@@ -7358,14 +7122,7 @@ bool CUrl8::IsValidUrl(PCSTR szUrl)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CUrlW::CUrlW(void)
-	: m_nPort(no_port)
-{
-}
-
-//#################################################################################################
 CUrlW::CUrlW(const CUrlW &src)
-	: m_nPort(no_port)
 {
 	Assign(src);
 }
@@ -7386,49 +7143,42 @@ CUrlW::CUrlW(CUrlW &&src) noexcept
 
 //#################################################################################################
 CUrlW::CUrlW(const CUrl8 &url)
-	: m_nPort(no_port)
 {
 	Assign(url);
 }
 
 //#################################################################################################
 CUrlW::CUrlW(const CDomainNameW &domain)
-	: m_domain(domain),
-	m_nPort(no_port)
+	: m_domain(domain)
 {
 }
 
 //#################################################################################################
 CUrlW::CUrlW(const CDomainName8 &domain)
-	: m_domain(domain),
-	m_nPort(no_port)
+	: m_domain(domain)
 {
 }
 
 //#################################################################################################
 CUrlW::CUrlW(const CStrW &str)
-	: m_nPort(no_port)
 {
 	ParseUrl(str);
 }
 
 //#################################################################################################
 CUrlW::CUrlW(const CStr8 &str)
-	: m_nPort(no_port)
 {
 	ParseUrl(str.AsWide());
 }
 
 //#################################################################################################
 CUrlW::CUrlW(PCWSTR sz)
-	: m_nPort(no_port)
 {
 	ParseUrl(CStrW(sz));
 }
 
 //#################################################################################################
 CUrlW::CUrlW(PCSTR sz)
-	: m_nPort(no_port)
 {
 	ParseUrl(CStrW(sz));
 }

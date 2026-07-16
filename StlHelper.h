@@ -7,6 +7,8 @@ template<typename T>
 class CNumberHashTraits final
 {
 public:
+	CNumberHashTraits &operator=(const CNumberHashTraits &src) = delete;
+
 	T operator()(const T n) const noexcept
 	{
 		return n;
@@ -17,6 +19,8 @@ public:
 class CStr8HashTraits final
 {
 public:
+	CStr8HashTraits &operator=(const CStr8HashTraits &src) = delete;
+
 	uint64_t operator()(const CStr8 &str) const;
 };
 
@@ -24,6 +28,8 @@ public:
 class CStrWHashTraits final
 {
 public:
+	CStrWHashTraits &operator=(const CStrWHashTraits &src) = delete;
+
 	uint64_t operator()(const CStrW &str) const;
 };
 
@@ -31,6 +37,8 @@ public:
 class CStr8IgnoreCaseTraits final
 {
 public:
+	CStr8IgnoreCaseTraits &operator=(const CStr8IgnoreCaseTraits &src) = delete;
+
 	uint64_t operator()(const CStr8 &str) const;
 	bool operator()(const CStr8 &str1, const CStr8 &str2) const;
 };
@@ -39,6 +47,8 @@ public:
 class CStrWIgnoreCaseTraits final
 {
 public:
+	CStrWIgnoreCaseTraits &operator=(const CStrWIgnoreCaseTraits &src) = delete;
+
 	uint64_t operator()(const CStrW &str) const;
 	bool operator()(const CStrW &str1, const CStrW &str2) const;
 };
@@ -47,6 +57,8 @@ public:
 class CFilePathSegment8HashTraits final
 {
 public:
+	CFilePathSegment8HashTraits &operator=(const CFilePathSegment8HashTraits &src) = delete;
+
 	uint64_t operator()(const CFilePathSegment8 &path) const;
 };
 
@@ -54,6 +66,8 @@ public:
 class CFilePathSegmentWHashTraits final
 {
 public:
+	CFilePathSegmentWHashTraits &operator=(const CFilePathSegmentWHashTraits &src) = delete;
+
 	uint64_t operator()(const CFilePathSegmentW &path) const;
 };
 
@@ -61,6 +75,8 @@ public:
 class CFilePath8HashTraits final
 {
 public:
+	CFilePath8HashTraits &operator=(const CFilePath8HashTraits &src) = delete;
+
 	uint64_t operator()(const CFilePath8 &path) const;
 };
 
@@ -68,6 +84,8 @@ public:
 class CFilePathWHashTraits final
 {
 public:
+	CFilePathWHashTraits &operator=(const CFilePathWHashTraits &src) = delete;
+
 	uint64_t operator()(const CFilePathW &path) const;
 };
 
@@ -76,6 +94,8 @@ public:
 class CUuidHashTraits final
 {	// You cannot use uuid_t in STL containers on MacOS because it is defined as a raw character array which is not copyable
 public:
+	CUuidHashTraits &operator=(const CUuidHashTraits &src) = delete;
+
 	uint64_t operator()(const uuid_t &id) const;
 };
 

@@ -9,7 +9,7 @@ class CMemStream;
 class CMemBuffer final
 {
 public:
-	CMemBuffer(void);
+	CMemBuffer(void) = default;
 	CMemBuffer(const CMemBuffer &src);
 	CMemBuffer(CMemBuffer &&src) noexcept;
 	explicit CMemBuffer(const CMemStream &buf);
@@ -84,9 +84,9 @@ public:
 	bool SetBufferSize(const size_t nBufSize);
 
 private:
-	PBYTE m_pBuf;
-	size_t m_nDataSize;
-	size_t m_nBufSize;
+	PBYTE m_pBuf = nullptr;
+	size_t m_nDataSize = 0;
+	size_t m_nBufSize = 0;
 };
 
 NS_END

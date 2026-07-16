@@ -20,8 +20,7 @@ CSrwLock::CSrwLock(void)
 
 //#################################################################################################
 CSrwLocker::CSrwLocker(CSrwLock &srw, const ELockType eType)
-	: m_srw(srw),
-	m_eType(ELT_NoLock)
+	: m_srw(srw)
 {
 	if(eType == ELT_ReaderLock)
 		LockReader();

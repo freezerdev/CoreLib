@@ -12,7 +12,7 @@ template<typename T>
 class CBlockingQueue
 {
 public:
-	CBlockingQueue(void) : m_bQuit(false) {}
+	CBlockingQueue(void) = default;
 	// Copy and move constructors
 	CBlockingQueue(const CBlockingQueue &src) = delete;
 	CBlockingQueue(CBlockingQueue &&src) = delete;
@@ -117,7 +117,7 @@ private:
 	std::deque<T> m_q;
 	mutable std::mutex m_mutex;
 	std::condition_variable m_cv;
-	bool m_bQuit;
+	bool m_bQuit = false;
 };
 
 NS_END

@@ -14,10 +14,7 @@ std::mutex CThread::s_mutexThreads;
 
 //#################################################################################################
 CThread::CThread(const CStr &strThreadName)
-	: m_strThreadName(strThreadName),
-	m_pfnProc(nullptr),
-	m_pParam(nullptr),
-	m_bActive(false)
+	: m_strThreadName(strThreadName)
 {
 }
 

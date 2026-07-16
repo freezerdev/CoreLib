@@ -3,21 +3,14 @@
 
 NS_BEGIN
 
-static PCWSTR g_szWql = L"WQL";
+constexpr PCWSTR g_szWql = L"WQL";
 
 /////////////////////////////////////////////////
 // CWmiInstance
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CWmiInstance::CWmiInstance(void)
-	: m_pClass(nullptr)
-{
-}
-
-//#################################################################################################
 CWmiInstance::CWmiInstance(const CWmiInstance &src)
-	: m_pClass(nullptr)
 {
 	*this = src;
 }
@@ -1904,14 +1897,7 @@ bool CWmiInstance::IsOpen(void) const noexcept
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CWmiClass::CWmiClass(void)
-	: m_pClassEnumerator(nullptr)
-{
-}
-
-//#################################################################################################
 CWmiClass::CWmiClass(const CWmiClass &src)
-	: m_pClassEnumerator(nullptr)
 {
 	*this = src;
 }
@@ -2015,16 +2001,7 @@ CWmiInstance CWmiClass::GetNextInstance(void) const
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CWmiService::CWmiService(void)
-	: m_pLocator(nullptr),
-	m_pService(nullptr)
-{
-}
-
-//#################################################################################################
 CWmiService::CWmiService(const CWmiService &src)
-	: m_pLocator(nullptr),
-	m_pService(nullptr)
 {
 	*this = src;
 }
@@ -2040,8 +2017,6 @@ CWmiService::CWmiService(CWmiService &&src) noexcept
 
 //#################################################################################################
 CWmiService::CWmiService(PCWSTR szNamespace)
-	: m_pLocator(nullptr),
-	m_pService(nullptr)
 {
 	Open(szNamespace);
 }

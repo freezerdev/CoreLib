@@ -5,7 +5,7 @@
 
 NS_BEGIN
 
-static constexpr auto INFINITE_WAIT = (size_t)-1;
+constexpr auto INFINITE_WAIT = (size_t)-1;
 
 //#################################################################################################
 class CEvent final

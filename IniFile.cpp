@@ -6,14 +6,14 @@
 
 NS_BEGIN
 
-const NCHAR g_chEqual = _N('=');
-const NCHAR g_chOpenBracket = _N('[');
-const NCHAR g_chCloseBracket = _N(']');
-const NCHAR g_chSemiColon = _N(';');
+constexpr NCHAR g_chEqual = _N('=');
+constexpr NCHAR g_chOpenBracket = _N('[');
+constexpr NCHAR g_chCloseBracket = _N(']');
+constexpr NCHAR g_chSemiColon = _N(';');
 
-static PCNSTR g_szIntValue = _N("{0}={1}");
-static PCNSTR g_szStrValue = _N("{0}=\"{1}\"");
-static PCNSTR g_szEmptyValue = _N("{0}=");
+constexpr PCNSTR g_szIntValue = _N("{0}={1}");
+constexpr PCNSTR g_szStrValue = _N("{0}=\"{1}\"");
+constexpr PCNSTR g_szEmptyValue = _N("{0}=");
 
 //#################################################################################################
 inline char GetFirstNonWhiteSpace(const CStr8 &str)

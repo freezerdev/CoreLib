@@ -4,15 +4,8 @@
 NS_BEGIN
 
 //#################################################################################################
-CContainer::CContainer(void)
-	: m_nReadPosition(0)
-{
-}
-
-//#################################################################################################
 CContainer::CContainer(PCBYTE pBuf, const size_t nDataSize)
-	: m_buffer(pBuf, nDataSize),
-	m_nReadPosition(0)
+	: m_buffer(pBuf, nDataSize)
 {
 }
 

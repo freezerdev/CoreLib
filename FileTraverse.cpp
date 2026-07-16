@@ -14,9 +14,9 @@
 
 NS_USE
 
-static NCHAR g_chPeriod = _N('.');
+constexpr NCHAR g_chPeriod = _N('.');
 #ifdef _WIN32
-static NCHAR g_chAsterisk = _N('*');
+constexpr NCHAR g_chAsterisk = _N('*');
 #endif
 
 //#################################################################################################

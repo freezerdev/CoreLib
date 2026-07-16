@@ -9,7 +9,7 @@ class CMemBuffer;
 class CMemStream final
 {
 public:
-	CMemStream(void);
+	CMemStream(void) = default;
 	CMemStream(const CMemStream &src);
 	CMemStream(CMemStream &&src) noexcept;
 	explicit CMemStream(const CMemBuffer &buf);
@@ -94,10 +94,10 @@ public:
 	void SetReadPosition(const size_t nReadPosition) noexcept;
 
 private:
-	PBYTE m_pBuf;
-	size_t m_nDataSize;
-	size_t m_nBufSize;
-	size_t m_nReadPosition;
+	PBYTE m_pBuf = nullptr;
+	size_t m_nDataSize = 0;
+	size_t m_nBufSize = 0;
+	size_t m_nReadPosition = 0;
 };
 
 NS_END

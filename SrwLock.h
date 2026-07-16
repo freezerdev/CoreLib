@@ -51,7 +51,7 @@ public:
 
 private:
 	CSrwLock &m_srw;
-	ELockType m_eType;
+	ELockType m_eType = ELT_NoLock;
 };
 
 NS_END

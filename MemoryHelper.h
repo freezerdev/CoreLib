@@ -23,8 +23,8 @@ public:
 	uint64_t GetProcessPrivateWorkingSet(const HANDLE hProcess) const;
 
 private:
-	HMODULE m_hNtDll;
-	PFNZWQUERYINFORMATIONPROCESS m_pfnZwQueryInformationProcess;
+	HMODULE m_hNtDll = nullptr;
+	PFNZWQUERYINFORMATIONPROCESS m_pfnZwQueryInformationProcess = nullptr;
 };
 
 NS_END

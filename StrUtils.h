@@ -301,7 +301,7 @@ template<typename INTTYPE>
 CStr8 IntegerToString8(const INTTYPE i, const uint8_t nBase = 10)
 {
 	Assert(nBase <= 36);
-	static PCSTR szDigits = "ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	static constexpr PCSTR szDigits = "ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	char sz[66];	// An int64 in base 2 is 64 characters long, plus 2 extra for negative sign and null term
 	PSTR szScan = (PSTR)sz + 65;
@@ -325,7 +325,7 @@ template<typename INTTYPE>
 CStrW IntegerToStringW(const INTTYPE i, const uint8_t nBase = 10)
 {
 	Assert(nBase <= 36);
-	static PCWSTR szDigits = L"ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	static constexpr PCWSTR szDigits = L"ZYXWVUTSRQPONMLKJIHGFEDCBA9876543210123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	wchar_t sz[66];	// An int64 in base 2 is 64 characters long, plus 2 extra for negative sign and null term
 	PWSTR szScan = (PWSTR)sz + 65;

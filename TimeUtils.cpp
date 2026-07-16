@@ -5,7 +5,7 @@
 
 NS_BEGIN
 
-static constexpr auto POSIX_EPOCH = 25569.0;
+constexpr auto POSIX_EPOCH = 25569.0;
 
 //#################################################################################################
 time_point<system_clock> GetCurrentUtcTime(void)

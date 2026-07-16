@@ -27,7 +27,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CDomainName8(void);
+	CDomainName8(void) = default;
 	// Copy and move constructors
 	CDomainName8(const CDomainName8 &src);
 	CDomainName8(CDomainName8 &&src) noexcept;
@@ -140,9 +140,9 @@ public:
 	static bool IsValidDomainName(const char chDomainName);
 
 private:
-	PSTR m_sz;				// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	PSTR m_sz = (PSTR)g_szNull8;	// String buffer
+	size_t m_nBufLen = 0;			// Length of the buffer in characters
+	size_t m_nStrLen = 0;			// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);
@@ -160,7 +160,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CDomainNameW(void);
+	CDomainNameW(void) = default;
 	// Copy and move constructors
 	CDomainNameW(const CDomainNameW &src);
 	CDomainNameW(CDomainNameW &&src) noexcept;
@@ -273,9 +273,9 @@ public:
 	static bool IsValidDomainName(const wchar_t chDomainName);
 
 private:
-	PWSTR m_sz;				// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	PWSTR m_sz = (PWSTR)g_szNullW;	// String buffer
+	size_t m_nBufLen = 0;			// Length of the buffer in characters
+	size_t m_nStrLen = 0;			// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);
@@ -293,7 +293,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CUrlPathSegment8(void);
+	CUrlPathSegment8(void) = default;
 	// Copy and move constructors
 	CUrlPathSegment8(const CUrlPathSegment8 &src);
 	CUrlPathSegment8(CUrlPathSegment8 &&src) noexcept;
@@ -406,9 +406,9 @@ public:
 	static bool IsValidSegment(const char chSegment) noexcept;
 
 private:
-	PSTR m_sz;				// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	PSTR m_sz = (PSTR)g_szNull8;	// String buffer
+	size_t m_nBufLen = 0;			// Length of the buffer in characters
+	size_t m_nStrLen = 0;			// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);
@@ -423,7 +423,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CUrlPathSegmentW(void);
+	CUrlPathSegmentW(void) = default;
 	// Copy and move constructors
 	CUrlPathSegmentW(const CUrlPathSegmentW &src);
 	CUrlPathSegmentW(CUrlPathSegmentW &&src) noexcept;
@@ -536,9 +536,9 @@ public:
 	static bool IsValidSegment(const wchar_t chSegment) noexcept;
 
 private:
-	PWSTR m_sz;				// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	PWSTR m_sz = (PWSTR)g_szNullW;	// String buffer
+	size_t m_nBufLen = 0;			// Length of the buffer in characters
+	size_t m_nStrLen = 0;			// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);
@@ -553,7 +553,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CUrlParameter8(void);
+	CUrlParameter8(void) = default;
 	// Copy and move constructors
 	CUrlParameter8(const CUrlParameter8 &src);
 	CUrlParameter8(CUrlParameter8 &&src) noexcept;
@@ -677,13 +677,13 @@ public:
 	static bool IsValidParameter(const char chParam);
 
 private:
-	PSTR m_szName;			// Name string buffer
-	size_t m_nNameBufLen;	// Length of the name buffer in characters
-	size_t m_nNameStrLen;	// Length of the name string in characters
+	PSTR m_szName = (PSTR)g_szNull8;	// Name string buffer
+	size_t m_nNameBufLen = 0;			// Length of the name buffer in characters
+	size_t m_nNameStrLen = 0;			// Length of the name string in characters
 
-	PSTR m_szValue;		// Value string buffer
-	size_t m_nValueBufLen;	// Length of the value buffer in characters
-	size_t m_nValueStrLen;	// Length of the value string in characters
+	PSTR m_szValue = (PSTR)g_szNull8;	// Value string buffer
+	size_t m_nValueBufLen = 0;			// Length of the value buffer in characters
+	size_t m_nValueStrLen = 0;			// Length of the value string in characters
 
 	bool AllocName(const size_t nBufLen);
 	void DeallocName(void);
@@ -703,7 +703,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CUrlParameterW(void);
+	CUrlParameterW(void) = default;
 	// Copy and move constructors
 	CUrlParameterW(const CUrlParameterW &src);
 	CUrlParameterW(CUrlParameterW &&src) noexcept;
@@ -827,13 +827,13 @@ public:
 	static bool IsValidParameter(const wchar_t chParam);
 
 private:
-	PWSTR m_szName;			// Name string buffer
-	size_t m_nNameBufLen;	// Length of the name buffer in characters
-	size_t m_nNameStrLen;	// Length of the name string in characters
+	PWSTR m_szName = (PWSTR)g_szNullW;	// Name string buffer
+	size_t m_nNameBufLen = 0;			// Length of the name buffer in characters
+	size_t m_nNameStrLen = 0;			// Length of the name string in characters
 
-	PWSTR m_szValue;		// Value string buffer
-	size_t m_nValueBufLen;	// Length of the value buffer in characters
-	size_t m_nValueStrLen;	// Length of the value string in characters
+	PWSTR m_szValue = (PWSTR)g_szNullW;	// Value string buffer
+	size_t m_nValueBufLen = 0;			// Length of the value buffer in characters
+	size_t m_nValueStrLen = 0;			// Length of the value string in characters
 
 	bool AllocName(const size_t nBufLen);
 	void DeallocName(void);
@@ -855,7 +855,7 @@ public:
 	static const uint32_t no_port;
 
 	// Constructs an empty object
-	CUrl8(void);
+	CUrl8(void) = default;
 	// Copy and move constructors
 	CUrl8(const CUrl8 &src);
 	CUrl8(CUrl8 &&src) noexcept;
@@ -1073,7 +1073,7 @@ private:
 	CStr8 m_strUsername;
 	CStr8 m_strPassword;
 	CDomainName8 m_domain;
-	uint32_t m_nPort;
+	uint32_t m_nPort = no_port;
 	std::vector<CUrlPathSegment8> m_vecPath;
 	std::vector<CUrlParameter8> m_vecParams;
 	CStr8 m_strFragment;
@@ -1095,7 +1095,7 @@ public:
 	static const uint32_t no_port;
 
 	// Constructs an empty object
-	CUrlW(void);
+	CUrlW(void) = default;
 	// Copy and move constructors
 	CUrlW(const CUrlW &src);
 	CUrlW(CUrlW &&src) noexcept;
@@ -1313,7 +1313,7 @@ private:
 	CStrW m_strUsername;
 	CStrW m_strPassword;
 	CDomainNameW m_domain;
-	uint32_t m_nPort;
+	uint32_t m_nPort = no_port;
 	std::vector<CUrlPathSegmentW> m_vecPath;
 	std::vector<CUrlParameterW> m_vecParams;
 	CStrW m_strFragment;

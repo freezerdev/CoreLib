@@ -13,9 +13,9 @@ class CFilePath8;
 class CFilePathW;
 
 #ifdef _WIN32
-static constexpr auto FILE_DEFAULT_CMP = true;
+constexpr auto FILE_DEFAULT_CMP = true;
 #else
-static constexpr auto FILE_DEFAULT_CMP = false;
+constexpr auto FILE_DEFAULT_CMP = false;
 #endif
 
 //#################################################################################################
@@ -29,7 +29,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CFilePathSegment8(void);
+	CFilePathSegment8(void) = default;
 	// Copy and move constructors
 	CFilePathSegment8(const CFilePathSegment8 &src);
 	CFilePathSegment8(CFilePathSegment8 &&src) noexcept;
@@ -170,9 +170,9 @@ public:
 	static bool IsValidSegment(const char chSegment);
 
 protected:
-	PSTR m_sz;				// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	PSTR m_sz = (PSTR)g_szNull8;	// String buffer
+	size_t m_nBufLen = 0;			// Length of the buffer in characters
+	size_t m_nStrLen = 0;			// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);
@@ -193,7 +193,7 @@ private:
 
 public:
 	// Constructs an empty object
-	CFilePathSegmentW(void);
+	CFilePathSegmentW(void) = default;
 	// Copy and move constructors
 	CFilePathSegmentW(const CFilePathSegmentW &src);
 	CFilePathSegmentW(CFilePathSegmentW &&src) noexcept;
@@ -334,9 +334,9 @@ public:
 	static bool IsValidSegment(const wchar_t chSegment);
 
 protected:
-	PWSTR m_sz;				// String buffer
-	size_t m_nBufLen;		// Length of the buffer in characters
-	size_t m_nStrLen;		// Length of the string in characters
+	PWSTR m_sz = (PWSTR)g_szNullW;	// String buffer
+	size_t m_nBufLen = 0;			// Length of the buffer in characters
+	size_t m_nStrLen = 0;			// Length of the string in characters
 
 	bool Alloc(const size_t nBufLen);
 	void Dealloc(void);
@@ -485,7 +485,7 @@ public:
 #endif
 
 	// Constructs an empty object
-	CFilePath8(void);
+	CFilePath8(void) = default;
 	// Copy and move constructors
 	CFilePath8(const CFilePath8 &src);
 	CFilePath8(CFilePath8 &&src) noexcept;
@@ -771,8 +771,8 @@ public:
 	void DebugPrint(const bool bAppendNewline = true) const;
 
 private:
-	EPathType m_eType;
 	std::vector<std::unique_ptr<CFilePathSegment8>> m_vecSegments;
+	EPathType m_eType = EPT_Empty;
 
 	ERRCODE ParsePath(const CStr8 &strPath);
 	bool SafeDotAppend(const CFilePath8 &path1, const CFilePath8 &path2);
@@ -807,7 +807,7 @@ public:
 #endif
 
 	// Constructs an empty object
-	CFilePathW(void);
+	CFilePathW(void) = default;
 	// Copy and move constructors
 	CFilePathW(const CFilePathW &src);
 	CFilePathW(CFilePathW &&src) noexcept;
@@ -1093,8 +1093,8 @@ public:
 	void DebugPrint(const bool bAppendNewline = true) const;
 
 private:
-	EPathType m_eType;
 	std::vector<std::unique_ptr<CFilePathSegmentW>> m_vecSegments;
+	EPathType m_eType = EPT_Empty;
 
 	ERRCODE ParsePath(const CStrW &strPath);
 	bool SafeDotAppend(const CFilePathW &path1, const CFilePathW &path2);

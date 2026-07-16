@@ -35,18 +35,18 @@ NS_BEGIN
 #define IPV4ADDR3(ip)		((BYTE)(ip))
 
 #ifdef __APPLE__
-static constexpr auto XSO_SOCKET = 0x001;
-static constexpr auto XSO_RCVBUF = 0x002;
-static constexpr auto XSO_SNDBUF = 0x004;
-static constexpr auto XSO_STATS = 0x008;
-static constexpr auto XSO_INPCB = 0x010;
-static constexpr auto XSO_TCPCB = 0x020;
-static constexpr auto XSO_KCREG = 0x040;
-static constexpr auto XSO_KCB = 0x080;
-static constexpr auto XSO_EVT = 0x100;
+constexpr auto XSO_SOCKET = 0x001;
+constexpr auto XSO_RCVBUF = 0x002;
+constexpr auto XSO_SNDBUF = 0x004;
+constexpr auto XSO_STATS = 0x008;
+constexpr auto XSO_INPCB = 0x010;
+constexpr auto XSO_TCPCB = 0x020;
+constexpr auto XSO_KCREG = 0x040;
+constexpr auto XSO_KCB = 0x080;
+constexpr auto XSO_EVT = 0x100;
 
-static constexpr auto ALL_XGN_KIND_INP = XSO_SOCKET | XSO_RCVBUF | XSO_SNDBUF | XSO_STATS | XSO_INPCB;
-static constexpr auto ALL_XGN_KIND_TCP = ALL_XGN_KIND_INP | XSO_TCPCB;
+constexpr auto ALL_XGN_KIND_INP = XSO_SOCKET | XSO_RCVBUF | XSO_SNDBUF | XSO_STATS | XSO_INPCB;
+constexpr auto ALL_XGN_KIND_TCP = ALL_XGN_KIND_INP | XSO_TCPCB;
 
 // Round up to the next 64 byte boundary
 #define ROUNDUP64(n)	((n) > 0 ? (1 + (((n) - 1) | (sizeof(uint64_t) - 1))) : sizeof(uint64_t))
@@ -410,7 +410,7 @@ void GetSocketConnections(std::vector<SocketInfo> &vecSocketInfo)
 	char szSelfAddress[INET6_ADDRSTRLEN] = {0};
 	char szPeerAddress[INET6_ADDRSTRLEN] = {0};
 
-	static PCSTR szMibName = "net.inet.tcp.pcblist_n";
+	static constexpr PCSTR szMibName = "net.inet.tcp.pcblist_n";
 
 	if(sysctlbyname(szMibName, nullptr, &nSize, nullptr, 0) == -1)
 		return;

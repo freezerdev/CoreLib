@@ -3,45 +3,45 @@
 
 NS_BEGIN
 
-static constexpr char g_chBackSlash8 = '\\';
-static constexpr wchar_t g_chBackSlashW = L'\\';
+constexpr char g_chBackSlash8 = '\\';
+constexpr wchar_t g_chBackSlashW = L'\\';
 
-static PCSTR g_szHKCR8 = "HKEY_CLASSES_ROOT";
-static PCWSTR g_szHKCRW = L"HKEY_CLASSES_ROOT";
-static constexpr size_t g_nHKCRLen = 17;
-static PCSTR g_szHKCRShort8 = "HKCR";
-static PCWSTR g_szHKCRShortW = L"HKCR";
-static constexpr size_t g_nHKCRShortLen = 4;
-static PCSTR g_szHKCU8 = "HKEY_CURRENT_USER";
-static PCWSTR g_szHKCUW = L"HKEY_CURRENT_USER";
-static constexpr size_t g_nHKCULen = 17;
-static PCSTR g_szHKCUShort8 = "HKCU";
-static PCWSTR g_szHKCUShortW = L"HKCU";
-static constexpr size_t g_nHKCUShortLen = 4;
-static PCSTR g_szHKLM8 = "HKEY_LOCAL_MACHINE";
-static PCWSTR g_szHKLMW = L"HKEY_LOCAL_MACHINE";
-static constexpr size_t g_nHKLMLen = 18;
-static PCSTR g_szHKLMShort8 = "HKLM";
-static PCWSTR g_szHKLMShortW = L"HKLM";
-static constexpr size_t g_nHKLMShortLen = 4;
-static PCSTR g_szHKU8 = "HKEY_USERS";
-static PCWSTR g_szHKUW = L"HKEY_USERS";
-static constexpr size_t g_nHKULen = 10;
-static PCSTR g_szHKUShort8 = "HKU";
-static PCWSTR g_szHKUShortW = L"HKU";
-static constexpr size_t g_nHKUShortLen = 3;
-static PCSTR g_szHKCC8 = "HKEY_CURRENT_CONFIG";
-static PCWSTR g_szHKCCW = L"HKEY_CURRENT_CONFIG";
-static constexpr size_t g_nHKCCLen = 19;
-static PCSTR g_szHKCCShort8 = "HKCC";
-static PCWSTR g_szHKCCShortW = L"HKCC";
-static constexpr size_t g_nHKCCShortLen = 4;
-static PCSTR g_szRegKernelMachine8 = "\\REGISTRY\\MACHINE";
-static PCWSTR g_szRegKernelMachineW = L"\\REGISTRY\\MACHINE";
-static constexpr size_t g_nKernelMachineLen = 17;
-static PCSTR g_szRegKernelUser8 = "\\REGISTRY\\USER";
-static PCWSTR g_szRegKernelUserW = L"\\REGISTRY\\USER";
-static constexpr size_t g_nKernelUserLen = 14;
+constexpr PCSTR g_szHKCR8 = "HKEY_CLASSES_ROOT";
+constexpr PCWSTR g_szHKCRW = L"HKEY_CLASSES_ROOT";
+constexpr size_t g_nHKCRLen = 17;
+constexpr PCSTR g_szHKCRShort8 = "HKCR";
+constexpr PCWSTR g_szHKCRShortW = L"HKCR";
+constexpr size_t g_nHKCRShortLen = 4;
+constexpr PCSTR g_szHKCU8 = "HKEY_CURRENT_USER";
+constexpr PCWSTR g_szHKCUW = L"HKEY_CURRENT_USER";
+constexpr size_t g_nHKCULen = 17;
+constexpr PCSTR g_szHKCUShort8 = "HKCU";
+constexpr PCWSTR g_szHKCUShortW = L"HKCU";
+constexpr size_t g_nHKCUShortLen = 4;
+constexpr PCSTR g_szHKLM8 = "HKEY_LOCAL_MACHINE";
+constexpr PCWSTR g_szHKLMW = L"HKEY_LOCAL_MACHINE";
+constexpr size_t g_nHKLMLen = 18;
+constexpr PCSTR g_szHKLMShort8 = "HKLM";
+constexpr PCWSTR g_szHKLMShortW = L"HKLM";
+constexpr size_t g_nHKLMShortLen = 4;
+constexpr PCSTR g_szHKU8 = "HKEY_USERS";
+constexpr PCWSTR g_szHKUW = L"HKEY_USERS";
+constexpr size_t g_nHKULen = 10;
+constexpr PCSTR g_szHKUShort8 = "HKU";
+constexpr PCWSTR g_szHKUShortW = L"HKU";
+constexpr size_t g_nHKUShortLen = 3;
+constexpr PCSTR g_szHKCC8 = "HKEY_CURRENT_CONFIG";
+constexpr PCWSTR g_szHKCCW = L"HKEY_CURRENT_CONFIG";
+constexpr size_t g_nHKCCLen = 19;
+constexpr PCSTR g_szHKCCShort8 = "HKCC";
+constexpr PCWSTR g_szHKCCShortW = L"HKCC";
+constexpr size_t g_nHKCCShortLen = 4;
+constexpr PCSTR g_szRegKernelMachine8 = "\\REGISTRY\\MACHINE";
+constexpr PCWSTR g_szRegKernelMachineW = L"\\REGISTRY\\MACHINE";
+constexpr size_t g_nKernelMachineLen = 17;
+constexpr PCSTR g_szRegKernelUser8 = "\\REGISTRY\\USER";
+constexpr PCWSTR g_szRegKernelUserW = L"\\REGISTRY\\USER";
+constexpr size_t g_nKernelUserLen = 14;
 
 
 /////////////////////////////////////////////////
@@ -49,18 +49,7 @@ static constexpr size_t g_nKernelUserLen = 14;
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CRegPathSegment8::CRegPathSegment8(void)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CRegPathSegment8::CRegPathSegment8(const CRegPathSegment8 &src)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -78,63 +67,42 @@ CRegPathSegment8::CRegPathSegment8(CRegPathSegment8 &&src) noexcept
 
 //#################################################################################################
 CRegPathSegment8::CRegPathSegment8(const CRegPathSegmentW &path)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CRegPathSegment8::CRegPathSegment8(const CStr8 &str)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CRegPathSegment8::CRegPathSegment8(const CStrW &str)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CRegPathSegment8::CRegPathSegment8(PCSTR sz)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CRegPathSegment8::CRegPathSegment8(PCWSTR sz)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CRegPathSegment8::CRegPathSegment8(const char ch)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CRegPathSegment8::CRegPathSegment8(const wchar_t ch)
-	: m_sz((PSTR)g_szNull8),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
@@ -744,18 +712,7 @@ void CRegPathSegment8::Dealloc(void)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CRegPathSegmentW::CRegPathSegmentW(void)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
-{
-}
-
-//#################################################################################################
 CRegPathSegmentW::CRegPathSegmentW(const CRegPathSegmentW &src)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(src);
 }
@@ -773,63 +730,42 @@ CRegPathSegmentW::CRegPathSegmentW(CRegPathSegmentW &&src) noexcept
 
 //#################################################################################################
 CRegPathSegmentW::CRegPathSegmentW(const CRegPathSegment8 &path)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CRegPathSegmentW::CRegPathSegmentW(const CStrW &str)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CRegPathSegmentW::CRegPathSegmentW(const CStr8 &str)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(str);
 }
 
 //#################################################################################################
 CRegPathSegmentW::CRegPathSegmentW(PCWSTR sz)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CRegPathSegmentW::CRegPathSegmentW(PCSTR sz)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(sz);
 }
 
 //#################################################################################################
 CRegPathSegmentW::CRegPathSegmentW(const wchar_t ch)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
 
 //#################################################################################################
 CRegPathSegmentW::CRegPathSegmentW(const char ch)
-	: m_sz((PWSTR)g_szNullW),
-	m_nBufLen(0),
-	m_nStrLen(0)
 {
 	Assign(ch);
 }
@@ -3561,14 +3497,7 @@ bool CHiveNameW::IsValidHiveName(PCWSTR sz)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CRegPath8::CRegPath8(void)
-	: m_bRooted(false)
-{
-}
-
-//#################################################################################################
 CRegPath8::CRegPath8(const CRegPath8 &src)
-	: m_bRooted(false)
 {
 	Assign(src);
 }
@@ -3583,77 +3512,66 @@ CRegPath8::CRegPath8(CRegPath8 &&src) noexcept
 
 //#################################################################################################
 CRegPath8::CRegPath8(const CRegPathW &path)
-	: m_bRooted(false)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CRegPath8::CRegPath8(const CRegPathSegment8 &path)
-	: m_bRooted(false)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CRegPath8::CRegPath8(const CRegPathSegmentW &path)
-	: m_bRooted(false)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CRegPath8::CRegPath8(const CHiveName8 &hive)
-	: m_bRooted(false)
 {
 	Assign(hive);
 }
 
 //#################################################################################################
 CRegPath8::CRegPath8(const CHiveNameW &hive)
-	: m_bRooted(false)
 {
 	Assign(hive);
 }
 
 //#################################################################################################
 CRegPath8::CRegPath8(const CStr8 &str)
-	: m_bRooted(false)
 {
 	ParsePath(str);
 }
 
 //#################################################################################################
 CRegPath8::CRegPath8(const CStrW &str)
-	: m_bRooted(false)
 {
 	ParsePath(str.AsUtf8());
 }
 
 //#################################################################################################
 CRegPath8::CRegPath8(PCSTR sz)
-	: m_bRooted(false)
 {
 	ParsePath(CStr8(sz));
 }
 
 //#################################################################################################
 CRegPath8::CRegPath8(PCWSTR sz)
-	: m_bRooted(false)
 {
 	ParsePath(CStr8(sz));
 }
 
 //#################################################################################################
 CRegPath8::CRegPath8(const char ch)
-	: m_bRooted(false)
 {
 	ParsePath(CStr8(ch));
 }
 
 //#################################################################################################
 CRegPath8::CRegPath8(const wchar_t ch)
-	: m_bRooted(false)
 {
 	ParsePath(CStr8(ch));
 }
@@ -5131,14 +5049,7 @@ bool CRegPath8::IsValidPath(const char chPath)
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CRegPathW::CRegPathW(void)
-	: m_bRooted(false)
-{
-}
-
-//#################################################################################################
 CRegPathW::CRegPathW(const CRegPathW &src)
-	: m_bRooted(false)
 {
 	Assign(src);
 }
@@ -5153,77 +5064,66 @@ CRegPathW::CRegPathW(CRegPathW &&src) noexcept
 
 //#################################################################################################
 CRegPathW::CRegPathW(const CRegPath8 &path)
-	: m_bRooted(false)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CRegPathW::CRegPathW(const CRegPathSegmentW &path)
-	: m_bRooted(false)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CRegPathW::CRegPathW(const CRegPathSegment8 &path)
-	: m_bRooted(false)
 {
 	Assign(path);
 }
 
 //#################################################################################################
 CRegPathW::CRegPathW(const CHiveNameW &hive)
-	: m_bRooted(false)
 {
 	Assign(hive);
 }
 
 //#################################################################################################
 CRegPathW::CRegPathW(const CHiveName8 &hive)
-	: m_bRooted(false)
 {
 	Assign(hive);
 }
 
 //#################################################################################################
 CRegPathW::CRegPathW(const CStrW &str)
-	: m_bRooted(false)
 {
 	ParsePath(str);
 }
 
 //#################################################################################################
 CRegPathW::CRegPathW(const CStr8 &str)
-	: m_bRooted(false)
 {
 	ParsePath(str.AsWide());
 }
 
 //#################################################################################################
 CRegPathW::CRegPathW(PCWSTR sz)
-	: m_bRooted(false)
 {
 	ParsePath(CStrW(sz));
 }
 
 //#################################################################################################
 CRegPathW::CRegPathW(PCSTR sz)
-	: m_bRooted(false)
 {
 	ParsePath(CStrW(sz));
 }
 
 //#################################################################################################
 CRegPathW::CRegPathW(const wchar_t ch)
-	: m_bRooted(false)
 {
 	ParsePath(CStrW(ch));
 }
 
 //#################################################################################################
 CRegPathW::CRegPathW(const char ch)
-	: m_bRooted(false)
 {
 	ParsePath(CStrW(ch));
 }

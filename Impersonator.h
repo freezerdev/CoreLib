@@ -8,7 +8,7 @@ NS_BEGIN
 class CImpersonator final
 {
 public:
-	CImpersonator(void);
+	CImpersonator(void) = default;
 	// Copy and move constructors
 	CImpersonator(const CImpersonator &src) = delete;
 	CImpersonator(CImpersonator &&src) = delete;
@@ -24,7 +24,7 @@ public:
 
 private:
 	CPrivilegeManager m_pm;
-	bool m_bImpersonating;
+	bool m_bImpersonating = false;
 };
 
 NS_END

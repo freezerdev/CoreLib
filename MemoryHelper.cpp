@@ -6,8 +6,6 @@ NS_BEGIN
 
 //#################################################################################################
 CMemoryHelper::CMemoryHelper(void)
-	: m_hNtDll(nullptr),
-	m_pfnZwQueryInformationProcess(nullptr)
 {
 	m_hNtDll = SystemLoadLibrary(_N("ntdll.dll"));
 	if(m_hNtDll)

@@ -8,7 +8,7 @@ NS_BEGIN
 class CContainer final
 {
 public:
-	CContainer(void);
+	CContainer(void) = default;
 	CContainer(PCBYTE pBuf, const size_t nDataSize);
 	// Copy and move constructors
 	CContainer(const CContainer &src) = default;
@@ -54,7 +54,7 @@ public:
 
 private:
 	CMemBuffer m_buffer;
-	mutable size_t m_nReadPosition;
+	mutable size_t m_nReadPosition = 0;
 };
 
 NS_END

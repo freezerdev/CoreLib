@@ -7,7 +7,7 @@
 
 NS_BEGIN
 
-static PCWSTR g_szCimV2Namespace = L"root\\cimv2";
+constexpr PCWSTR g_szCimV2Namespace = L"root\\cimv2";
 
 // Forward declarations
 class CWmiClass;
@@ -19,7 +19,7 @@ class CWmiInstance final
 	friend class CWmiClass;
 
 public:
-	CWmiInstance(void);
+	CWmiInstance(void) = default;
 	CWmiInstance(const CWmiInstance &src);
 	CWmiInstance(CWmiInstance &&src) noexcept;
 	~CWmiInstance(void);
@@ -63,7 +63,7 @@ public:
 	bool IsOpen(void) const noexcept;
 
 private:
-	IWbemClassObject *m_pClass;
+	IWbemClassObject *m_pClass = nullptr;
 };
 
 
@@ -73,7 +73,7 @@ class CWmiClass final
 	friend class CWmiService;
 
 public:
-	CWmiClass(void);
+	CWmiClass(void) = default;
 	CWmiClass(const CWmiClass &src);
 	CWmiClass(CWmiClass &&src) noexcept;
 	~CWmiClass(void);
@@ -89,7 +89,7 @@ public:
 	CWmiInstance GetNextInstance(void) const;
 
 private:
-	IEnumWbemClassObject *m_pClassEnumerator;
+	IEnumWbemClassObject *m_pClassEnumerator = nullptr;
 };
 
 
@@ -97,7 +97,7 @@ private:
 class CWmiService final
 {
 public:
-	CWmiService(void);
+	CWmiService(void) = default;
 	CWmiService(const CWmiService &src);
 	CWmiService(CWmiService &&src) noexcept;
 	explicit CWmiService(PCWSTR szNamespace);
@@ -157,8 +157,8 @@ public:
 	CWmiClass GetClassByQuery(PCWSTR szQuery) const;
 
 private:
-	IWbemLocator *m_pLocator;
-	IWbemServices *m_pService;
+	IWbemLocator *m_pLocator = nullptr;
+	IWbemServices *m_pService = nullptr;
 
 	template<typename T>
 	static std::wstring ToString(const T &val)

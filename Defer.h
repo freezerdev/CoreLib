@@ -5,24 +5,24 @@
 NS_BEGIN
 
 template <typename F>
-struct Defer final
+struct DeferGuard final
 {
-	Defer(F &&fnDefer) : m_fnDefer(std::move(fnDefer)) {}
-	Defer(const Defer &src) = delete;
-	Defer(Defer &&src) = default;		// Move constructor is required for C++14 support
-	~Defer(void) {m_fnDefer();}
+	DeferGuard(F &&fnDefer) : m_fnDefer(std::move(fnDefer)) {}
+	DeferGuard(const DeferGuard &src) = delete;
+	DeferGuard(DeferGuard &&src) = default;		// Move constructor is required for C++14 support
+	~DeferGuard(void) {m_fnDefer();}
 
-	Defer &operator=(const Defer &src) = delete;
-	Defer &operator=(Defer &&src) = delete;
+	DeferGuard &operator=(const DeferGuard &src) = delete;
+	DeferGuard &operator=(DeferGuard &&src) = delete;
 
 	F m_fnDefer;
 };
 
 // Helper function for C++14 support
 template <typename F>
-Defer<F> MakeDefer(F &&fnDefer)
+DeferGuard<F> MakeDefer(F &&fnDefer)
 {
-	return Defer<F>(std::move(fnDefer));
+	return DeferGuard<F>(std::move(fnDefer));
 }
 
 #define CONCAT_IMPL(a, b) a##b
@@ -31,6 +31,6 @@ Defer<F> MakeDefer(F &&fnDefer)
 // C++14 version
 #define DEFER(code) const auto CONCAT(_defer_, __LINE__) = MakeDefer([&](){code;})
 // C++17 version
-//#define DEFER(code) const auto CONCAT(_defer_, __LINE__) = Defer([&](){code;})
+//#define DEFER(code) const auto CONCAT(_defer_, __LINE__) = DeferGuard([&](){code;})
 
 NS_END
