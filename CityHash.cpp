@@ -47,7 +47,7 @@ inline uint64_t Hash128to64(const uint64_t &nLow, const uint64_t &nHigh) noexcep
 }
 
 //#################################################################################################
-uint32_t Fetch32(PCBYTE pBuf)
+uint32_t Fetch32(PCBYTE pBuf) noexcept
 {
 	uint32_t nResult;
 	std::memcpy(&nResult, pBuf, sizeof(nResult));
@@ -56,7 +56,7 @@ uint32_t Fetch32(PCBYTE pBuf)
 }
 
 //#################################################################################################
-uint64_t Fetch64(PCBYTE pBuf)
+uint64_t Fetch64(PCBYTE pBuf) noexcept
 {
 	uint64_t nResult;
 	std::memcpy(&nResult, pBuf, sizeof(nResult));

@@ -250,9 +250,9 @@ ERRCODE GetIORegistryString(PCSTR szPath, PCSTR szKey, CStr &strValue)
 
 	CIOObject ioReg;
 	if(szPath)
-		ioReg = IORegistryEntryFromPath(kIOMasterPortDefault, szPath);
+		ioReg = IORegistryEntryFromPath(kIOMainPortDefault, szPath);
 	else
-		ioReg = IORegistryGetRootEntry(kIOMasterPortDefault);
+		ioReg = IORegistryGetRootEntry(kIOMainPortDefault);
 
 	if(ioReg)
 	{
@@ -280,9 +280,9 @@ ERRCODE GetIORegistryData(PCSTR szPath, PCSTR szKey, CMemBuffer &bufValue)
 
 	CIOObject ioReg;
 	if(szPath)
-		ioReg = IORegistryEntryFromPath(kIOMasterPortDefault, szPath);
+		ioReg = IORegistryEntryFromPath(kIOMainPortDefault, szPath);
 	else
-		ioReg = IORegistryGetRootEntry(kIOMasterPortDefault);
+		ioReg = IORegistryGetRootEntry(kIOMainPortDefault);
 
 	if(ioReg)
 	{

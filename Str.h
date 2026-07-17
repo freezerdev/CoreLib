@@ -80,7 +80,7 @@ public:
 	// Returns the length in characters
 	size_t GetLength(const bool bIncludeNullTerm = false) const noexcept;
 	// Returns the count of characters (which may be different from length in UTF8 strings)
-	size_t GetCount(const bool bIncludeNullTerm = false) const;
+	size_t GetCount(const bool bIncludeNullTerm = false) const noexcept;
 	// Returns the size in bytes
 	size_t GetSize(const bool bIncludeNullTerm = false) const noexcept;
 
@@ -89,13 +89,13 @@ public:
 	// Empties the string, optionally freeing the memory
 	void Empty(const bool bFree = false);
 	// Returns the first character in the string, or '\0' if the string is empty
-	char GetFirst(void) const;
+	char GetFirst(void) const noexcept;
 	// Returns the last character in the string, or '\0' if the string is empty
-	char GetLast(void) const;
+	char GetLast(void) const noexcept;
 	// Returns the character at the given index, or '\0' if the index is beyond the string
-	char GetAt(const size_t nIndex) const;
+	char GetAt(const size_t nIndex) const noexcept;
 	// Sets the character at the given index, so long as index is not beyond the string
-	void SetAt(const size_t nIndex, const char ch);
+	void SetAt(const size_t nIndex, const char ch) noexcept;
 	// Returns a pointer to the raw string data
 	operator PCSTR(void) const noexcept;
 
@@ -578,13 +578,13 @@ public:
 	// Empties the string, optionally freeing the memory
 	void Empty(const bool bFree = false);
 	// Returns the first character in the string, or '\0' if the string is empty
-	wchar_t GetFirst(void) const;
+	wchar_t GetFirst(void) const noexcept;
 	// Returns the last character in the string, or '\0' if the string is empty
-	wchar_t GetLast(void) const;
+	wchar_t GetLast(void) const noexcept;
 	// Returns the character at the given index, or '\0' if the index is beyond the string
-	wchar_t GetAt(const size_t nIndex) const;
+	wchar_t GetAt(const size_t nIndex) const noexcept;
 	// Sets the character at the given index, so long as index is not beyond the string
-	void SetAt(const size_t nIndex, const wchar_t ch);
+	void SetAt(const size_t nIndex, const wchar_t ch) noexcept;
 	// Returns a pointer to the raw string data
 	operator PCWSTR(void) const noexcept;
 
@@ -1034,13 +1034,13 @@ public:
 	// Empties the string, optionally freeing the memory
 	void Empty(const bool bFree = false);
 	// Returns the first character in the string, or '\0' if the string is empty
-	char16_t GetFirst(void) const;
+	char16_t GetFirst(void) const noexcept;
 	// Returns the last character in the string, or '\0' if the string is empty
-	char16_t GetLast(void) const;
+	char16_t GetLast(void) const noexcept;
 	// Returns the character at the given index, or '\0' if the index is beyond the string
-	char16_t GetAt(const size_t nIndex) const;
+	char16_t GetAt(const size_t nIndex) const noexcept;
 	// Sets the character at the given index, so long as index is not beyond the string
-	void SetAt(const size_t nIndex, const char16_t ch);
+	void SetAt(const size_t nIndex, const char16_t ch) noexcept;
 	// Returns a pointer to the raw string data
 	operator const char16_t*(void) const noexcept;
 

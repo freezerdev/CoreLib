@@ -58,15 +58,15 @@ public:
 	bool Prepend(const CStrW &str, const bool bIncludeNullTerm = true);
 	bool Prepend(const CStr16 &str, const bool bIncludeNullTerm = true);
 
-	bool operator==(const CMemBuffer &buf) const;
-	bool operator!=(const CMemBuffer &buf) const;
-	bool Compare(const CMemBuffer &buf) const;
-	bool Compare(PCBYTE pBuf, const size_t nDataSize) const;
+	bool operator==(const CMemBuffer &buf) const noexcept;
+	bool operator!=(const CMemBuffer &buf) const noexcept;
+	bool Compare(const CMemBuffer &buf) const noexcept;
+	bool Compare(PCBYTE pBuf, const size_t nDataSize) const noexcept;
 
 	operator PBYTE(void) noexcept;
 	operator PCBYTE(void) const noexcept;
-	BYTE GetAt(const size_t nIndex) const;
-	void SetAt(const size_t nIndex, const BYTE n);
+	BYTE GetAt(const size_t nIndex) const noexcept;
+	void SetAt(const size_t nIndex, const BYTE n) noexcept;
 
 	BYTE& operator[](const size_t nIndex);
 	BYTE operator[](const size_t nIndex) const;

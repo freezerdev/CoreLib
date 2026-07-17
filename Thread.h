@@ -25,7 +25,10 @@ public:
 	CThread &operator=(const CThread &src) = delete;
 	CThread &operator=(CThread &&src) = delete;
 
+	// Spawns a new thread and executes 'ThreadProc' - use this for classes derived from CThread
 	bool Start(void);
+
+	// Spawns a new thread and executes 'pfnProc' - use without having to derived from CThread
 	bool Start(PFNPROC pfnProc, PVOID pParam = nullptr);
 	void Wait(void);
 	void Reset(void);
@@ -36,6 +39,7 @@ public:
 
 	static CStr GetThreadName(const std::thread::id &id = std::thread::id());
 
+	// Attaches to an existing thread and executes 'pfnProc' - adds crash minidump support to an existing thread
 	static bool MonitorThread(const CStr &strThreadName, PFNPROC pfnProc, PVOID pParam = nullptr);
 
 private:

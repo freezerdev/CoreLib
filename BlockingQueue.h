@@ -17,7 +17,7 @@ public:
 	CBlockingQueue(const CBlockingQueue &src) = delete;
 	CBlockingQueue(CBlockingQueue &&src) = delete;
 
-	virtual ~CBlockingQueue(void)
+	virtual ~CBlockingQueue(void) noexcept
 	{
 		Shutdown();
 	}
@@ -26,13 +26,13 @@ public:
 	CBlockingQueue &operator=(const CBlockingQueue &src) = delete;
 	CBlockingQueue &operator=(CBlockingQueue &&src) = delete;
 
-	bool IsEmpty(void) const
+	bool IsEmpty(void) const noexcept
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		return m_q.empty();
 	}
 
-	void Shutdown(void)
+	void Shutdown(void) noexcept
 	{
 		std::unique_lock<std::mutex> lock(m_mutex);
 		m_q.clear();
@@ -41,7 +41,7 @@ public:
 		m_cv.notify_all();
 	}
 
-	void Reset(void)
+	void Reset(void) noexcept
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		Assert(m_q.empty());
@@ -80,8 +80,7 @@ public:
 	{
 		bool bSuccess = false;
 		std::unique_lock<std::mutex> lock(m_mutex);
-		while(m_q.empty() && !m_bQuit)
-			m_cv.wait(lock);
+		m_cv.wait(lock, [this](void){return m_bQuit || !m_q.empty();});
 
 		if(!m_q.empty())
 		{
@@ -107,7 +106,7 @@ public:
 		return bSuccess;
 	}
 
-	size_t GetQueueSize(void) const
+	size_t GetQueueSize(void) const noexcept
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		return m_q.size();

@@ -155,7 +155,7 @@ size_t CStr8::GetLength(const bool bIncludeNullTerm) const noexcept
 }
 
 //#################################################################################################
-size_t CStr8::GetCount(const bool bIncludeNullTerm) const
+size_t CStr8::GetCount(const bool bIncludeNullTerm) const noexcept
 {	// Count of characters
 	size_t nCount = (bIncludeNullTerm) ? 1 : 0;
 
@@ -201,25 +201,25 @@ void CStr8::Empty(const bool bFree)
 }
 
 //#################################################################################################
-char CStr8::GetFirst(void) const
+char CStr8::GetFirst(void) const noexcept
 {
 	return (m_nStrLen) ? m_sz[0] : g_chNull8;
 }
 
 //#################################################################################################
-char CStr8::GetLast(void) const
+char CStr8::GetLast(void) const noexcept
 {
 	return (m_nStrLen) ? m_sz[m_nStrLen - 1] : g_chNull8;
 }
 
 //#################################################################################################
-char CStr8::GetAt(const size_t nIndex) const
+char CStr8::GetAt(const size_t nIndex) const noexcept
 {
 	return (nIndex < m_nStrLen) ? m_sz[nIndex] : g_chNull8;
 }
 
 //#################################################################################################
-void CStr8::SetAt(const size_t nIndex, const char ch)
+void CStr8::SetAt(const size_t nIndex, const char ch) noexcept
 {
 	if(nIndex < m_nStrLen)
 	{
@@ -3942,25 +3942,25 @@ void CStrW::Empty(const bool bFree)
 }
 
 //#################################################################################################
-wchar_t CStrW::GetFirst(void) const
+wchar_t CStrW::GetFirst(void) const noexcept
 {
 	return (m_nStrLen) ? m_sz[0] : g_chNullW;
 }
 
 //#################################################################################################
-wchar_t CStrW::GetLast(void) const
+wchar_t CStrW::GetLast(void) const noexcept
 {
 	return (m_nStrLen) ? m_sz[m_nStrLen - 1] : g_chNullW;
 }
 
 //#################################################################################################
-wchar_t CStrW::GetAt(const size_t nIndex) const
+wchar_t CStrW::GetAt(const size_t nIndex) const noexcept
 {
 	return (nIndex < m_nStrLen) ? m_sz[nIndex] : g_chNullW;
 }
 
 //#################################################################################################
-void CStrW::SetAt(const size_t nIndex, const wchar_t ch)
+void CStrW::SetAt(const size_t nIndex, const wchar_t ch) noexcept
 {
 	if(nIndex < m_nStrLen)
 	{
@@ -7653,25 +7653,25 @@ void CStr16::Empty(const bool bFree)
 }
 
 //#################################################################################################
-char16_t CStr16::GetFirst(void) const
+char16_t CStr16::GetFirst(void) const noexcept
 {
 	return (m_nStrLen) ? m_sz[0] : g_chNull16;
 }
 
 //#################################################################################################
-char16_t CStr16::GetLast(void) const
+char16_t CStr16::GetLast(void) const noexcept
 {
 	return (m_nStrLen) ? m_sz[m_nStrLen - 1] : g_chNull16;
 }
 
 //#################################################################################################
-char16_t CStr16::GetAt(const size_t nIndex) const
+char16_t CStr16::GetAt(const size_t nIndex) const noexcept
 {
 	return (nIndex < m_nStrLen) ? m_sz[nIndex] : g_chNull16;
 }
 
 //#################################################################################################
-void CStr16::SetAt(const size_t nIndex, const char16_t ch)
+void CStr16::SetAt(const size_t nIndex, const char16_t ch) noexcept
 {
 	if(nIndex < m_nStrLen)
 	{

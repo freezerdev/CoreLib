@@ -39,12 +39,12 @@ bool CEvent::Wait(const size_t nMilliseconds)
 	if(nMilliseconds == INFINITE_WAIT)
 	{
 		std::unique_lock<std::mutex> lock(m_mutex);
-		m_cv.wait(lock, [this](){return m_bSignaled;});
+		m_cv.wait(lock, [this](void){return m_bSignaled;});
 	}
 	else
 	{
 		std::unique_lock<std::mutex> lock(m_mutex);
-		bSignaled = m_cv.wait_for(lock, std::chrono::milliseconds(nMilliseconds), [this](){return m_bSignaled;});
+		bSignaled = m_cv.wait_for(lock, std::chrono::milliseconds(nMilliseconds), [this](void){return m_bSignaled;});
 	}
 
 	return bSignaled;

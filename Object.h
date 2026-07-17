@@ -10,7 +10,7 @@ NS_BEGIN
 class CCFObject final
 {
 public:
-	CCFObject(void);
+	CCFObject(void) = default;
 	CCFObject(const CCFObject &src);
 	CCFObject(CCFObject &&src) noexcept;
 	CCFObject(const CFTypeRef cf, const bool bAutoRelease = true);
@@ -47,7 +47,7 @@ public:
 
 	//#########################################################################
 	template<typename T>
-	CCFObject GetDictionary(T&& cfProperty) const
+	CCFObject GetDictionary(T &&cfProperty) const
 	{
 		CCFObject cf;
 
@@ -59,7 +59,7 @@ public:
 
 	//#########################################################################
 	template<typename T>
-	bool GetDictionaryBoolean(T&& cfProperty, const bool bDefault = false) const
+	bool GetDictionaryBoolean(T &&cfProperty, const bool bDefault = false) const
 	{
 		bool b = bDefault;
 
@@ -74,7 +74,7 @@ public:
 
 	//#########################################################################
 	template<typename T>
-	int64_t GetDictionaryInteger(T&& cfProperty, const int64_t nDefault = 0) const
+	int64_t GetDictionaryInteger(T &&cfProperty, const int64_t nDefault = 0) const
 	{
 		int64_t n = nDefault;
 
@@ -89,7 +89,7 @@ public:
 
 	//#########################################################################
 	template<typename T>
-	CStr GetDictionaryString(T&& cfProperty, PCSTR szDefault = nullptr) const
+	CStr GetDictionaryString(T &&cfProperty, PCSTR szDefault = nullptr) const
 	{
 		CStr str(szDefault);
 
@@ -104,7 +104,7 @@ public:
 
 	//#########################################################################
 	template<typename T>
-	CMemBuffer GetDictionaryData(T&& cfProperty) const
+	CMemBuffer GetDictionaryData(T &&cfProperty) const
 	{
 		CMemBuffer buf;
 
@@ -119,14 +119,14 @@ public:
 
 	//#########################################################################
 	template<typename T, typename ...ARGS>
-	static CCFObject CreateWithFormat(T&& cfFormat, const ARGS&... args)
+	static CCFObject CreateWithFormat(T &&cfFormat, const ARGS&... args)
 	{
 		return CFStringCreateWithFormat(nullptr, nullptr, cfFormat, args...);
 	}
 
 private:
-	CFTypeRef m_cf;
-	bool m_bAutoRelease;
+	CFTypeRef m_cf = nullptr;
+	bool m_bAutoRelease = false;
 };
 
 
@@ -134,7 +134,7 @@ private:
 class CIOObject final
 {
 public:
-	CIOObject(void);
+	CIOObject(void) = default;
 	CIOObject(const CIOObject &src);
 	CIOObject(CIOObject &&src) noexcept;
 	CIOObject(const io_object_t io);
@@ -156,7 +156,7 @@ public:
 	CStr GetName(void) const;
 
 private:
-	io_object_t m_io;
+	io_object_t m_io = 0;
 };
 
 NS_END

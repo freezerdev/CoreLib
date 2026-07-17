@@ -26,10 +26,10 @@ public:
 	CMemStream &operator=(const CMemBuffer &buf);
 	CMemStream &operator=(CMemBuffer &&buf) noexcept;
 
-	bool operator==(const CMemStream &buf) const;
-	bool operator!=(const CMemStream &buf) const;
-	bool Compare(const CMemStream &buf) const;
-	bool Compare(PCBYTE pBuf, const size_t nDataSize) const;
+	bool operator==(const CMemStream &buf) const noexcept;
+	bool operator!=(const CMemStream &buf) const noexcept;
+	bool Compare(const CMemStream &buf) const noexcept;
+	bool Compare(PCBYTE pBuf, const size_t nDataSize) const noexcept;
 
 	operator PBYTE(void) noexcept;
 	operator PCBYTE(void) const noexcept;

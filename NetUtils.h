@@ -48,9 +48,9 @@ struct SocketInfo final
 {
 	CStr8 strSelfAddress;
 	CStr8 strPeerAddress;
-	uint16_t nSelfPort;
-	uint16_t nPeerPort;
-	uint32_t nProcessId;
+	uint16_t nSelfPort = 0;
+	uint16_t nPeerPort = 0;
+	uint32_t nProcessId = 0;
 };
 
 // Returns information on all socket connections on the computer

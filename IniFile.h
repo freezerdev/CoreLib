@@ -99,7 +99,7 @@ public:
 	bool GetSection(const CStr &strSection, std::unique_ptr<CIniSection> &pSection, const bool bCreate = false);
 	bool DeleteSection(const CStr &strSection);
 
-	size_t GetSectionCount(void);
+	size_t GetSectionCount(void) const;
 	size_t GetEntryCount(const CStr &strSection);
 
 private:

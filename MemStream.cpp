@@ -205,25 +205,25 @@ CMemStream &CMemStream::operator=(CMemBuffer &&buf) noexcept
 }
 
 //#################################################################################################
-bool CMemStream::operator==(const CMemStream &buf) const
+bool CMemStream::operator==(const CMemStream &buf) const noexcept
 {
 	return Compare(buf.m_pBuf, buf.m_nDataSize);
 }
 
 //#################################################################################################
-bool CMemStream::operator!=(const CMemStream &buf) const
+bool CMemStream::operator!=(const CMemStream &buf) const noexcept
 {
 	return !Compare(buf.m_pBuf, buf.m_nDataSize);
 }
 
 //#################################################################################################
-bool CMemStream::Compare(const CMemStream &buf) const
+bool CMemStream::Compare(const CMemStream &buf) const noexcept
 {
 	return Compare(buf.m_pBuf, buf.m_nDataSize);
 }
 
 //#################################################################################################
-bool CMemStream::Compare(PCBYTE pBuf, const size_t nDataSize) const
+bool CMemStream::Compare(PCBYTE pBuf, const size_t nDataSize) const noexcept
 {
 	return (m_nDataSize == nDataSize && std::memcmp(m_pBuf, pBuf, m_nDataSize) == 0);
 }

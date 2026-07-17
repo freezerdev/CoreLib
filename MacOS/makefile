@@ -8,10 +8,10 @@ endif
 
 # Figure out the compiler flags
 ifeq ($(BUILD), release)
-CFLAGS=-std=c++14 -O3 -arch arm64 -arch x86_64 -target arm64-apple-macos10.15 -mmacosx-version-min=10.15
+CFLAGS=-std=c++14 -O3 -arch arm64 -arch x86_64 -target arm64-apple-macos12.4 -mmacosx-version-min=12.4
 BUILDDIR=Release
 else
-CFLAGS=-std=c++14 -g -O0 -arch arm64 -arch x86_64 -target arm64-apple-macos10.15 -mmacosx-version-min=10.15
+CFLAGS=-std=c++14 -g -O0 -arch arm64 -arch x86_64 -target arm64-apple-macos12.4 -mmacosx-version-min=12.4
 BUILDDIR=Debug
 endif
 

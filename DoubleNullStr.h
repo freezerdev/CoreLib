@@ -24,9 +24,9 @@ public:
 	~CDoubleNullStr8(void);
 
 	// Returns the length in characters (including null-terminators)
-	size_t GetLength(void) const;
+	size_t GetLength(void) const noexcept;
 	// Returns the size in bytes (including null-terminators)
-	size_t GetSize(void) const;
+	size_t GetSize(void) const noexcept;
 
 	// Returns a pointer to the raw string data
 	operator PCSTR(void) const noexcept;
@@ -92,9 +92,9 @@ public:
 	~CDoubleNullStrW(void);
 
 	// Returns the length in characters (including null-terminators)
-	size_t GetLength(void) const;
+	size_t GetLength(void) const noexcept;
 	// Returns the size in bytes (including null-terminators)
-	size_t GetSize(void) const;
+	size_t GetSize(void) const noexcept;
 
 	// Returns a pointer to the raw string data
 	operator PCWSTR(void) const noexcept;

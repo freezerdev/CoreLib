@@ -4,10 +4,11 @@
 
 NS_BEGIN
 
-template <typename F>
+//#################################################################################################
+template<typename F>
 struct DeferGuard final
 {
-	DeferGuard(F &&fnDefer) : m_fnDefer(std::move(fnDefer)) {}
+	explicit DeferGuard(F &&fnDefer) : m_fnDefer(std::move(fnDefer)) {}
 	DeferGuard(const DeferGuard &src) = delete;
 	DeferGuard(DeferGuard &&src) = default;		// Move constructor is required for C++14 support
 	~DeferGuard(void) {m_fnDefer();}
@@ -19,7 +20,7 @@ struct DeferGuard final
 };
 
 // Helper function for C++14 support
-template <typename F>
+template<typename F>
 DeferGuard<F> MakeDefer(F &&fnDefer)
 {
 	return DeferGuard<F>(std::move(fnDefer));
@@ -29,8 +30,8 @@ DeferGuard<F> MakeDefer(F &&fnDefer)
 #define CONCAT(a, b) CONCAT_IMPL(a, b)
 
 // C++14 version
-#define DEFER(code) const auto CONCAT(_defer_, __LINE__) = MakeDefer([&](){code;})
+#define DEFER(code) const auto CONCAT(_defer_, __LINE__) = MakeDefer([&](void){code;})
 // C++17 version
-//#define DEFER(code) const auto CONCAT(_defer_, __LINE__) = DeferGuard([&](){code;})
+//#define DEFER(code) const auto CONCAT(_defer_, __LINE__) = DeferGuard([&](void){code;})
 
 NS_END

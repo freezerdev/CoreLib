@@ -50,8 +50,8 @@ constexpr size_t g_nEolLen = 2;
 
 // FILETIME_NULL (similar to GUID_NULL) as well as op== and op!=
 constexpr FILETIME FILETIME_NULL = {0x00000000L, 0x00000000L};
-inline bool operator==(const FILETIME &ft1, const FILETIME &ft2) {return (CompareFileTime(&ft1, &ft2) == 0);}
-inline bool operator!=(const FILETIME &ft1, const FILETIME &ft2) {return (CompareFileTime(&ft1, &ft2) != 0);}
+inline bool operator==(const FILETIME &ft1, const FILETIME &ft2) noexcept {return (CompareFileTime(&ft1, &ft2) == 0);}
+inline bool operator!=(const FILETIME &ft1, const FILETIME &ft2) noexcept {return (CompareFileTime(&ft1, &ft2) != 0);}
 
 #elif __APPLE__
 //#################################################################################################
@@ -95,16 +95,16 @@ constexpr size_t g_nEolLen = 1;
 
 struct FILETIME final
 {
-	unsigned int dwLowDateTime;
-	unsigned int dwHighDateTime;
+	unsigned int dwLowDateTime = 0;
+	unsigned int dwHighDateTime = 0;
 };
 
 union ULARGE_INTEGER
 {
 	struct
 	{
-		unsigned int LowPart;
-		unsigned int HighPart;
+		unsigned int LowPart = 0;
+		unsigned int HighPart = 0;
 	};
 	unsigned long long QuadPart;
 };
@@ -161,16 +161,16 @@ constexpr size_t g_nEolLen = 1;
 
 struct FILETIME final
 {
-	unsigned int dwLowDateTime;
-	unsigned int dwHighDateTime;
+	unsigned int dwLowDateTime = 0;
+	unsigned int dwHighDateTime = 0;
 };
 
 union ULARGE_INTEGER
 {
 	struct
 	{
-		unsigned int LowPart;
-		unsigned int HighPart;
+		unsigned int LowPart = 0;
+		unsigned int HighPart = 0;
 	};
 	unsigned long long QuadPart;
 };

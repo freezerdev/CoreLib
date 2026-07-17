@@ -38,7 +38,7 @@ CDoubleNullStr8::~CDoubleNullStr8(void)
 }
 
 //#################################################################################################
-size_t CDoubleNullStr8::GetLength(void) const
+size_t CDoubleNullStr8::GetLength(void) const noexcept
 {	// Length in characters (including null-terminators)
 	size_t nTotalStrLen = 0;
 
@@ -61,7 +61,7 @@ size_t CDoubleNullStr8::GetLength(void) const
 }
 
 //#################################################################################################
-size_t CDoubleNullStr8::GetSize(void) const
+size_t CDoubleNullStr8::GetSize(void) const noexcept
 {	// Size in bytes (including null-terminators)
 	return GetLength();
 }
@@ -389,7 +389,7 @@ CDoubleNullStrW::~CDoubleNullStrW(void)
 }
 
 //#################################################################################################
-size_t CDoubleNullStrW::GetLength(void) const
+size_t CDoubleNullStrW::GetLength(void) const noexcept
 {	// Length in characters (including null-terminators)
 	size_t nTotalStrLen = 0;
 
@@ -412,7 +412,7 @@ size_t CDoubleNullStrW::GetLength(void) const
 }
 
 //#################################################################################################
-size_t CDoubleNullStrW::GetSize(void) const
+size_t CDoubleNullStrW::GetSize(void) const noexcept
 {	// Size in bytes (including null-terminators)
 	return GetLength() * sizeof(wchar_t);
 }

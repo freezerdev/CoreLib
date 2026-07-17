@@ -128,7 +128,7 @@ ELidState GetLidState(void)
 {
 	ELidState eState = ELS_Unknown;
 
-	CIOObject ioReg = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/AppleACPIPlatformExpert/IOPMrootDomain");
+	CIOObject ioReg = IORegistryEntryFromPath(kIOMainPortDefault, "IOService:/AppleACPIPlatformExpert/IOPMrootDomain");
 	if(ioReg)
 	{
 		CCFObject cfProp = IORegistryEntryCreateCFProperty(ioReg, CFSTR(kAppleClamshellStateKey), kCFAllocatorDefault, 0);

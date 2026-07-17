@@ -538,7 +538,7 @@ void StringToUpper(char16_t *sz, const size_t nStrLen)
 }
 
 //#################################################################################################
-void CharAdvance(PCSTR &sz)
+void CharAdvance(PCSTR &sz) noexcept
 {
 	Assert(sz);
 
@@ -553,7 +553,7 @@ void CharAdvance(PCSTR &sz)
 }
 
 //#################################################################################################
-size_t CharAdvance(PCSTR &sz, const size_t nStrSize)
+size_t CharAdvance(PCSTR &sz, const size_t nStrSize) noexcept
 {
 	Assert(sz);
 
@@ -587,7 +587,7 @@ size_t CharAdvance(PCSTR &sz, const size_t nStrSize)
 }
 
 //#################################################################################################
-uint8_t StringGetCharSize(PCSTR sz)
+uint8_t StringGetCharSize(PCSTR sz) noexcept
 {	// Use with caution, this function assumes the string is at least 4 characters long and/or null terminated
 	Assert(sz);
 
@@ -606,7 +606,7 @@ uint8_t StringGetCharSize(PCSTR sz)
 }
 
 //#################################################################################################
-uint8_t StringGetCharSize(PCSTR sz, const size_t nStrSize)
+uint8_t StringGetCharSize(PCSTR sz, const size_t nStrSize) noexcept
 {
 	Assert(sz);
 
@@ -628,7 +628,7 @@ uint8_t StringGetCharSize(PCSTR sz, const size_t nStrSize)
 }
 
 //#################################################################################################
-uint8_t GetMultiByteCharSize(PCSTR szSrc, const size_t nSrcSize)
+uint8_t GetMultiByteCharSize(PCSTR szSrc, const size_t nSrcSize) noexcept
 {
 	if(szSrc == nullptr || nSrcSize == 0)
 		return 0;
@@ -648,7 +648,7 @@ uint8_t GetMultiByteCharSize(PCSTR szSrc, const size_t nSrcSize)
 }
 
 //#################################################################################################
-uint8_t CopyMultiByteChar(PSTR szDest, const size_t nDestSize, PCSTR szSrc, const size_t nSrcSize)
+uint8_t CopyMultiByteChar(PSTR szDest, const size_t nDestSize, PCSTR szSrc, const size_t nSrcSize) noexcept
 {
 	if(szSrc == nullptr || nSrcSize == 0 || nDestSize == 0)
 		return 0;

@@ -8,17 +8,8 @@ NS_BEGIN
 // CCFObject
 /////////////////////////////////////////////////
 
-//#################################################################################################
-CCFObject::CCFObject(void)
-	: m_cf(nullptr),
-	m_bAutoRelease(false)
-{
-}
-
 // #################################################################################################
 CCFObject::CCFObject(const CCFObject &src)
-	: m_cf(nullptr),
-	m_bAutoRelease(false)
 {
 	if(src.m_cf)
 	{
@@ -326,14 +317,7 @@ CMemBuffer CCFObject::GetDictionaryDataEx(PCSTR szProperty) const
 /////////////////////////////////////////////////
 
 //#################################################################################################
-CIOObject::CIOObject(void)
-	: m_io(0)
-{
-}
-
-//#################################################################################################
 CIOObject::CIOObject(const CIOObject &src)
-	: m_io(0)
 {
 	if(src.m_io && IOObjectRetain(src.m_io) == KERN_SUCCESS)
 		m_io = src.m_io;

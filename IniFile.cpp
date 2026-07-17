@@ -813,7 +813,7 @@ bool CIniFile::DeleteSection(const CStr &strSection)
 }
 
 //#################################################################################################
-size_t CIniFile::GetSectionCount(void)
+size_t CIniFile::GetSectionCount(void) const
 {
 	size_t nCount = 0;
 

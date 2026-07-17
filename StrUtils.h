@@ -130,35 +130,35 @@ inline wchar_t CharToUpper(const wchar_t ch)
 // These functions advance the pointer by one character in the string.  These functions exist because multibyte UTF8 characters could be
 // between 1 and 4 bytes in size.  All other formats are a fixed size.  Note: These functions always advance the pointer, even if currently pointing
 // at the null character ('\0').  Passing a null pointer may result in an exception.
-void CharAdvance(PCSTR &sz);
-inline void CharAdvance(PCWSTR &sz) {Assert(sz); ++sz;}
-inline void CharAdvance(const char16_t *&sz) {Assert(sz); ++sz;}
-inline void CharAdvance(const char32_t *&sz) {Assert(sz); ++sz;}
-size_t CharAdvance(PCSTR &sz, const size_t nStrSize);
-inline size_t CharAdvance(PCWSTR &sz, const size_t nStrSize) {Assert(sz); if(nStrSize) ++sz; return sizeof(wchar_t);}
-inline size_t CharAdvance(const char16_t *&sz, const size_t nStrSize) {Assert(sz); if(nStrSize) ++sz; return sizeof(char16_t);}
-inline size_t CharAdvance(const char32_t *&sz, const size_t nStrSize) {Assert(sz); if(nStrSize) ++sz; return sizeof(char32_t);}
+void CharAdvance(PCSTR &sz) noexcept;
+inline void CharAdvance(PCWSTR &sz) noexcept {Assert(sz); ++sz;}
+inline void CharAdvance(const char16_t *&sz) noexcept {Assert(sz); ++sz;}
+inline void CharAdvance(const char32_t *&sz) noexcept {Assert(sz); ++sz;}
+size_t CharAdvance(PCSTR &sz, const size_t nStrSize) noexcept;
+inline size_t CharAdvance(PCWSTR &sz, const size_t nStrSize) noexcept {Assert(sz); if(nStrSize) ++sz; return sizeof(wchar_t);}
+inline size_t CharAdvance(const char16_t *&sz, const size_t nStrSize) noexcept {Assert(sz); if(nStrSize) ++sz; return sizeof(char16_t);}
+inline size_t CharAdvance(const char32_t *&sz, const size_t nStrSize) noexcept {Assert(sz); if(nStrSize) ++sz; return sizeof(char32_t);}
 
 //#################################################################################################
 // These functions return the size of the first character in the string.  These functions exist because multibyte UTF8 characters could be
 // between 1 and 4 bytes in size.  All other formats are a fixed size.  Note: The null character ('\0') is a character and returns a valid size.
 // Passing a null pointer may result in an exception.
-uint8_t StringGetCharSize(PCSTR sz);
-inline uint8_t StringGetCharSize(PCWSTR sz) {UNUSED(sz); Assert(sz); return sizeof(wchar_t);}
-inline uint8_t StringGetCharSize(const char16_t *sz) {UNUSED(sz); Assert(sz); return sizeof(char16_t);}
-inline uint8_t StringGetCharSize(const char32_t *sz) {UNUSED(sz); Assert(sz); return sizeof(char32_t);}
-uint8_t StringGetCharSize(PCSTR sz, const size_t nStrSize);
-inline uint8_t StringGetCharSize(PCWSTR sz, const size_t nStrSize) {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(wchar_t);}
-inline uint8_t StringGetCharSize(const char16_t *sz, const size_t nStrSize) {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(char16_t);}
-inline uint8_t StringGetCharSize(const char32_t *sz, const size_t nStrSize) {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(char32_t);}
+uint8_t StringGetCharSize(PCSTR sz) noexcept;
+inline uint8_t StringGetCharSize(PCWSTR sz) noexcept {UNUSED(sz); Assert(sz); return sizeof(wchar_t);}
+inline uint8_t StringGetCharSize(const char16_t *sz) noexcept {UNUSED(sz); Assert(sz); return sizeof(char16_t);}
+inline uint8_t StringGetCharSize(const char32_t *sz) noexcept {UNUSED(sz); Assert(sz); return sizeof(char32_t);}
+uint8_t StringGetCharSize(PCSTR sz, const size_t nStrSize) noexcept;
+inline uint8_t StringGetCharSize(PCWSTR sz, const size_t nStrSize) noexcept {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(wchar_t);}
+inline uint8_t StringGetCharSize(const char16_t *sz, const size_t nStrSize) noexcept {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(char16_t);}
+inline uint8_t StringGetCharSize(const char32_t *sz, const size_t nStrSize) noexcept {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(char32_t);}
 
-uint8_t GetMultiByteCharSize(PCSTR szSrc, const size_t nSrcSize);
-uint8_t CopyMultiByteChar(PSTR szDest, const size_t nDestSize, PCSTR szSrc, const size_t nSrcSize);
+uint8_t GetMultiByteCharSize(PCSTR szSrc, const size_t nSrcSize) noexcept;
+uint8_t CopyMultiByteChar(PSTR szDest, const size_t nDestSize, PCSTR szSrc, const size_t nSrcSize) noexcept;
 
 
 //#################################################################################################
 template<typename CHARTYPE>
-size_t StringGetCount(const CHARTYPE *sz)
+size_t StringGetCount(const CHARTYPE *sz) noexcept
 {
 	size_t nLen = 0;
 
@@ -178,7 +178,7 @@ size_t StringGetCount(const CHARTYPE *sz)
 
 //#################################################################################################
 template<typename CHARTYPE>
-size_t StringGetCount(const CHARTYPE *sz, const size_t nMaxSize)
+size_t StringGetCount(const CHARTYPE *sz, const size_t nMaxSize) noexcept
 {
 	size_t nLen = 0;
 
@@ -199,7 +199,7 @@ size_t StringGetCount(const CHARTYPE *sz, const size_t nMaxSize)
 
 //#################################################################################################
 template<typename CHARTYPE>
-size_t StringGetLength(const CHARTYPE *sz)
+size_t StringGetLength(const CHARTYPE *sz) noexcept
 {
 	size_t nLen = 0;
 
@@ -216,7 +216,7 @@ size_t StringGetLength(const CHARTYPE *sz)
 
 //#################################################################################################
 template<typename CHARTYPE>
-size_t StringGetLength(const CHARTYPE *sz, const size_t nMaxLen)
+size_t StringGetLength(const CHARTYPE *sz, const size_t nMaxLen) noexcept
 {
 	size_t nLen = 0;
 
@@ -234,7 +234,7 @@ size_t StringGetLength(const CHARTYPE *sz, const size_t nMaxLen)
 
 //#################################################################################################
 template<typename CHARTYPE>
-size_t StringGetSize(const CHARTYPE *sz)
+size_t StringGetSize(const CHARTYPE *sz) noexcept
 {
 	size_t nSize = 0;
 
@@ -251,7 +251,7 @@ size_t StringGetSize(const CHARTYPE *sz)
 
 //#################################################################################################
 template<typename CHARTYPE>
-size_t StringGetSize(const CHARTYPE *sz, const size_t nMaxLen)
+size_t StringGetSize(const CHARTYPE *sz, const size_t nMaxLen) noexcept
 {
 	size_t nSize = 0;
 
@@ -272,18 +272,18 @@ int StringCompareW(PCWSTR sz1, const size_t nStrLen1, PCWSTR sz2, const size_t n
 int StringCompare16(const char16_t *sz1, const size_t nStrLen1, const char16_t *sz2, const size_t nStrLen2, const bool bCaseInsensitive = false);
 
 // isspace/iswspace take an int which can result in errors if the character is negative
-inline bool IsSpace8(const char ch) {return (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r' || ch == '\f' || ch == '\v');}
-inline bool IsSpaceW(const wchar_t ch) {return (ch == L' ' || ch == L'\t' || ch == L'\n' || ch == L'\r' || ch == L'\f' || ch == L'\v');}
-inline bool IsSpace16(const char16_t ch) {return (ch == u' ' || ch == u'\t' || ch == u'\n' || ch == u'\r' || ch == u'\f' || ch == u'\v');}
+inline bool IsSpace8(const char ch) noexcept {return (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r' || ch == '\f' || ch == '\v');}
+inline bool IsSpaceW(const wchar_t ch) noexcept {return (ch == L' ' || ch == L'\t' || ch == L'\n' || ch == L'\r' || ch == L'\f' || ch == L'\v');}
+inline bool IsSpace16(const char16_t ch) noexcept {return (ch == u' ' || ch == u'\t' || ch == u'\n' || ch == u'\r' || ch == u'\f' || ch == u'\v');}
 
-inline bool IsAlphaChar8(const char ch) {return (ch >= 'A' && (ch <= 'Z' || ch >= 'a') && ch <= 'z');}
-inline bool IsAlphaCharW(const wchar_t ch) {return (ch >= L'A' && (ch <= L'Z' || ch >= L'a') && ch <= L'z');}
-inline bool IsDigitChar8(const char ch) {return (ch >= '0' && ch <= '9');}
-inline bool IsDigitCharW(const wchar_t ch) {return (ch >= L'0' && ch <= L'9');}
-inline bool IsAlphaDigitChar8(const char ch) {return (ch >= '0' && (ch <= '9' || ch >= 'A') && (ch <= 'Z' || ch >= 'a') && ch <= 'z');}
-inline bool IsAlphaDigitCharW(const wchar_t ch) {return (ch >= L'0' && (ch <= L'9' || ch >= L'A') && (ch <= L'Z' || ch >= L'a') && ch <= L'z');}
-inline bool IsHexChar8(const char ch) {return (ch >= '0' && (ch <= '9' || ch >= 'A') && (ch <= 'F' || ch >= 'a') && ch <= 'f');}
-inline bool IsHexCharW(const wchar_t ch) {return (ch >= L'0' && (ch <= L'9' || ch >= L'A') && (ch <= L'F' || ch >= L'a') && ch <= L'f');}
+inline bool IsAlphaChar8(const char ch) noexcept {return (ch >= 'A' && (ch <= 'Z' || ch >= 'a') && ch <= 'z');}
+inline bool IsAlphaCharW(const wchar_t ch) noexcept {return (ch >= L'A' && (ch <= L'Z' || ch >= L'a') && ch <= L'z');}
+inline bool IsDigitChar8(const char ch) noexcept {return (ch >= '0' && ch <= '9');}
+inline bool IsDigitCharW(const wchar_t ch) noexcept {return (ch >= L'0' && ch <= L'9');}
+inline bool IsAlphaDigitChar8(const char ch) noexcept {return (ch >= '0' && (ch <= '9' || ch >= 'A') && (ch <= 'Z' || ch >= 'a') && ch <= 'z');}
+inline bool IsAlphaDigitCharW(const wchar_t ch) noexcept {return (ch >= L'0' && (ch <= L'9' || ch >= L'A') && (ch <= L'Z' || ch >= L'a') && ch <= L'z');}
+inline bool IsHexChar8(const char ch) noexcept {return (ch >= '0' && (ch <= '9' || ch >= 'A') && (ch <= 'F' || ch >= 'a') && ch <= 'f');}
+inline bool IsHexCharW(const wchar_t ch) noexcept {return (ch >= L'0' && (ch <= L'9' || ch >= L'A') && (ch <= L'F' || ch >= L'a') && ch <= L'f');}
 
 bool IsAlphaString8(PCSTR sz);
 bool IsAlphaStringW(PCWSTR sz);

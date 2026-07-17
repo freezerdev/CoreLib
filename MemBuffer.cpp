@@ -435,25 +435,25 @@ bool CMemBuffer::Prepend(const CStr16 &str, const bool bIncludeNullTerm)
 }
 
 //#################################################################################################
-bool CMemBuffer::operator==(const CMemBuffer &buf) const
+bool CMemBuffer::operator==(const CMemBuffer &buf) const noexcept
 {
 	return Compare(buf.m_pBuf, buf.m_nDataSize);
 }
 
 //#################################################################################################
-bool CMemBuffer::operator!=(const CMemBuffer &buf) const
+bool CMemBuffer::operator!=(const CMemBuffer &buf) const noexcept
 {
 	return !Compare(buf.m_pBuf, buf.m_nDataSize);
 }
 
 //#################################################################################################
-bool CMemBuffer::Compare(const CMemBuffer &buf) const
+bool CMemBuffer::Compare(const CMemBuffer &buf) const noexcept
 {
 	return Compare(buf.m_pBuf, buf.m_nDataSize);
 }
 
 //#################################################################################################
-bool CMemBuffer::Compare(PCBYTE pBuf, const size_t nDataSize) const
+bool CMemBuffer::Compare(PCBYTE pBuf, const size_t nDataSize) const noexcept
 {
 	return (m_nDataSize == nDataSize && std::memcmp(m_pBuf, pBuf, m_nDataSize) == 0);
 }
@@ -471,13 +471,13 @@ CMemBuffer::operator PCBYTE(void) const noexcept
 }
 
 //#################################################################################################
-BYTE CMemBuffer::GetAt(const size_t nIndex) const
+BYTE CMemBuffer::GetAt(const size_t nIndex) const noexcept
 {
 	return (nIndex < m_nBufSize) ? m_pBuf[nIndex] : 0;
 }
 
 //#################################################################################################
-void CMemBuffer::SetAt(const size_t nIndex, const BYTE n)
+void CMemBuffer::SetAt(const size_t nIndex, const BYTE n) noexcept
 {
 	if(nIndex < m_nBufSize)
 		m_pBuf[nIndex] = n;

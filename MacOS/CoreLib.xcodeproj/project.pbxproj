@@ -34,6 +34,7 @@
 		ECA9391D2679277C00788BBF /* Errors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938B82679277B00788BBF /* Errors.cpp */; };
 		ECA9391E2679277C00788BBF /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938B92679277B00788BBF /* TimeUtils.cpp */; };
 		ECA9391F2679277C00788BBF /* FileSystemUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938BA2679277B00788BBF /* FileSystemUtils.h */; };
+		ECA939202679277C00788BBF /* Defer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938202679277B00788BBF /* Defer.h */; };
 		ECA939212679277C00788BBF /* Container.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938BC2679277B00788BBF /* Container.cpp */; };
 		ECA939222679277C00788BBF /* UrlUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938BD2679277B00788BBF /* UrlUtils.h */; };
 		ECA939232679277C00788BBF /* FilePath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938BE2679277B00788BBF /* FilePath.cpp */; };
@@ -70,6 +71,7 @@
 		ECA939512679277C00788BBF /* ThreadUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938EC2679277B00788BBF /* ThreadUtils.cpp */; };
 		ECA939522679277C00788BBF /* DoubleNullStr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938ED2679277B00788BBF /* DoubleNullStr.cpp */; };
 		ECA939532679277C00788BBF /* Url.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938EE2679277B00788BBF /* Url.h */; };
+		ECA939542679277C00788BBF /* Fuzz.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938182679277B00788BBF /* Fuzz.h */; };
 		ECA939562679277C00788BBF /* RegexUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938F12679277B00788BBF /* RegexUtils.h */; };
 		ECA939582679277C00788BBF /* BlockingQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938F32679277B00788BBF /* BlockingQueue.h */; };
 		ECA939592679277C00788BBF /* WhitespaceParser.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938F42679277B00788BBF /* WhitespaceParser.h */; };
@@ -81,8 +83,6 @@
 		ECA939632679277C00788BBF /* MemStream.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938FE2679277C00788BBF /* MemStream.h */; };
 		ECA939642679277C00788BBF /* ThreadUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938FF2679277C00788BBF /* ThreadUtils.h */; };
 		ECA939662679277C00788BBF /* Mac.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA939012679277C00788BBF /* Mac.h */; };
-		ECA939542679277C00788BBF /* Fuzz.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938182679277B00788BBF /* Fuzz.h */; };
-		ECA939202679277C00788BBF /* Defer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938202679277B00788BBF /* Defer.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +93,8 @@
 		ECA370EF2F087E9B00318131 /* Object.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Object.cpp; path = ../Object.cpp; sourceTree = SOURCE_ROOT; };
 		ECA687DD2AE068CB0015DAF7 /* PowerUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerUtils.h; path = ../PowerUtils.h; sourceTree = "<group>"; };
 		ECA687DE2AE068CB0015DAF7 /* PowerUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerUtils.cpp; path = ../PowerUtils.cpp; sourceTree = "<group>"; };
+		ECA938182679277B00788BBF /* Fuzz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fuzz.h; path = ../Fuzz.h; sourceTree = "<group>"; };
+		ECA938202679277B00788BBF /* Defer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Defer.h; path = ../Defer.h; sourceTree = "<group>"; };
 		ECA9389D2679277A00788BBF /* DoubleNullStr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DoubleNullStr.h; path = ../DoubleNullStr.h; sourceTree = "<group>"; };
 		ECA938A12679277B00788BBF /* Base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Base.h; path = ../Base.h; sourceTree = "<group>"; };
 		ECA938A32679277B00788BBF /* CoreUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreUtils.cpp; path = ../CoreUtils.cpp; sourceTree = "<group>"; };
@@ -161,8 +163,6 @@
 		ECA938FE2679277C00788BBF /* MemStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MemStream.h; path = ../MemStream.h; sourceTree = "<group>"; };
 		ECA938FF2679277C00788BBF /* ThreadUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadUtils.h; path = ../ThreadUtils.h; sourceTree = "<group>"; };
 		ECA939012679277C00788BBF /* Mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mac.h; path = ../Mac.h; sourceTree = "<group>"; };
-		ECA938182679277B00788BBF /* Fuzz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fuzz.h; path = ../Fuzz.h; sourceTree = "<group>"; };
-		ECA938202679277B00788BBF /* Defer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Defer.h; path = ../Defer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -471,7 +471,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OBJROOT = bin;
@@ -533,7 +533,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OBJROOT = bin;
@@ -550,7 +550,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				EXECUTABLE_PREFIX = lib;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -564,7 +564,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				EXECUTABLE_PREFIX = lib;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
