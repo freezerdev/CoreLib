@@ -272,7 +272,7 @@ void CreateMiniDump(PEXCEPTION_POINTERS pep)
 	pathDumpFile += CFilePathSegmentW(strFilename);
 
 	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(pathDumpFile.Get(), EFM_CreateReadWrite, hFile) == FW_NO_ERROR)
+	if(FileCreate(pathDumpFile.Get(), EFileMode::CreateReadWrite, hFile) == FW_NO_ERROR)
 	{
 		MINIDUMP_EXCEPTION_INFORMATION mdei = {0};
 		mdei.ThreadId = GetCurrentThreadId();
@@ -314,19 +314,19 @@ CStr8 GetStackTrace(void)
 				szDemangled = abi::__cxa_demangle(info.dli_sname, nullptr, nullptr, &status);
 
 			if(status == 0)
-				strTrace += CStr8(CStr8::EFT_Format, "{0} {1} {2} + {3}{4}", n, callstack[n], szDemangled, (PSTR)callstack[n] - (PSTR)info.dli_saddr, g_szEol);
+				strTrace += CStr8(CStr8::EFormatType::Format, "{0} {1} {2} + {3}{4}", n, callstack[n], szDemangled, (PSTR)callstack[n] - (PSTR)info.dli_saddr, g_szEol);
 			else
 			{
 				if(info.dli_sname == nullptr)
-					strTrace += CStr8(CStr8::EFT_Format, "{0} {1} {2} + {3}{4}", n, callstack[n], pszSymbols[n], (PSTR)callstack[n] - (PSTR)info.dli_saddr, g_szEol);
+					strTrace += CStr8(CStr8::EFormatType::Format, "{0} {1} {2} + {3}{4}", n, callstack[n], pszSymbols[n], (PSTR)callstack[n] - (PSTR)info.dli_saddr, g_szEol);
 				else
-					strTrace += CStr8(CStr8::EFT_Format, "{0} {1} {2} + {3}{4}", n, callstack[n], info.dli_sname, (PSTR)callstack[n] - (PSTR)info.dli_saddr, g_szEol);
+					strTrace += CStr8(CStr8::EFormatType::Format, "{0} {1} {2} + {3}{4}", n, callstack[n], info.dli_sname, (PSTR)callstack[n] - (PSTR)info.dli_saddr, g_szEol);
 			}
 
 			std::free(szDemangled);
 		}
 		else
-			strTrace += CStr8(CStr8::EFT_Format, "{0} {1} {2}{3}", n, callstack[n], pszSymbols[n], g_szEol);
+			strTrace += CStr8(CStr8::EFormatType::Format, "{0} {1} {2}{3}", n, callstack[n], pszSymbols[n], g_szEol);
 	}
 
 	std::free(pszSymbols);
@@ -357,7 +357,7 @@ void CreateMiniDump(const CStr8 &strDetails)
 	pathDumpFile += CFilePathSegment8(strFilename);
 
 	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(pathDumpFile.Get(), EFM_CreateReadWrite, hFile) == FW_NO_ERROR)
+	if(FileCreate(pathDumpFile.Get(), EFileMode::CreateReadWrite, hFile) == FW_NO_ERROR)
 	{
 		size_t nBytesWritten;
 		FileWrite(hFile, strDetails, strDetails.GetSize(), nBytesWritten);

@@ -93,7 +93,7 @@ ERRCODE ConvertFromNativeErrorCode(const ERRCODE nNativeErrorCode) noexcept
 		Assert(false);
 		nErrorCode = FW_ERROR_UNKNOWN;
 #ifdef _DEBUG
-		CStr(CStr::EFT_Format, _N("Unknown error code {0}"), nNativeErrorCode).DebugPrint();
+		CStr(CStr::EFormatType::Format, _N("Unknown error code {0}"), nNativeErrorCode).DebugPrint();
 #endif
 		break;
 	}
@@ -190,7 +190,7 @@ ERRCODE ConvertFromNativeErrorCode(const ERRCODE nNativeErrorCode) noexcept
 		Assert(false);
 		nErrorCode = FW_ERROR_UNKNOWN;
 #ifdef _DEBUG
-		CStr(CStr::EFT_Format, _N("Unknown error code {0}"), nNativeErrorCode).DebugPrint();
+		CStr(CStr::EFormatType::Format, _N("Unknown error code {0}"), nNativeErrorCode).DebugPrint();
 #endif
 		break;
 	}

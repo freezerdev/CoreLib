@@ -30,6 +30,7 @@ bool RegexSearch8(PCSTR szTarget, PCSTR szRegexPattern, const bool bCaseInsensit
 			{
 				bResult = true;
 
+				pvecResults->reserve(matches.size());
 				for(const auto &itr : matches)
 					pvecResults->emplace_back(itr);
 
@@ -80,6 +81,7 @@ bool RegexSearchW(PCWSTR szTarget, PCWSTR szRegexPattern, const bool bCaseInsens
 			{
 				bResult = true;
 
+				pvecResults->reserve(matches.size());
 				for(const auto &itr : matches)
 					pvecResults->emplace_back(itr);
 
@@ -128,6 +130,7 @@ bool RegexMatch8(PCSTR szTarget, PCSTR szRegexPattern, const bool bCaseInsensiti
 			bResult = std::regex_match(szTarget, matches, rgx);
 			if(bResult)
 			{
+				pvecResults->reserve(matches.size());
 				for(const auto &itr : matches)
 					pvecResults->emplace_back(itr);
 			}
@@ -171,6 +174,7 @@ bool RegexMatchW(PCWSTR szTarget, PCWSTR szRegexPattern, const bool bCaseInsensi
 			bResult = std::regex_match(szTarget, matches, rgx);
 			if(bResult)
 			{
+				pvecResults->reserve(matches.size());
 				for(const auto &itr : matches)
 					pvecResults->emplace_back(itr);
 			}

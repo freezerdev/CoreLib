@@ -36,11 +36,11 @@ bool GetRemoteTZOffset(const CStrW &strMachine, int16_t &nOffset);
 
 #elif __APPLE__
 
-enum EPrivilegeLevel : uint8_t
+enum class EPrivilegeLevel : uint8_t
 {
-	EPL_Unknown = 0,
-	EPL_Denied,
-	EPL_Granted
+	Unknown,
+	Denied,
+	Granted
 };
 
 EPrivilegeLevel CheckFullDiskAccess(void);

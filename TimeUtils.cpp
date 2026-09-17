@@ -122,14 +122,14 @@ void EpochToTimePoint(const uint64_t nEpoch, time_point<system_clock> &tp, const
 void EpochToTimePoint(PCNSTR szEpoch, time_point<system_clock> &tp, const EEpochType eType)
 {
 	Assert(IsDigitString(szEpoch));
-	Assert(eType != EET_Nanoseconds);
+	Assert(eType != EEpochType::Nanoseconds);
 
 	uint64_t nTime = StringToInteger<uint64_t>(szEpoch);
 	size_t nLen = StringGetLength(szEpoch);
 
-	if(nLen >= 15 || eType == EET_Microseconds)
+	if(nLen >= 15 || eType == EEpochType::Microseconds)
 		tp = time_point<system_clock>(microseconds{nTime});
-	else if(nLen >= 11 || eType == EET_Milliseconds)
+	else if(nLen >= 11 || eType == EEpochType::Milliseconds)
 		tp = time_point<system_clock>(milliseconds{nTime});
 	else
 		tp = time_point<system_clock>(seconds{nTime});
@@ -140,19 +140,19 @@ void TimePointToEpoch(const time_point<system_clock> &tp, uint64_t &nEpoch, cons
 {
 	switch(eType)
 	{
-	case EET_Seconds:
+	case EEpochType::Seconds:
 		nEpoch = duration_cast<seconds>(tp.time_since_epoch()).count();
 		break;
 
-	case EET_Milliseconds:
+	case EEpochType::Milliseconds:
 		nEpoch = duration_cast<milliseconds>(tp.time_since_epoch()).count();
 		break;
 
-	case EET_Microseconds:
+	case EEpochType::Microseconds:
 		nEpoch = duration_cast<microseconds>(tp.time_since_epoch()).count();
 		break;
 
-	case EET_Nanoseconds:
+	case EEpochType::Nanoseconds:
 		nEpoch = duration_cast<nanoseconds>(tp.time_since_epoch()).count();
 		break;
 

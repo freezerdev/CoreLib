@@ -22,18 +22,18 @@ CSrwLock::CSrwLock(void)
 CSrwLocker::CSrwLocker(CSrwLock &srw, const ELockType eType)
 	: m_srw(srw)
 {
-	if(eType == ELT_ReaderLock)
+	if(eType == ELockType::ReaderLock)
 		LockReader();
-	else if(eType == ELT_WriterLock)
+	else if(eType == ELockType::WriterLock)
 		LockWriter();
 }
 
 //#################################################################################################
 CSrwLocker::~CSrwLocker(void)
 {
-	if(m_eType == ELT_ReaderLock)
+	if(m_eType == ELockType::ReaderLock)
 		UnlockReader();
-	else if(m_eType == ELT_WriterLock)
+	else if(m_eType == ELockType::WriterLock)
 		UnlockWriter();
 }
 
@@ -46,29 +46,29 @@ CSrwLocker::ELockType CSrwLocker::GetLockStatus(void) const noexcept
 //#################################################################################################
 void CSrwLocker::LockReader(void)
 {
-	Assert(m_eType == ELT_NoLock);
+	Assert(m_eType == ELockType::NoLock);
 
 	m_srw.LockReader();
-	m_eType = ELT_ReaderLock;
+	m_eType = ELockType::ReaderLock;
 }
 
 //#################################################################################################
 void CSrwLocker::LockWriter(void)
 {
-	Assert(m_eType == ELT_NoLock);
+	Assert(m_eType == ELockType::NoLock);
 
 	m_srw.LockWriter();
-	m_eType = ELT_WriterLock;
+	m_eType = ELockType::WriterLock;
 }
 
 //#################################################################################################
 bool CSrwLocker::TryLockReader(void)
 {
-	Assert(m_eType == ELT_NoLock);
+	Assert(m_eType == ELockType::NoLock);
 
 	if(m_srw.TryLockReader())
 	{
-		m_eType = ELT_ReaderLock;
+		m_eType = ELockType::ReaderLock;
 		return true;
 	}
 	else
@@ -78,11 +78,11 @@ bool CSrwLocker::TryLockReader(void)
 //#################################################################################################
 bool CSrwLocker::TryLockWriter(void)
 {
-	Assert(m_eType == ELT_NoLock);
+	Assert(m_eType == ELockType::NoLock);
 
 	if(m_srw.TryLockWriter())
 	{
-		m_eType = ELT_WriterLock;
+		m_eType = ELockType::WriterLock;
 		return true;
 	}
 	else
@@ -92,19 +92,19 @@ bool CSrwLocker::TryLockWriter(void)
 //#################################################################################################
 void CSrwLocker::UnlockReader(void)
 {
-	Assert(m_eType == ELT_ReaderLock);
+	Assert(m_eType == ELockType::ReaderLock);
 
 	m_srw.UnlockReader();
-	m_eType = ELT_NoLock;
+	m_eType = ELockType::NoLock;
 }
 
 //#################################################################################################
 void CSrwLocker::UnlockWriter(void)
 {
-	Assert(m_eType == ELT_WriterLock);
+	Assert(m_eType == ELockType::WriterLock);
 
 	m_srw.UnlockWriter();
-	m_eType = ELT_NoLock;
+	m_eType = ELockType::NoLock;
 }
 
 NS_END

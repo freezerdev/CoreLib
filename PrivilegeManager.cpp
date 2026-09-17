@@ -21,7 +21,7 @@ bool CPrivilegeManager::Grant(PCNSTR szPrivilege, const EGrantLevel eLevel)
 	BOOL bOpened = FALSE;
 	HANDLE hToken = nullptr;
 
-	if(eLevel == EGL_Thread)
+	if(eLevel == EGrantLevel::Thread)
 	{
 		bOpened = OpenThreadToken(GetCurrentThread(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, false, &hToken);
 		if(!bOpened && GetLastError() == ERROR_NO_TOKEN)
@@ -41,7 +41,7 @@ bool CPrivilegeManager::Grant(PCNSTR szPrivilege, const EGrantLevel eLevel)
 			}
 		}
 	}
-	else if(eLevel == EGL_Process)
+	else if(eLevel == EGrantLevel::Process)
 		bOpened = OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
 
 	if(bOpened)
@@ -104,9 +104,9 @@ bool CPrivilegeManager::Revoke(PCNSTR szPrivilege, const EGrantLevel eLevel)
 	BOOL bOpened = FALSE;
 	HANDLE hToken = nullptr;
 
-	if(eLevel == EGL_Thread)
+	if(eLevel == EGrantLevel::Thread)
 		bOpened = OpenThreadToken(GetCurrentThread(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, false, &hToken);
-	else if(eLevel == EGL_Process)
+	else if(eLevel == EGrantLevel::Process)
 		bOpened = OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
 
 	if(bOpened)
@@ -141,9 +141,9 @@ void CPrivilegeManager::RevokeAll(void)
 		BOOL bOpened = FALSE;
 		HANDLE hToken = nullptr;
 
-		if(itr.second == EGL_Thread)
+		if(itr.second == EGrantLevel::Thread)
 			bOpened = OpenThreadToken(GetCurrentThread(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, false, &hToken);
-		else if(itr.second == EGL_Process)
+		else if(itr.second == EGrantLevel::Process)
 			bOpened = OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
 
 		if(bOpened)
@@ -178,9 +178,9 @@ bool CPrivilegeManager::IsEnabled(PCNSTR szPrivilege, const EGrantLevel eLevel)
 	BOOL bOpened = FALSE;
 	HANDLE hToken = nullptr;
 
-	if(eLevel == EGL_Thread)
+	if(eLevel == EGrantLevel::Thread)
 		bOpened = OpenThreadToken(GetCurrentThread(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, false, &hToken);
-	else if(eLevel == EGL_Process)
+	else if(eLevel == EGrantLevel::Process)
 		bOpened = OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
 
 	if(bOpened)

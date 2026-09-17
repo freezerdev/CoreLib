@@ -28,7 +28,7 @@ void DiagnosticAssert(const bool bCondition, PCNSTR szFile, const long nLine)
 {
 	if(!bCondition)
 	{
-		CStr strMsg(CStr::EFT_Format, _N("[{0}] Assertion failed.  {1} ({2}){3}"), GetFormattedTime(), szFile, nLine, g_szEol);
+		CStr strMsg(CStr::EFormatType::Format, _N("[{0}] Assertion failed.  {1} ({2}){3}"), GetFormattedTime(), szFile, nLine, g_szEol);
 		if(g_pDiagnosticMutex)
 		{
 			CFilePath pathFile = GetExecutablePath();
@@ -37,10 +37,10 @@ void DiagnosticAssert(const bool bCondition, PCNSTR szFile, const long nLine)
 			NHANDLE hFile = INVALID_NHANDLE;
 
 			std::lock_guard<std::mutex> lock(*g_pDiagnosticMutex);
-			if(FileCreate(pathFile.Get(), EFM_AlwaysReadWrite, hFile) == FW_NO_ERROR)
+			if(FileCreate(pathFile.Get(), EFileMode::AlwaysReadWrite, hFile) == FW_NO_ERROR)
 			{
 				size_t nBytesWritten;
-				FileSetPosition(hFile, 0, EFS_End);		// Move to the end so we append
+				FileSetPosition(hFile, 0, EFileSeek::End);		// Move to the end so we append
 				FileWrite(hFile, (PCBYTE)(PCNSTR)strMsg, strMsg.GetSize(), nBytesWritten);
 				FileClose(hFile);
 			}
@@ -59,7 +59,7 @@ void DiagnosticAssert(const bool bCondition, PCNSTR szFile, const long nLine)
 //#################################################################################################
 void DiagnosticMessage(PCNSTR szMsg)
 {
-	CStr strMsg(CStr::EFT_Format, _N("[{0}] {1}{2}"), GetFormattedTime(), szMsg, g_szEol);
+	CStr strMsg(CStr::EFormatType::Format, _N("[{0}] {1}{2}"), GetFormattedTime(), szMsg, g_szEol);
 	if(g_pDiagnosticMutex)
 	{
 		CFilePath pathFile = GetExecutablePath();
@@ -68,10 +68,10 @@ void DiagnosticMessage(PCNSTR szMsg)
 		NHANDLE hFile = INVALID_NHANDLE;
 
 		std::lock_guard<std::mutex> lock(*g_pDiagnosticMutex);
-		if(FileCreate(pathFile.Get(), EFM_AlwaysReadWrite, hFile) == FW_NO_ERROR)
+		if(FileCreate(pathFile.Get(), EFileMode::AlwaysReadWrite, hFile) == FW_NO_ERROR)
 		{
 			size_t nBytesWritten;
-			FileSetPosition(hFile, 0, EFS_End);		// Move to the end so we append
+			FileSetPosition(hFile, 0, EFileSeek::End);		// Move to the end so we append
 			FileWrite(hFile, (PCBYTE)(PCNSTR)strMsg, strMsg.GetSize(), nBytesWritten);
 			FileClose(hFile);
 		}

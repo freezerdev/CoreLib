@@ -25,14 +25,14 @@ public:
 class CSrwLocker final
 {
 public:
-	enum ELockType : int8_t
+	enum class ELockType : int8_t
 	{
-		ELT_WriterLock = -1,
-		ELT_NoLock = 0,
-		ELT_ReaderLock = 1
+		WriterLock = -1,
+		NoLock = 0,
+		ReaderLock = 1
 	};
 
-	explicit CSrwLocker(CSrwLock &srw, const ELockType eType = ELT_NoLock);
+	explicit CSrwLocker(CSrwLock &srw, const ELockType eType = ELockType::NoLock);
 	CSrwLocker(const CSrwLocker &src) = delete;
 	CSrwLocker(CSrwLocker &&src) = delete;
 	~CSrwLocker(void);
@@ -51,7 +51,7 @@ public:
 
 private:
 	CSrwLock &m_srw;
-	ELockType m_eType = ELT_NoLock;
+	ELockType m_eType = ELockType::NoLock;
 };
 
 NS_END

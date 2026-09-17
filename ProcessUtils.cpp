@@ -154,7 +154,7 @@ CFilePath GetProcessFilename(const uint32_t nPid)
 	pathFilename = szPath;
 	Canonicalize(pathFilename);
 #elif __linux__
-	CStr8 strPath(CStr8::EFT_Format, "/proc/{0}/exe", nPid);
+	CStr8 strPath(CStr8::EFormatType::Format, "/proc/{0}/exe", nPid);
 	char szPath[MAX_PATH] = {0};
 	if(readlink(strPath, szPath, MAX_PATH) != -1)
 		pathFilename = szPath;
@@ -291,7 +291,7 @@ CStr GetProcessCommandLine(const uint32_t nPid)
 	pathProc += CFilePathSegment("cmdline");
 
 	NHANDLE hFile = INVALID_NHANDLE;
-	ERRCODE nErrorCode = FileCreate(pathProc.Get(), EFM_ExistingReadOnly, hFile);
+	ERRCODE nErrorCode = FileCreate(pathProc.Get(), EFileMode::ExistingReadOnly, hFile);
 	if(nErrorCode == FW_NO_ERROR)
 	{
 		DEFER(FileClose(hFile));

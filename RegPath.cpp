@@ -3736,6 +3736,7 @@ ERRCODE CRegPath8::Assign(const CRegPath8 &path)
 		m_bRooted = path.m_bRooted;
 
 		// Add segments to the path
+		m_vecSegments.reserve(path.m_vecSegments.size());
 		auto itr = path.m_vecSegments.begin();
 		if(path.m_bRooted)
 		{
@@ -3761,6 +3762,7 @@ ERRCODE CRegPath8::Assign(const CRegPathW &path)
 	m_bRooted = path.m_bRooted;
 
 	// Add segments to the path
+	m_vecSegments.reserve(path.m_vecSegments.size());
 	auto itr = path.m_vecSegments.begin();
 	if(path.m_bRooted)
 	{
@@ -4034,6 +4036,7 @@ ERRCODE CRegPath8::Append(const CRegPath8 &path)
 				nErrorCode = FW_ERROR_INVALID_DATA;
 			else
 			{	// Add segments to the path
+				m_vecSegments.reserve(path.m_vecSegments.size());
 				for(const auto &segment : path.m_vecSegments)
 					m_vecSegments.push_back(std::make_unique<CRegPathSegment8>(*segment));
 			}
@@ -4058,6 +4061,7 @@ ERRCODE CRegPath8::Append(const CRegPathW &path)
 				nErrorCode = FW_ERROR_INVALID_DATA;
 			else
 			{	// Add segments to the path
+				m_vecSegments.reserve(path.m_vecSegments.size());
 				for(const auto &segment : path.m_vecSegments)
 					m_vecSegments.push_back(std::make_unique<CRegPathSegment8>(*segment));
 			}
@@ -5288,6 +5292,7 @@ ERRCODE CRegPathW::Assign(const CRegPathW &path)
 		m_bRooted = path.m_bRooted;
 
 		// Add segments to the path
+		m_vecSegments.reserve(path.m_vecSegments.size());
 		auto itr = path.m_vecSegments.begin();
 		if(path.m_bRooted)
 		{
@@ -5313,6 +5318,7 @@ ERRCODE CRegPathW::Assign(const CRegPath8 &path)
 	m_bRooted = path.m_bRooted;
 
 	// Add segments to the path
+	m_vecSegments.reserve(path.m_vecSegments.size());
 	auto itr = path.m_vecSegments.begin();
 	if(path.m_bRooted)
 	{
@@ -5586,6 +5592,7 @@ ERRCODE CRegPathW::Append(const CRegPathW &path)
 				nErrorCode = FW_ERROR_INVALID_DATA;
 			else
 			{	// Add segments to the path
+				m_vecSegments.reserve(path.m_vecSegments.size());
 				for(const auto &segment : path.m_vecSegments)
 					m_vecSegments.push_back(std::make_unique<CRegPathSegmentW>(*segment));
 			}
@@ -5610,6 +5617,7 @@ ERRCODE CRegPathW::Append(const CRegPath8 &path)
 				nErrorCode = FW_ERROR_INVALID_DATA;
 			else
 			{	// Add segments to the path
+				m_vecSegments.reserve(path.m_vecSegments.size());
 				for(const auto &segment : path.m_vecSegments)
 					m_vecSegments.push_back(std::make_unique<CRegPathSegmentW>(*segment));
 			}

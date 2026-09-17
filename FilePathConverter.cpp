@@ -247,17 +247,6 @@ void CFilePathConverter::InitFolders(void)
 		{DECLARE_FOLDER(FOLDERID_Windows), FOLDERID_Windows}
 	};
 
-	for(const auto &itr : KnownFolderLookupTable)
-	{
-		PWSTR szPath;
-		if(SUCCEEDED(SHGetKnownFolderPath(itr.ridFolder, KF_FLAG_DEFAULT, nullptr, &szPath)))
-		{
-			Assert(StringGetLength(szPath));
-			m_vecFolderConvert.emplace_back(CStr(itr.szVariable), CFilePath(szPath));
-			CoTaskMemFree(szPath);
-		}
-	}
-
 	static constexpr PCNSTR EnvVarLookupTable[] =
 	{
 		_N("AllUsersProfile"),
@@ -276,6 +265,19 @@ void CFilePathConverter::InitFolders(void)
 		_N("UserProfile"),
 		_N("WinDir")
 	};
+
+	m_vecFolderConvert.reserve(COUNTOF(KnownFolderLookupTable) + COUNTOF(EnvVarLookupTable));
+
+	for(const auto &itr : KnownFolderLookupTable)
+	{
+		PWSTR szPath;
+		if(SUCCEEDED(SHGetKnownFolderPath(itr.ridFolder, KF_FLAG_DEFAULT, nullptr, &szPath)))
+		{
+			Assert(StringGetLength(szPath));
+			m_vecFolderConvert.emplace_back(CStr(itr.szVariable), CFilePath(szPath));
+			CoTaskMemFree(szPath);
+		}
+	}
 
 	CStr str;
 	for(const auto &itr : EnvVarLookupTable)

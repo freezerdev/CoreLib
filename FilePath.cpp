@@ -3236,7 +3236,7 @@ CFilePath8::CFilePath8(CFilePath8 &&src) noexcept
 	: m_vecSegments(std::move(src.m_vecSegments)),
 	m_eType(src.m_eType)
 {
-	src.m_eType = EPT_Empty;
+	src.m_eType = EPathType::Empty;
 }
 
 //#################################################################################################
@@ -3324,10 +3324,10 @@ CStr8 CFilePath8::Get(void) const
 	{
 		if(IsUNC())
 			str.Assign(g_szDoubleDelimiter8);
-		else if(m_eType == EPT_CurrentDriveRelative)
+		else if(m_eType == EPathType::CurrentDriveRelative)
 			str.Assign(g_chDelimiter8);
 #ifndef _WIN32
-		else if(m_eType == EPT_FullyRooted)
+		else if(m_eType == EPathType::FullyRooted)
 			str.Assign(g_chDelimiter8);
 #endif
 
@@ -3339,7 +3339,7 @@ CStr8 CFilePath8::Get(void) const
 
 			while(++itr != m_vecSegments.end())
 			{
-				if(m_eType != EPT_DriveRelative || nCount != 0)
+				if(m_eType != EPathType::DriveRelative || nCount != 0)
 					str.Append(g_chDelimiter8);
 				str.Append((*itr)->Get());
 				++nCount;
@@ -3351,7 +3351,7 @@ CStr8 CFilePath8::Get(void) const
 		}
 
 #ifdef _WIN32
-		if(eKernelPath == EKP_Always || (eKernelPath == EKP_Auto && str.GetLength() > INTERNAL_MAX_PATH))
+		if(eKernelPath == EKernelPath::Always || (eKernelPath == EKernelPath::Auto && str.GetLength() > INTERNAL_MAX_PATH))
 		{
 			if(IsDrive())
 				str.Prepend(g_szKernelPrefix8);
@@ -3377,10 +3377,10 @@ size_t CFilePath8::GetLength(const bool bIncludeNullTerm) const
 	{
 		if(IsUNC())
 			nStrLen = 2;
-		else if(m_eType == EPT_CurrentDriveRelative)
+		else if(m_eType == EPathType::CurrentDriveRelative)
 			nStrLen = 1;
 #ifndef _WIN32
-		else if(m_eType == EPT_FullyRooted)
+		else if(m_eType == EPathType::FullyRooted)
 			nStrLen = 1;
 #endif
 
@@ -3392,7 +3392,7 @@ size_t CFilePath8::GetLength(const bool bIncludeNullTerm) const
 
 			while(++itr != m_vecSegments.end())
 			{
-				if(m_eType != EPT_DriveRelative || nCount != 0)
+				if(m_eType != EPathType::DriveRelative || nCount != 0)
 					++nStrLen;
 				nStrLen += (*itr)->GetLength();
 				++nCount;
@@ -3404,7 +3404,7 @@ size_t CFilePath8::GetLength(const bool bIncludeNullTerm) const
 		}
 
 #ifdef _WIN32
-		if(eKernelPath == EKP_Always || (eKernelPath == EKP_Auto && nStrLen > INTERNAL_MAX_PATH))
+		if(eKernelPath == EKernelPath::Always || (eKernelPath == EKernelPath::Auto && nStrLen > INTERNAL_MAX_PATH))
 		{
 			if(IsDrive())
 				nStrLen += g_nKernelPrefixLen;
@@ -3449,7 +3449,7 @@ CFilePath8 &CFilePath8::operator=(CFilePath8 &&src) noexcept
 		m_eType = src.m_eType;
 		m_vecSegments = std::move(src.m_vecSegments);
 
-		src.m_eType = EPT_Empty;
+		src.m_eType = EPathType::Empty;
 	}
 
 	return *this;
@@ -3542,8 +3542,9 @@ ERRCODE CFilePath8::Assign(const CFilePath8 &path)
 		m_eType = path.m_eType;
 
 		// Add segments to the path
+		m_vecSegments.reserve(path.m_vecSegments.size());
 		auto itr = path.m_vecSegments.begin();
-		if(path.m_eType == EPT_UNC)
+		if(path.m_eType == EPathType::UNC)
 		{
 			m_vecSegments.push_back(std::make_unique<CMachineName8>(**itr));
 			++itr;
@@ -3567,8 +3568,9 @@ ERRCODE CFilePath8::Assign(const CFilePathW &path)
 	m_eType = (EPathType)path.m_eType;
 
 	// Add segments to the path
+	m_vecSegments.reserve(path.m_vecSegments.size());
 	auto itr = path.m_vecSegments.begin();
-	if(path.m_eType == CFilePathW::EPT_UNC)
+	if(path.m_eType == CFilePathW::EPathType::UNC)
 	{
 		m_vecSegments.push_back(std::make_unique<CMachineName8>(**itr));
 		++itr;
@@ -3591,9 +3593,9 @@ ERRCODE CFilePath8::Assign(const CFilePathSegment8 &path)
 	if(!path.IsEmpty())
 	{	// Is it a drive path?
 		if(path.IsDrive())
-			m_eType = EPT_FullyRooted;
+			m_eType = EPathType::FullyRooted;
 		else
-			m_eType = EPT_Relative;
+			m_eType = EPathType::Relative;
 
 		m_vecSegments.push_back(std::make_unique<CFilePathSegment8>(path));
 	}
@@ -3609,9 +3611,9 @@ ERRCODE CFilePath8::Assign(const CFilePathSegmentW &path)
 	if(!path.IsEmpty())
 	{	// Is it a drive path?
 		if(path.IsDrive())
-			m_eType = EPT_FullyRooted;
+			m_eType = EPathType::FullyRooted;
 		else
-			m_eType = EPT_Relative;
+			m_eType = EPathType::Relative;
 
 		m_vecSegments.push_back(std::make_unique<CFilePathSegment8>(path));
 	}
@@ -3626,7 +3628,7 @@ ERRCODE CFilePath8::Assign(const CMachineName8 &machine)
 
 	if(!machine.IsEmpty())
 	{
-		m_eType = EPT_UNC;
+		m_eType = EPathType::UNC;
 		m_vecSegments.push_back(std::make_unique<CMachineName8>(machine));
 	}
 
@@ -3640,7 +3642,7 @@ ERRCODE CFilePath8::Assign(const CMachineNameW &machine)
 
 	if(!machine.IsEmpty())
 	{
-		m_eType = EPT_UNC;
+		m_eType = EPathType::UNC;
 		m_vecSegments.push_back(std::make_unique<CMachineName8>(machine));
 	}
 
@@ -3796,7 +3798,7 @@ ERRCODE CFilePath8::Prepend(const CFilePathSegment8 &path)
 		{
 			m_vecSegments.erase(m_vecSegments.begin());
 			if(m_vecSegments.empty())
-				m_eType = EPT_Empty;
+				m_eType = EPathType::Empty;
 		}
 		else
 		{
@@ -3804,7 +3806,7 @@ ERRCODE CFilePath8::Prepend(const CFilePathSegment8 &path)
 				m_vecSegments.erase(m_vecSegments.begin());
 
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CFilePathSegment8>(path));
-			m_eType = path.IsDrive() ? EPT_FullyRooted : EPT_Relative;
+			m_eType = path.IsDrive() ? EPathType::FullyRooted : EPathType::Relative;
 		}
 	}
 
@@ -3826,7 +3828,7 @@ ERRCODE CFilePath8::Prepend(const CFilePathSegmentW &path)
 		{
 			m_vecSegments.erase(m_vecSegments.begin());
 			if(m_vecSegments.empty())
-				m_eType = EPT_Empty;
+				m_eType = EPathType::Empty;
 		}
 		else
 		{
@@ -3834,7 +3836,7 @@ ERRCODE CFilePath8::Prepend(const CFilePathSegmentW &path)
 				m_vecSegments.erase(m_vecSegments.begin());
 
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CFilePathSegment8>(path));
-			m_eType = path.IsDrive() ? EPT_FullyRooted : EPT_Relative;
+			m_eType = path.IsDrive() ? EPathType::FullyRooted : EPathType::Relative;
 		}
 	}
 
@@ -3852,7 +3854,7 @@ ERRCODE CFilePath8::Prepend(const CMachineName8 &machine)
 			nErrorCode = FW_ERROR_INVALID_DATA;
 		else
 		{
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CMachineName8>(machine));
 		}
 	}
@@ -3871,7 +3873,7 @@ ERRCODE CFilePath8::Prepend(const CMachineNameW &machine)
 			nErrorCode = FW_ERROR_INVALID_DATA;
 		else
 		{
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CMachineName8>(machine));
 		}
 	}
@@ -3941,9 +3943,9 @@ ERRCODE CFilePath8::Append(const CFilePathSegment8 &path)
 		if(IsEmpty())
 		{	// Is it a drive path?
 			if(path.IsDrive())
-				m_eType = EPT_FullyRooted;
+				m_eType = EPathType::FullyRooted;
 			else
-				m_eType = EPT_Relative;
+				m_eType = EPathType::Relative;
 
 			m_vecSegments.push_back(std::make_unique<CFilePathSegment8>(path));
 		}
@@ -3957,7 +3959,7 @@ ERRCODE CFilePath8::Append(const CFilePathSegment8 &path)
 			{
 				m_vecSegments.pop_back();
 				if(m_vecSegments.empty())
-					m_eType = EPT_Empty;
+					m_eType = EPathType::Empty;
 			}
 		}
 		else if(path != g_chPeriod8)
@@ -3977,9 +3979,9 @@ ERRCODE CFilePath8::Append(const CFilePathSegmentW &path)
 		if(IsEmpty())
 		{	// Is it a drive path?
 			if(path.IsDrive())
-				m_eType = EPT_FullyRooted;
+				m_eType = EPathType::FullyRooted;
 			else
-				m_eType = EPT_Relative;
+				m_eType = EPathType::Relative;
 
 			m_vecSegments.push_back(std::make_unique<CFilePathSegment8>(path));
 		}
@@ -3993,7 +3995,7 @@ ERRCODE CFilePath8::Append(const CFilePathSegmentW &path)
 			{
 				m_vecSegments.pop_back();
 				if(m_vecSegments.empty())
-					m_eType = EPT_Empty;
+					m_eType = EPathType::Empty;
 			}
 		}
 		else if(path != g_chPeriodW)
@@ -4014,7 +4016,7 @@ ERRCODE CFilePath8::Append(const CMachineName8 &machine)
 			nErrorCode = FW_ERROR_INVALID_DATA;
 		else
 		{
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CMachineName8>(machine));
 		}
 	}
@@ -4033,7 +4035,7 @@ ERRCODE CFilePath8::Append(const CMachineNameW &machine)
 			nErrorCode = FW_ERROR_INVALID_DATA;
 		else
 		{
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CMachineName8>(machine));
 		}
 	}
@@ -4239,7 +4241,7 @@ CFilePath8 operator+(const CMachineNameW &machine, const CFilePathSegmentW &path
 std::ostream &operator<<(std::ostream &stream, const CFilePath8 &path)
 {
 #ifdef _WIN32
-	stream << path.Get(CFilePath8::EKP_Never);
+	stream << path.Get(CFilePath8::EKernelPath::Never);
 #else
 	stream << path.Get();
 #endif
@@ -4579,7 +4581,7 @@ size_t CFilePath8::ReverseCountCompare(const CFilePath8 &path, const bool bCaseI
 //#################################################################################################
 void CFilePath8::Empty(void)
 {
-	m_eType = EPT_Empty;
+	m_eType = EPathType::Empty;
 	m_vecSegments.clear();
 }
 
@@ -4589,45 +4591,45 @@ bool CFilePath8::SetAnchor(const bool bAnchor)
 	bool bReturn = false;
 
 #ifdef _WIN32
-	if(bAnchor && m_eType == EPT_DriveRelative)
+	if(bAnchor && m_eType == EPathType::DriveRelative)
 	{
-		m_eType = EPT_FullyRooted;
+		m_eType = EPathType::FullyRooted;
 		bReturn = true;
 	}
-	else if(bAnchor && m_eType == EPT_Relative)
+	else if(bAnchor && m_eType == EPathType::Relative)
 	{
-		m_eType = EPT_CurrentDriveRelative;
+		m_eType = EPathType::CurrentDriveRelative;
 		bReturn = true;
 	}
-	else if(!bAnchor && m_eType == EPT_FullyRooted)
+	else if(!bAnchor && m_eType == EPathType::FullyRooted)
 	{
-		m_eType = EPT_DriveRelative;
+		m_eType = EPathType::DriveRelative;
 		bReturn = true;
 	}
-	else if(!bAnchor && m_eType == EPT_CurrentDriveRelative)
+	else if(!bAnchor && m_eType == EPathType::CurrentDriveRelative)
 	{
-		m_eType = EPT_Relative;
+		m_eType = EPathType::Relative;
 		bReturn = true;
 	}
 #else
-	if(bAnchor && m_eType == EPT_Relative && !HasLeadingDots())
+	if(bAnchor && m_eType == EPathType::Relative && !HasLeadingDots())
 	{
-		m_eType = EPT_FullyRooted;
+		m_eType = EPathType::FullyRooted;
 		bReturn = true;
 	}
-	else if(bAnchor && m_eType == EPT_Empty)
+	else if(bAnchor && m_eType == EPathType::Empty)
 	{
-		m_eType = EPT_FullyRooted;
+		m_eType = EPathType::FullyRooted;
 		bReturn = true;
 	}
-	else if(!bAnchor && m_eType == EPT_FullyRooted && !m_vecSegments.empty())
+	else if(!bAnchor && m_eType == EPathType::FullyRooted && !m_vecSegments.empty())
 	{
-		m_eType = EPT_Relative;
+		m_eType = EPathType::Relative;
 		bReturn = true;
 	}
-	else if(!bAnchor && m_eType == EPT_FullyRooted)
+	else if(!bAnchor && m_eType == EPathType::FullyRooted)
 	{
-		m_eType = EPT_Empty;
+		m_eType = EPathType::Empty;
 		bReturn = true;
 	}
 #endif
@@ -4688,47 +4690,47 @@ bool CFilePath8::SimplifyDots(void)
 //#################################################################################################
 bool CFilePath8::IsEmpty(void) const noexcept
 {
-	return (m_eType == EPT_Empty);
+	return (m_eType == EPathType::Empty);
 }
 
 //#################################################################################################
 bool CFilePath8::IsDrive(void) const noexcept
 {
-	return (m_eType == EPT_FullyRooted || m_eType == EPT_DriveRelative);
+	return (m_eType == EPathType::FullyRooted || m_eType == EPathType::DriveRelative);
 }
 
 //#################################################################################################
 bool CFilePath8::IsUNC(void) const noexcept
 {
-	return (m_eType == EPT_UNC);
+	return (m_eType == EPathType::UNC);
 }
 
 //#################################################################################################
 bool CFilePath8::IsFullyRooted(void) const noexcept
 {
-	return (m_eType == EPT_FullyRooted);
+	return (m_eType == EPathType::FullyRooted);
 }
 
 //#################################################################################################
 bool CFilePath8::IsRelative(void) const noexcept
 {
-	return (m_eType == EPT_Relative || m_eType == EPT_DriveRelative || m_eType == EPT_CurrentDriveRelative);
+	return (m_eType == EPathType::Relative || m_eType == EPathType::DriveRelative || m_eType == EPathType::CurrentDriveRelative);
 }
 
 //#################################################################################################
 bool CFilePath8::IsRoot(void) const noexcept
 {
 #ifdef _WIN32
-	return (m_eType == EPT_FullyRooted && m_vecSegments.size() == 1);
+	return (m_eType == EPathType::FullyRooted && m_vecSegments.size() == 1);
 #else
-	return (m_eType == EPT_FullyRooted && m_vecSegments.empty());
+	return (m_eType == EPathType::FullyRooted && m_vecSegments.empty());
 #endif
 }
 
 //#################################################################################################
 bool CFilePath8::IsAnchored(void) const noexcept
 {
-	return (m_eType == EPT_FullyRooted || m_eType == EPT_CurrentDriveRelative);
+	return (m_eType == EPathType::FullyRooted || m_eType == EPathType::CurrentDriveRelative);
 }
 
 //#################################################################################################
@@ -4847,7 +4849,7 @@ CFilePath8 &CFilePath8::TrimLeft(const size_t nSegmentCount)
 			Empty();
 		else
 		{	// If it was a drive, UNC, or non-relative path it no longer is because we are removing the first segment
-			m_eType = EPT_Relative;
+			m_eType = EPathType::Relative;
 
 			size_t nRemoved = 0;
 			while(nRemoved++ < nSegmentCount)
@@ -4903,7 +4905,7 @@ CFilePath8 &CFilePath8::CropRight(const size_t nSegmentCount)
 			Empty();
 		else
 		{	// If it was a drive, UNC, or non-relative path it no longer is because we are removing the first segment
-			m_eType = EPT_Relative;
+			m_eType = EPathType::Relative;
 
 			size_t nToRemove = m_vecSegments.size() - nSegmentCount;
 			while(nToRemove--)
@@ -4964,7 +4966,7 @@ ERRCODE CFilePath8::Insert(const size_t nSegment, const CFilePathSegment8 &path)
 			m_vecSegments.insert(itr, std::make_unique<CFilePathSegment8>(path));
 
 			if(nSegment == 0)
-				m_eType = path.IsDrive() ? EPT_FullyRooted : EPT_Relative;
+				m_eType = path.IsDrive() ? EPathType::FullyRooted : EPathType::Relative;
 		}
 	}
 
@@ -4982,7 +4984,7 @@ ERRCODE CFilePath8::Insert(const CMachineName8 &machine)
 			nErrorCode = FW_ERROR_INVALID_DATA;
 		else
 		{
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CMachineName8>(machine));
 		}
 	}
@@ -5009,7 +5011,7 @@ CFilePath8 &CFilePath8::Delete(const size_t nSegment, const size_t nSegmentCount
 				itr = m_vecSegments.erase(itr);
 
 			if(nSegment == 0)
-				m_eType = EPT_Relative;
+				m_eType = EPathType::Relative;
 		}
 	}
 
@@ -5027,7 +5029,7 @@ size_t CFilePath8::Remove(const CFilePathSegment8 &path, const bool bCaseInsensi
 		if((*itr)->Compare(path, bCaseInsensitive) == 0)
 		{
 			if(itr == m_vecSegments.begin())
-				m_eType = EPT_Relative;
+				m_eType = EPathType::Relative;
 
 			itr = m_vecSegments.erase(itr);
 			++nCount;
@@ -5037,7 +5039,7 @@ size_t CFilePath8::Remove(const CFilePathSegment8 &path, const bool bCaseInsensi
 	}
 
 	if(nCount && m_vecSegments.empty())
-		m_eType = EPT_Empty;
+		m_eType = EPathType::Empty;
 
 	return nCount;
 }
@@ -5056,9 +5058,9 @@ size_t CFilePath8::Replace(const CFilePathSegment8 &pathOld, const CFilePathSegm
 				if(itr == m_vecSegments.begin())
 				{
 					if(pathNew.IsDrive())
-						m_eType = EPT_FullyRooted;
+						m_eType = EPathType::FullyRooted;
 					else if(pathOld.IsDrive())
-						m_eType = EPT_Relative;
+						m_eType = EPathType::Relative;
 
 					*itr = std::make_unique<CFilePathSegment8>(pathNew);
 					++nCount;
@@ -5089,9 +5091,9 @@ CFilePath8 &CFilePath8::Modify(const size_t nSegment, const CFilePathSegment8 &p
 		if(nSegment == 0)
 		{
 			if(path.IsDrive())
-				m_eType = EPT_FullyRooted;
+				m_eType = EPathType::FullyRooted;
 			else if(IsDrive())
-				m_eType = EPT_Relative;
+				m_eType = EPathType::Relative;
 		}
 	}
 
@@ -5127,11 +5129,12 @@ CFilePath8 CFilePath8::GetMachineAndShare(void) const
 
 	if(IsUNC() && m_vecSegments.size() >= 2)
 	{
+		path.m_vecSegments.reserve(2);
 		auto itr = m_vecSegments.begin();
 		path.m_vecSegments.push_back(std::make_unique<CMachineName8>(**itr));
 		++itr;
 		path.m_vecSegments.push_back(std::make_unique<CFilePathSegment8>(**itr));
-		path.m_eType = EPT_UNC;
+		path.m_eType = EPathType::UNC;
 	}
 
 	return path;
@@ -5480,7 +5483,7 @@ ERRCODE CFilePath8::ParsePath(const CStr8 &strPath)
 	// Is it a kernel UNC path?
 	if(strPath.CompareLeft(g_szUNCKernelPrefix8, g_nUNCKernelPrefixLen, true) == 0)
 	{
-		m_eType = EPT_UNC;
+		m_eType = EPathType::UNC;
 		szLastDelim += g_nUNCKernelPrefixLen;
 		nDelimLen -= g_nUNCKernelPrefixLen;
 	}
@@ -5489,9 +5492,9 @@ ERRCODE CFilePath8::ParsePath(const CStr8 &strPath)
 		if(strPath.GetLength() >= g_nKernelPrefixLen + 2 && szPath[g_nKernelPrefixLen + 1] == g_chColon8)
 		{
 			if(strPath.GetLength() == g_nKernelPrefixLen + 2 || szPath[g_nKernelPrefixLen + 2] != g_chDelimiter8)
-				m_eType = EPT_DriveRelative;
+				m_eType = EPathType::DriveRelative;
 			else
-				m_eType = EPT_FullyRooted;
+				m_eType = EPathType::FullyRooted;
 
 			szLastDelim += g_nKernelPrefixLen;
 			nDelimLen -= g_nKernelPrefixLen;
@@ -5502,31 +5505,31 @@ ERRCODE CFilePath8::ParsePath(const CStr8 &strPath)
 	else if(szPath[1] == g_chColon8)
 	{	// Is it a drive path?
 		if(strPath.GetLength() == 2 || szPath[2] != g_chDelimiter8)
-			m_eType = EPT_DriveRelative;
+			m_eType = EPathType::DriveRelative;
 		else
-			m_eType = EPT_FullyRooted;
+			m_eType = EPathType::FullyRooted;
 	}
 	else
 #endif
 	{
 		if(szPath[0] == g_chDelimiter8 && szPath[1] == g_chDelimiter8)
 		{	// Is it a UNC path?
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			szLastDelim += 2;
 			nDelimLen -= 2;
 		}
 		else if(szPath[0] == g_chDelimiter8)
 		{
 #ifdef _WIN32
-			m_eType = EPT_CurrentDriveRelative;
+			m_eType = EPathType::CurrentDriveRelative;
 #else
-			m_eType = EPT_FullyRooted;
+			m_eType = EPathType::FullyRooted;
 #endif
 			++szLastDelim;
 			--nDelimLen;
 		}
 		else
-			m_eType = EPT_Relative;
+			m_eType = EPathType::Relative;
 	}
 
 	do{
@@ -5739,7 +5742,7 @@ CFilePathW::CFilePathW(CFilePathW &&src) noexcept
 	: m_vecSegments(std::move(src.m_vecSegments)),
 	m_eType(src.m_eType)
 {
-	src.m_eType = EPT_Empty;
+	src.m_eType = EPathType::Empty;
 }
 
 //#################################################################################################
@@ -5827,10 +5830,10 @@ CStrW CFilePathW::Get(void) const
 	{
 		if(IsUNC())
 			str.Assign(g_szDoubleDelimiterW);
-		else if(m_eType == EPT_CurrentDriveRelative)
+		else if(m_eType == EPathType::CurrentDriveRelative)
 			str.Assign(g_chDelimiterW);
 #ifndef _WIN32
-		else if(m_eType == EPT_FullyRooted)
+		else if(m_eType == EPathType::FullyRooted)
 			str.Assign(g_chDelimiterW);
 #endif
 
@@ -5842,7 +5845,7 @@ CStrW CFilePathW::Get(void) const
 
 			while(++itr != m_vecSegments.end())
 			{
-				if(m_eType != EPT_DriveRelative || nCount != 0)
+				if(m_eType != EPathType::DriveRelative || nCount != 0)
 					str.Append(g_chDelimiterW);
 				str.Append((*itr)->Get());
 				++nCount;
@@ -5854,7 +5857,7 @@ CStrW CFilePathW::Get(void) const
 		}
 
 #ifdef _WIN32
-		if(eKernelPath == EKP_Always || (eKernelPath == EKP_Auto && str.GetLength() > INTERNAL_MAX_PATH))
+		if(eKernelPath == EKernelPath::Always || (eKernelPath == EKernelPath::Auto && str.GetLength() > INTERNAL_MAX_PATH))
 		{
 			if(IsDrive())
 				str.Prepend(g_szKernelPrefixW);
@@ -5880,10 +5883,10 @@ size_t CFilePathW::GetLength(const bool bIncludeNullTerm) const
 	{
 		if(IsUNC())
 			nStrLen = 2;
-		else if(m_eType == EPT_CurrentDriveRelative)
+		else if(m_eType == EPathType::CurrentDriveRelative)
 			nStrLen = 1;
 #ifndef _WIN32
-		else if(m_eType == EPT_FullyRooted)
+		else if(m_eType == EPathType::FullyRooted)
 			nStrLen = 1;
 #endif
 
@@ -5895,7 +5898,7 @@ size_t CFilePathW::GetLength(const bool bIncludeNullTerm) const
 
 			while(++itr != m_vecSegments.end())
 			{
-				if(m_eType != EPT_DriveRelative || nCount != 0)
+				if(m_eType != EPathType::DriveRelative || nCount != 0)
 					++nStrLen;
 				nStrLen += (*itr)->GetLength();
 				++nCount;
@@ -5907,7 +5910,7 @@ size_t CFilePathW::GetLength(const bool bIncludeNullTerm) const
 		}
 
 #ifdef _WIN32
-		if(eKernelPath == EKP_Always || (eKernelPath == EKP_Auto && nStrLen > INTERNAL_MAX_PATH))
+		if(eKernelPath == EKernelPath::Always || (eKernelPath == EKernelPath::Auto && nStrLen > INTERNAL_MAX_PATH))
 		{
 			if(IsDrive())
 				nStrLen += g_nKernelPrefixLen;
@@ -5952,7 +5955,7 @@ CFilePathW &CFilePathW::operator=(CFilePathW &&src) noexcept
 		m_eType = src.m_eType;
 		m_vecSegments = std::move(src.m_vecSegments);
 
-		src.m_eType = EPT_Empty;
+		src.m_eType = EPathType::Empty;
 	}
 
 	return *this;
@@ -6045,8 +6048,9 @@ ERRCODE CFilePathW::Assign(const CFilePathW &path)
 		m_eType = path.m_eType;
 
 		// Add segments to the path
+		m_vecSegments.reserve(path.m_vecSegments.size());
 		auto itr = path.m_vecSegments.begin();
-		if(path.m_eType == EPT_UNC)
+		if(path.m_eType == EPathType::UNC)
 		{
 			m_vecSegments.push_back(std::make_unique<CMachineNameW>(**itr));
 			++itr;
@@ -6070,8 +6074,9 @@ ERRCODE CFilePathW::Assign(const CFilePath8 &path)
 	m_eType = (EPathType)path.m_eType;
 
 	// Add segments to the path
+	m_vecSegments.reserve(path.m_vecSegments.size());
 	auto itr = path.m_vecSegments.begin();
-	if(path.m_eType == CFilePath8::EPT_UNC)
+	if(path.m_eType == CFilePath8::EPathType::UNC)
 	{
 		m_vecSegments.push_back(std::make_unique<CMachineNameW>(**itr));
 		++itr;
@@ -6094,9 +6099,9 @@ ERRCODE CFilePathW::Assign(const CFilePathSegmentW &path)
 	if(!path.IsEmpty())
 	{	// Is it a drive path?
 		if(path.IsDrive())
-			m_eType = EPT_FullyRooted;
+			m_eType = EPathType::FullyRooted;
 		else
-			m_eType = EPT_Relative;
+			m_eType = EPathType::Relative;
 
 		m_vecSegments.push_back(std::make_unique<CFilePathSegmentW>(path));
 	}
@@ -6112,9 +6117,9 @@ ERRCODE CFilePathW::Assign(const CFilePathSegment8 &path)
 	if(!path.IsEmpty())
 	{	// Is it a drive path?
 		if(path.IsDrive())
-			m_eType = EPT_FullyRooted;
+			m_eType = EPathType::FullyRooted;
 		else
-			m_eType = EPT_Relative;
+			m_eType = EPathType::Relative;
 
 		m_vecSegments.push_back(std::make_unique<CFilePathSegmentW>(path));
 	}
@@ -6129,7 +6134,7 @@ ERRCODE CFilePathW::Assign(const CMachineNameW &machine)
 
 	if(!machine.IsEmpty())
 	{
-		m_eType = EPT_UNC;
+		m_eType = EPathType::UNC;
 		m_vecSegments.push_back(std::make_unique<CMachineNameW>(machine));
 	}
 
@@ -6143,7 +6148,7 @@ ERRCODE CFilePathW::Assign(const CMachineName8 &machine)
 
 	if(!machine.IsEmpty())
 	{
-		m_eType = EPT_UNC;
+		m_eType = EPathType::UNC;
 		m_vecSegments.push_back(std::make_unique<CMachineNameW>(machine));
 	}
 
@@ -6299,7 +6304,7 @@ ERRCODE CFilePathW::Prepend(const CFilePathSegmentW &path)
 		{
 			m_vecSegments.erase(m_vecSegments.begin());
 			if(m_vecSegments.empty())
-				m_eType = EPT_Empty;
+				m_eType = EPathType::Empty;
 		}
 		else
 		{
@@ -6307,7 +6312,7 @@ ERRCODE CFilePathW::Prepend(const CFilePathSegmentW &path)
 				m_vecSegments.erase(m_vecSegments.begin());
 
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CFilePathSegmentW>(path));
-			m_eType = path.IsDrive() ? EPT_FullyRooted : EPT_Relative;
+			m_eType = path.IsDrive() ? EPathType::FullyRooted : EPathType::Relative;
 		}
 	}
 
@@ -6329,7 +6334,7 @@ ERRCODE CFilePathW::Prepend(const CFilePathSegment8 &path)
 		{
 			m_vecSegments.erase(m_vecSegments.begin());
 			if(m_vecSegments.empty())
-				m_eType = EPT_Empty;
+				m_eType = EPathType::Empty;
 		}
 		else
 		{
@@ -6337,7 +6342,7 @@ ERRCODE CFilePathW::Prepend(const CFilePathSegment8 &path)
 				m_vecSegments.erase(m_vecSegments.begin());
 
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CFilePathSegmentW>(path));
-			m_eType = path.IsDrive() ? EPT_FullyRooted : EPT_Relative;
+			m_eType = path.IsDrive() ? EPathType::FullyRooted : EPathType::Relative;
 		}
 	}
 
@@ -6355,7 +6360,7 @@ ERRCODE CFilePathW::Prepend(const CMachineNameW &machine)
 			nErrorCode = FW_ERROR_INVALID_DATA;
 		else
 		{
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CMachineNameW>(machine));
 		}
 	}
@@ -6374,7 +6379,7 @@ ERRCODE CFilePathW::Prepend(const CMachineName8 &machine)
 			nErrorCode = FW_ERROR_INVALID_DATA;
 		else
 		{
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CMachineNameW>(machine));
 		}
 	}
@@ -6400,6 +6405,7 @@ ERRCODE CFilePathW::Append(const CFilePathW &path)
 		}
 		else
 		{	// Add segments to the path
+			m_vecSegments.reserve(path.m_vecSegments.size());
 			for(const auto &segment : path.m_vecSegments)
 				m_vecSegments.push_back(std::make_unique<CFilePathSegmentW>(*segment));
 		}
@@ -6426,6 +6432,7 @@ ERRCODE CFilePathW::Append(const CFilePath8 &path)
 		}
 		else
 		{	// Add segments to the path
+			m_vecSegments.reserve(path.m_vecSegments.size());
 			for(const auto &segment : path.m_vecSegments)
 				m_vecSegments.push_back(std::make_unique<CFilePathSegmentW>(*segment));
 		}
@@ -6444,9 +6451,9 @@ ERRCODE CFilePathW::Append(const CFilePathSegmentW &path)
 		if(IsEmpty())
 		{	// Is it a drive path?
 			if(path.IsDrive())
-				m_eType = EPT_FullyRooted;
+				m_eType = EPathType::FullyRooted;
 			else
-				m_eType = EPT_Relative;
+				m_eType = EPathType::Relative;
 
 			m_vecSegments.push_back(std::make_unique<CFilePathSegmentW>(path));
 		}
@@ -6460,7 +6467,7 @@ ERRCODE CFilePathW::Append(const CFilePathSegmentW &path)
 			{
 				m_vecSegments.pop_back();
 				if(m_vecSegments.empty())
-					m_eType = EPT_Empty;
+					m_eType = EPathType::Empty;
 			}
 		}
 		else if(path != g_chPeriodW)
@@ -6480,9 +6487,9 @@ ERRCODE CFilePathW::Append(const CFilePathSegment8 &path)
 		if(IsEmpty())
 		{	// Is it a drive path?
 			if(path.IsDrive())
-				m_eType = EPT_FullyRooted;
+				m_eType = EPathType::FullyRooted;
 			else
-				m_eType = EPT_Relative;
+				m_eType = EPathType::Relative;
 
 			m_vecSegments.push_back(std::make_unique<CFilePathSegmentW>(path));
 		}
@@ -6496,7 +6503,7 @@ ERRCODE CFilePathW::Append(const CFilePathSegment8 &path)
 			{
 				m_vecSegments.pop_back();
 				if(m_vecSegments.empty())
-					m_eType = EPT_Empty;
+					m_eType = EPathType::Empty;
 			}
 		}
 		else if(path != g_chPeriod8)
@@ -6517,7 +6524,7 @@ ERRCODE CFilePathW::Append(const CMachineNameW &machine)
 			nErrorCode = FW_ERROR_INVALID_DATA;
 		else
 		{
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CMachineNameW>(machine));
 		}
 	}
@@ -6536,7 +6543,7 @@ ERRCODE CFilePathW::Append(const CMachineName8 &machine)
 			nErrorCode = FW_ERROR_INVALID_DATA;
 		else
 		{
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CMachineNameW>(machine));
 		}
 	}
@@ -6742,7 +6749,7 @@ CFilePathW operator+(const CMachineName8 &machine, const CFilePathSegment8 &path
 std::wostream &operator<<(std::wostream &stream, const CFilePathW &path)
 {
 #ifdef _WIN32
-	stream << path.Get(CFilePathW::EKP_Never);
+	stream << path.Get(CFilePathW::EKernelPath::Never);
 #else
 	stream << path.Get();
 #endif
@@ -7082,7 +7089,7 @@ size_t CFilePathW::ReverseCountCompare(const CFilePathW &path, const bool bCaseI
 //#################################################################################################
 void CFilePathW::Empty(void)
 {
-	m_eType = EPT_Empty;
+	m_eType = EPathType::Empty;
 	m_vecSegments.clear();
 }
 
@@ -7092,45 +7099,45 @@ bool CFilePathW::SetAnchor(const bool bAnchor)
 	bool bReturn = false;
 
 #ifdef _WIN32
-	if(bAnchor && m_eType == EPT_DriveRelative)
+	if(bAnchor && m_eType == EPathType::DriveRelative)
 	{
-		m_eType = EPT_FullyRooted;
+		m_eType = EPathType::FullyRooted;
 		bReturn = true;
 	}
-	else if(bAnchor && m_eType == EPT_Relative)
+	else if(bAnchor && m_eType == EPathType::Relative)
 	{
-		m_eType = EPT_CurrentDriveRelative;
+		m_eType = EPathType::CurrentDriveRelative;
 		bReturn = true;
 	}
-	else if(!bAnchor && m_eType == EPT_FullyRooted)
+	else if(!bAnchor && m_eType == EPathType::FullyRooted)
 	{
-		m_eType = EPT_DriveRelative;
+		m_eType = EPathType::DriveRelative;
 		bReturn = true;
 	}
-	else if(!bAnchor && m_eType == EPT_CurrentDriveRelative)
+	else if(!bAnchor && m_eType == EPathType::CurrentDriveRelative)
 	{
-		m_eType = EPT_Relative;
+		m_eType = EPathType::Relative;
 		bReturn = true;
 	}
 #else
-	if(bAnchor && m_eType == EPT_Relative && !HasLeadingDots())
+	if(bAnchor && m_eType == EPathType::Relative && !HasLeadingDots())
 	{
-		m_eType = EPT_FullyRooted;
+		m_eType = EPathType::FullyRooted;
 		bReturn = true;
 	}
-	else if(bAnchor && m_eType == EPT_Empty)
+	else if(bAnchor && m_eType == EPathType::Empty)
 	{
-		m_eType = EPT_FullyRooted;
+		m_eType = EPathType::FullyRooted;
 		bReturn = true;
 	}
-	else if(!bAnchor && m_eType == EPT_FullyRooted && !m_vecSegments.empty())
+	else if(!bAnchor && m_eType == EPathType::FullyRooted && !m_vecSegments.empty())
 	{
-		m_eType = EPT_Relative;
+		m_eType = EPathType::Relative;
 		bReturn = true;
 	}
-	else if(!bAnchor && m_eType == EPT_FullyRooted)
+	else if(!bAnchor && m_eType == EPathType::FullyRooted)
 	{
-		m_eType = EPT_Empty;
+		m_eType = EPathType::Empty;
 		bReturn = true;
 	}
 #endif
@@ -7191,47 +7198,47 @@ bool CFilePathW::SimplifyDots(void)
 //#################################################################################################
 bool CFilePathW::IsEmpty(void) const noexcept
 {
-	return (m_eType == EPT_Empty);
+	return (m_eType == EPathType::Empty);
 }
 
 //#################################################################################################
 bool CFilePathW::IsDrive(void) const noexcept
 {
-	return (m_eType == EPT_FullyRooted || m_eType == EPT_DriveRelative);
+	return (m_eType == EPathType::FullyRooted || m_eType == EPathType::DriveRelative);
 }
 
 //#################################################################################################
 bool CFilePathW::IsUNC(void) const noexcept
 {
-	return (m_eType == EPT_UNC);
+	return (m_eType == EPathType::UNC);
 }
 
 //#################################################################################################
 bool CFilePathW::IsFullyRooted(void) const noexcept
 {
-	return (m_eType == EPT_FullyRooted);
+	return (m_eType == EPathType::FullyRooted);
 }
 
 //#################################################################################################
 bool CFilePathW::IsRelative(void) const noexcept
 {
-	return (m_eType == EPT_Relative || m_eType == EPT_DriveRelative || m_eType == EPT_CurrentDriveRelative);
+	return (m_eType == EPathType::Relative || m_eType == EPathType::DriveRelative || m_eType == EPathType::CurrentDriveRelative);
 }
 
 //#################################################################################################
 bool CFilePathW::IsRoot(void) const noexcept
 {
 #ifdef _WIN32
-	return (m_eType == EPT_FullyRooted && m_vecSegments.size() == 1);
+	return (m_eType == EPathType::FullyRooted && m_vecSegments.size() == 1);
 #else
-	return (m_eType == EPT_FullyRooted && m_vecSegments.empty());
+	return (m_eType == EPathType::FullyRooted && m_vecSegments.empty());
 #endif
 }
 
 //#################################################################################################
 bool CFilePathW::IsAnchored(void) const noexcept
 {
-	return (m_eType == EPT_FullyRooted || m_eType == EPT_CurrentDriveRelative);
+	return (m_eType == EPathType::FullyRooted || m_eType == EPathType::CurrentDriveRelative);
 }
 
 //#################################################################################################
@@ -7350,7 +7357,7 @@ CFilePathW &CFilePathW::TrimLeft(const size_t nSegmentCount)
 			Empty();
 		else
 		{	// If it was a drive, UNC, or non-relative path it no longer is because we are removing the first segment
-			m_eType = EPT_Relative;
+			m_eType = EPathType::Relative;
 
 			size_t nRemoved = 0;
 			while(nRemoved++ < nSegmentCount)
@@ -7406,7 +7413,7 @@ CFilePathW &CFilePathW::CropRight(const size_t nSegmentCount)
 			Empty();
 		else
 		{	// If it was a drive, UNC, or non-relative path it no longer is because we are removing the first segment
-			m_eType = EPT_Relative;
+			m_eType = EPathType::Relative;
 
 			size_t nToRemove = m_vecSegments.size() - nSegmentCount;
 			while(nToRemove--)
@@ -7467,7 +7474,7 @@ ERRCODE CFilePathW::Insert(const size_t nSegment, const CFilePathSegmentW &path)
 			m_vecSegments.insert(itr, std::make_unique<CFilePathSegmentW>(path));
 
 			if(nSegment == 0)
-				m_eType = path.IsDrive() ? EPT_FullyRooted : EPT_Relative;
+				m_eType = path.IsDrive() ? EPathType::FullyRooted : EPathType::Relative;
 		}
 	}
 
@@ -7485,7 +7492,7 @@ ERRCODE CFilePathW::Insert(const CMachineNameW &machine)
 			nErrorCode = FW_ERROR_INVALID_DATA;
 		else
 		{
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			m_vecSegments.insert(m_vecSegments.begin(), std::make_unique<CMachineNameW>(machine));
 		}
 	}
@@ -7512,7 +7519,7 @@ CFilePathW &CFilePathW::Delete(const size_t nSegment, const size_t nSegmentCount
 				itr = m_vecSegments.erase(itr);
 
 			if(nSegment == 0)
-				m_eType = EPT_Relative;
+				m_eType = EPathType::Relative;
 		}
 	}
 
@@ -7530,7 +7537,7 @@ size_t CFilePathW::Remove(const CFilePathSegmentW &path, const bool bCaseInsensi
 		if((*itr)->Compare(path, bCaseInsensitive) == 0)
 		{
 			if(itr == m_vecSegments.begin())
-				m_eType = EPT_Relative;
+				m_eType = EPathType::Relative;
 
 			itr = m_vecSegments.erase(itr);
 			++nCount;
@@ -7540,7 +7547,7 @@ size_t CFilePathW::Remove(const CFilePathSegmentW &path, const bool bCaseInsensi
 	}
 
 	if(nCount && m_vecSegments.empty())
-		m_eType = EPT_Empty;
+		m_eType = EPathType::Empty;
 
 	return nCount;
 }
@@ -7559,9 +7566,9 @@ size_t CFilePathW::Replace(const CFilePathSegmentW &pathOld, const CFilePathSegm
 				if(itr == m_vecSegments.begin())
 				{
 					if(pathNew.IsDrive())
-						m_eType = EPT_FullyRooted;
+						m_eType = EPathType::FullyRooted;
 					else if(pathOld.IsDrive())
-						m_eType = EPT_Relative;
+						m_eType = EPathType::Relative;
 
 					*itr = std::make_unique<CFilePathSegmentW>(pathNew);
 					++nCount;
@@ -7592,9 +7599,9 @@ CFilePathW &CFilePathW::Modify(const size_t nSegment, const CFilePathSegmentW &p
 		if(nSegment == 0)
 		{
 			if(path.IsDrive())
-				m_eType = EPT_FullyRooted;
+				m_eType = EPathType::FullyRooted;
 			else if(IsDrive())
-				m_eType = EPT_Relative;
+				m_eType = EPathType::Relative;
 		}
 	}
 
@@ -7630,11 +7637,12 @@ CFilePathW CFilePathW::GetMachineAndShare(void) const
 
 	if(IsUNC() && m_vecSegments.size() >= 2)
 	{
+		path.m_vecSegments.reserve(2);
 		auto itr = m_vecSegments.begin();
 		path.m_vecSegments.push_back(std::make_unique<CMachineNameW>(**itr));
 		++itr;
 		path.m_vecSegments.push_back(std::make_unique<CFilePathSegmentW>(**itr));
-		path.m_eType = EPT_UNC;
+		path.m_eType = EPathType::UNC;
 	}
 
 	return path;
@@ -7984,7 +7992,7 @@ ERRCODE CFilePathW::ParsePath(const CStrW &strPath)
 	// Is it a kernel UNC path?
 	if(strPath.CompareLeft(g_szUNCKernelPrefixW, g_nUNCKernelPrefixLen, true) == 0)
 	{
-		m_eType = EPT_UNC;
+		m_eType = EPathType::UNC;
 		szLastDelim += g_nUNCKernelPrefixLen;
 		nDelimLen -= g_nUNCKernelPrefixLen;
 	}
@@ -7993,9 +8001,9 @@ ERRCODE CFilePathW::ParsePath(const CStrW &strPath)
 		if(strPath.GetLength() >= g_nKernelPrefixLen + 2 && szPath[g_nKernelPrefixLen + 1] == g_chColonW)
 		{
 			if(strPath.GetLength() == g_nKernelPrefixLen + 2 || szPath[g_nKernelPrefixLen + 2] != g_chDelimiterW)
-				m_eType = EPT_DriveRelative;
+				m_eType = EPathType::DriveRelative;
 			else
-				m_eType = EPT_FullyRooted;
+				m_eType = EPathType::FullyRooted;
 
 			szLastDelim += g_nKernelPrefixLen;
 			nDelimLen -= g_nKernelPrefixLen;
@@ -8006,31 +8014,31 @@ ERRCODE CFilePathW::ParsePath(const CStrW &strPath)
 	else if(szPath[1] == g_chColonW)
 	{	// Is it a drive path?
 		if(strPath.GetLength() == 2 || szPath[2] != g_chDelimiterW)
-			m_eType = EPT_DriveRelative;
+			m_eType = EPathType::DriveRelative;
 		else
-			m_eType = EPT_FullyRooted;
+			m_eType = EPathType::FullyRooted;
 	}
 	else
 #endif
 	{
 		if(szPath[0] == g_chDelimiterW && szPath[1] == g_chDelimiterW)
 		{	// Is it a UNC path?
-			m_eType = EPT_UNC;
+			m_eType = EPathType::UNC;
 			szLastDelim += 2;
 			nDelimLen -= 2;
 		}
 		else if(szPath[0] == g_chDelimiterW)
 		{
 #ifdef _WIN32
-			m_eType = EPT_CurrentDriveRelative;
+			m_eType = EPathType::CurrentDriveRelative;
 #else
-			m_eType = EPT_FullyRooted;
+			m_eType = EPathType::FullyRooted;
 #endif
 			++szLastDelim;
 			--nDelimLen;
 		}
 		else
-			m_eType = EPT_Relative;
+			m_eType = EPathType::Relative;
 	}
 
 	do{

@@ -385,7 +385,7 @@ bool CIniFile::Load(PCNSTR szIniPath)
 	Empty();
 
 	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(szIniPath, EFM_ExistingReadOnly, hFile) == FW_NO_ERROR)
+	if(FileCreate(szIniPath, EFileMode::ExistingReadOnly, hFile) == FW_NO_ERROR)
 	{
 		DEFER(FileClose(hFile));
 
@@ -469,18 +469,18 @@ bool CIniFile::SaveAs(PCNSTR szIniPath, const EEncodingType eType) const
 	bool bSaved = false;
 
 	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(szIniPath, EFM_CreateWriteOnly, hFile) == FW_NO_ERROR)
+	if(FileCreate(szIniPath, EFileMode::CreateWriteOnly, hFile) == FW_NO_ERROR)
 	{
 		DEFER(FileClose(hFile));
 
 		size_t nBytesWritten;
 
-		FileSetPosition(hFile, 0, EFS_Begin);
+		FileSetPosition(hFile, 0, EFileSeek::Begin);
 
 #ifdef _WIN32
-		if(eType == EET_Utf16 || eType == EET_Native)
+		if(eType == EEncodingType::Utf16 || eType == EEncodingType::Native)
 #else
-		if(eType == EET_Utf16)
+		if(eType == EEncodingType::Utf16)
 #endif
 		{	// UTF16 file
 			FileWrite(hFile, g_Utf16LE_Bom, sizeof(g_Utf16LE_Bom), nBytesWritten);

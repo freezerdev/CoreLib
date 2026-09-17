@@ -65,17 +65,17 @@ private:
 class CIniFile final
 {
 public:
-	enum EEncodingType : uint8_t
+	enum class EEncodingType : uint8_t
 	{
-		EET_Native = 0,
-		EET_Utf8,
-		EET_Utf16
+		Native,
+		Utf8,
+		Utf16
 	};
 
 	CIniFile(void) = default;
 
 	bool Load(PCNSTR szIniPath);
-	bool SaveAs(PCNSTR szIniPath, const EEncodingType eType = EET_Native) const;
+	bool SaveAs(PCNSTR szIniPath, const EEncodingType eType = EEncodingType::Native) const;
 
 	void ParseFromString(const CStr8 &strIni);
 	void ParseFromString(const CStrW &strIni);

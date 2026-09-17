@@ -38,13 +38,13 @@ void DirEnum(const CFilePath &path, std::vector<CFilePath> *pvecFiles, std::vect
 // Returns whether the given path exists as a file
 bool FileExists(PCNSTR szPath);
 
-enum EFileMode : uint8_t
+enum class EFileMode : uint8_t
 {
-	EFM_ExistingReadOnly = 0,	// Open existing file for read only
-	EFM_ExistingReadWrite,		// Open existing file for read/write
-	EFM_AlwaysReadWrite,		// Open existing file (or create new if not existing) for read/write
-	EFM_CreateWriteOnly,		// Create new file for write only (overwrites existing)
-	EFM_CreateReadWrite			// Create new file for read/write (overwrites existing)
+	ExistingReadOnly,		// Open existing file for read only
+	ExistingReadWrite,		// Open existing file for read/write
+	AlwaysReadWrite,		// Open existing file (or create new if not existing) for read/write
+	CreateWriteOnly,		// Create new file for write only (overwrites existing)
+	CreateReadWrite			// Create new file for read/write (overwrites existing)
 };
 
 // Opens an existing file or creates a new file, returns FW_NO_ERROR on success or an error code
@@ -63,17 +63,17 @@ ERRCODE FileWrite(const NHANDLE hFile, PCVOID pBuffer, const size_t nBytesToWrit
 // Flushes data to disk
 ERRCODE FileFlush(const NHANDLE hFile);
 
-enum EFileSeek : uint8_t
+enum class EFileSeek : uint8_t
 {
-	EFS_Begin = 0,				// Seek from the beginning of the file
-	EFS_Current,				// Seek from the current position
-	EFS_End						// Seek from the end of the file
+	Begin,					// Seek from the beginning of the file
+	Current,				// Seek from the current position
+	End						// Seek from the end of the file
 };
 
 // Gets the current file position
 ERRCODE FileGetPosition(const NHANDLE hFile, uint64_t &nOffset);
 // Sets the current file position relative to 'eSeek'
-ERRCODE FileSetPosition(const NHANDLE hFile, const int64_t nOffset, const EFileSeek eSeek = EFS_Current);
+ERRCODE FileSetPosition(const NHANDLE hFile, const int64_t nOffset, const EFileSeek eSeek = EFileSeek::Current);
 
 // Sets the current file position as the end of the file (truncates any file after current position)
 ERRCODE FileSetEnd(const NHANDLE hFile);

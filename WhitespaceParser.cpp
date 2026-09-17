@@ -221,6 +221,7 @@ void CWhitespaceParser::Append(const CWhitespaceParser &src)
 {
 	if(this != &src)
 	{
+		m_vecParams.reserve(src.m_vecParams.size());
 		for(const auto &param : src.m_vecParams)
 			m_vecParams.push_back(param);
 	}

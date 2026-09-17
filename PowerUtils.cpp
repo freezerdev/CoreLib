@@ -15,15 +15,15 @@ NS_BEGIN
 //#################################################################################################
 EPowerSource GetCurrentPowerSource(void)
 {
-	EPowerSource eSource = EPS_Unknown;
+	EPowerSource eSource = EPowerSource::Unknown;
 
 #ifdef _WIN32
 	SYSTEM_POWER_STATUS sps = {0};
 	GetSystemPowerStatus(&sps);
 	if(sps.ACLineStatus == AC_LINE_ONLINE)
-		eSource = EPS_AC;
+		eSource = EPowerSource::AC;
 	else if(sps.ACLineStatus != AC_LINE_UNKNOWN)
-		eSource = EPS_Battery;
+		eSource = EPowerSource::Battery;
 #elif __APPLE__
 	CCFObject cfPower = IOPSCopyPowerSourcesInfo();
 	if(cfPower)
@@ -34,9 +34,9 @@ EPowerSource GetCurrentPowerSource(void)
 			CStr strSource = cfValue.GetString();
 
 			if(strSource == kIOPMACPowerKey)
-				eSource = EPS_AC;
+				eSource = EPowerSource::AC;
 			else if(strSource == kIOPMBatteryPowerKey || strSource == kIOPMUPSPowerKey)
-				eSource = EPS_Battery;
+				eSource = EPowerSource::Battery;
 		}
 	}
 #elif __linux__
@@ -126,14 +126,14 @@ bool HasActiveDisplay(void)
 //#################################################################################################
 ELidState GetLidState(void)
 {
-	ELidState eState = ELS_Unknown;
+	ELidState eState = ELidState::Unknown;
 
 	CIOObject ioReg = IORegistryEntryFromPath(kIOMainPortDefault, "IOService:/AppleACPIPlatformExpert/IOPMrootDomain");
 	if(ioReg)
 	{
 		CCFObject cfProp = IORegistryEntryCreateCFProperty(ioReg, CFSTR(kAppleClamshellStateKey), kCFAllocatorDefault, 0);
 		if(cfProp)
-			eState = (cfProp.GetBoolean()) ? ELS_Closed : ELS_Open;
+			eState = (cfProp.GetBoolean()) ? ELidState::Closed : ELidState::Open;
 	}
 
 	return eState;

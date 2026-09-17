@@ -337,6 +337,7 @@ void GetSocketConnections(std::vector<SocketInfo> &vecSocketInfo)
 		if(dwErrorCode == NO_ERROR)
 		{
 			PMIB_TCPTABLE_OWNER_PID pTable = (PMIB_TCPTABLE_OWNER_PID)pBuf.get();
+			vecSocketInfo.reserve(pTable->dwNumEntries);
 			for(DWORD dw = 0; dw < pTable->dwNumEntries; ++dw)
 			{
 				SocketInfo si;
@@ -371,6 +372,7 @@ void GetSocketConnections(std::vector<SocketInfo> &vecSocketInfo)
 		if(dwErrorCode == NO_ERROR)
 		{
 			PMIB_TCP6TABLE_OWNER_PID pTable = (PMIB_TCP6TABLE_OWNER_PID)pBuf.get();
+			vecSocketInfo.reserve(pTable->dwNumEntries);
 			for(DWORD dw = 0; dw < pTable->dwNumEntries; ++dw)
 			{
 				SocketInfo si;
@@ -758,7 +760,7 @@ ERRCODE DownloadFile(const CUrl &url, const CFilePath &pathFile)
 	if(nErrorCode == FW_NO_ERROR)
 	{
 		NHANDLE hFile = INVALID_NHANDLE;
-		nErrorCode = FileCreate(pathFile.Get(), EFM_CreateWriteOnly, hFile);
+		nErrorCode = FileCreate(pathFile.Get(), EFileMode::CreateWriteOnly, hFile);
 		if(nErrorCode == FW_NO_ERROR)
 		{
 			DEFER(FileClose(hFile); if(nErrorCode != FW_NO_ERROR) FileDelete(pathFile.Get()));

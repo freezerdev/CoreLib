@@ -229,14 +229,14 @@ bool GetRemoteTZOffset(const CStrW &strMachine, int16_t &nOffset)
 //#################################################################################################
 EPrivilegeLevel CheckFullDiskAccess(void)
 {
-	EPrivilegeLevel eLevel = EPL_Unknown;
+	EPrivilegeLevel eLevel = EPrivilegeLevel::Unknown;
 
 	// The Transparency Consent and Control database is a protected file, can we access it?
 	int nResult = access("/Library/Application Support/com.apple.TCC/TCC.db", R_OK);
 	if(nResult == -1 && errno == EPERM)
-		eLevel = EPL_Denied;
+		eLevel = EPrivilegeLevel::Denied;
 	else if(nResult == 0)
-		eLevel = EPL_Granted;
+		eLevel = EPrivilegeLevel::Granted;
 
 	return eLevel;
 }

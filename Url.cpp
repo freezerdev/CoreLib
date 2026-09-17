@@ -5750,10 +5750,12 @@ ERRCODE CUrl8::Assign(const CUrl8 &url)
 		m_nPort = url.m_nPort;
 
 		// Add segments to the path
+		m_vecPath.reserve(url.m_vecPath.size());
 		for(const auto &segment : url.m_vecPath)
 			m_vecPath.push_back(segment);
 
 		// Add parameters to the path
+		m_vecParams.reserve(url.m_vecParams.size());
 		for(const auto &param : url.m_vecParams)
 			m_vecParams.push_back(param);
 
@@ -5775,10 +5777,12 @@ ERRCODE CUrl8::Assign(const CUrlW &url)
 	m_nPort = url.m_nPort;
 
 	// Add segments to the path
+	m_vecPath.reserve(url.m_vecPath.size());
 	for(const auto &segment : url.m_vecPath)
 		m_vecPath.emplace_back(segment);
 
 	// Add parameters to the path
+	m_vecParams.reserve(url.m_vecParams.size());
 	for(const auto &param : url.m_vecParams)
 		m_vecParams.emplace_back(param);
 
@@ -7426,10 +7430,12 @@ ERRCODE CUrlW::Assign(const CUrlW &url)
 		m_nPort = url.m_nPort;
 
 		// Add segments to the path
+		m_vecPath.reserve(url.m_vecPath.size());
 		for(const auto &segment : url.m_vecPath)
 			m_vecPath.push_back(segment);
 
 		// Add parameters to the path
+		m_vecParams.reserve(url.m_vecParams.size());
 		for(const auto &param : url.m_vecParams)
 			m_vecParams.push_back(param);
 
@@ -7451,10 +7457,12 @@ ERRCODE CUrlW::Assign(const CUrl8 &url)
 	m_nPort = url.m_nPort;
 
 	// Add segments to the path
+	m_vecPath.reserve(url.m_vecPath.size());
 	for(const auto &segment : url.m_vecPath)
 		m_vecPath.emplace_back(segment);
 
 	// Add parameters to the path
+	m_vecParams.reserve(url.m_vecParams.size());
 	for(const auto &param : url.m_vecParams)
 		m_vecParams.emplace_back(param);
 

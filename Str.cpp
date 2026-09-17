@@ -96,7 +96,7 @@ CStr8::CStr8(PCSTR sz, const size_t nStart, const size_t nLen)
 CStr8::CStr8(const EPrintfType eIgnored, PCSTR szFormat, ...)
 {
 	UNUSED(eIgnored);
-	Assert(eIgnored == EPT_Printf);
+	Assert(eIgnored == EPrintfType::Printf);
 
 	va_list vaArgs;
 	va_start(vaArgs, szFormat);
@@ -3840,7 +3840,7 @@ CStrW::CStrW(PCWSTR sz, const size_t nStart, const size_t nLen)
 CStrW::CStrW(const EPrintfType eIgnored, PCWSTR szFormat, ...)
 {
 	UNUSED(eIgnored);
-	Assert(eIgnored == EPT_Printf);
+	Assert(eIgnored == EPrintfType::Printf);
 
 	va_list vaArgs;
 	va_start(vaArgs, szFormat);

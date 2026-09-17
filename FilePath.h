@@ -464,23 +464,23 @@ class CFilePath8 final
 private:
 	friend class CFilePathW;
 
-	enum EPathType : uint8_t
+	enum class EPathType : uint8_t
 	{
-		EPT_Empty = 0,
-		EPT_FullyRooted,			// Path fully rooted - "C:\Windows" or "/etc/system"
-		EPT_Relative,				// Path fragment - "files\drivers" or "files/drivers"
-		EPT_DriveRelative,			// Path relative to a given drive - "C:temp"
-		EPT_CurrentDriveRelative,	// Path relative to current drive - "\Files\Current"
-		EPT_UNC						// UNC paths - "\\server\share" or "//server/share"
+		Empty,
+		FullyRooted,			// Path fully rooted - "C:\Windows" or "/etc/system"
+		Relative,				// Path fragment - "files\drivers" or "files/drivers"
+		DriveRelative,			// Path relative to a given drive - "C:temp"
+		CurrentDriveRelative,	// Path relative to current drive - "\Files\Current"
+		UNC						// UNC paths - "\\server\share" or "//server/share"
 	};
 
 public:
 #ifdef _WIN32
-	enum EKernelPath : uint8_t
+	enum class EKernelPath : uint8_t
 	{
-		EKP_Never = 0,				// Never add the kernel prefix to paths
-		EKP_Always,					// Always add the kernel prefix to paths
-		EKP_Auto					// Add the kernel prefix if the path length exceeds 256
+		Never,					// Never add the kernel prefix to paths
+		Always,					// Always add the kernel prefix to paths
+		Auto					// Add the kernel prefix if the path length exceeds 256
 	};
 #endif
 
@@ -506,11 +506,11 @@ public:
 	operator CStr8(void) const;
 #ifdef _WIN32
 	// Returns a string representing the full path, set eKernalPath to allow for paths greater than 256 in length
-	CStr8 Get(const EKernelPath eKernelPath = EKP_Auto) const;
+	CStr8 Get(const EKernelPath eKernelPath = EKernelPath::Auto) const;
 	// Returns the length in characters, set eKernalPath to allow for paths greater than 256 in length
-	size_t GetLength(const bool bIncludeNullTerm = false, const EKernelPath eKernelPath = EKP_Auto) const;
+	size_t GetLength(const bool bIncludeNullTerm = false, const EKernelPath eKernelPath = EKernelPath::Auto) const;
 	// Returns the size in bytes, set eKernalPath to allow for paths greater than 256 in length
-	size_t GetSize(const bool bIncludeNullTerm = false, const EKernelPath eKernelPath = EKP_Auto) const;
+	size_t GetSize(const bool bIncludeNullTerm = false, const EKernelPath eKernelPath = EKernelPath::Auto) const;
 #else
 	// Returns a string representing the full path
 	CStr8 Get(void) const;
@@ -772,7 +772,7 @@ public:
 
 private:
 	std::vector<std::unique_ptr<CFilePathSegment8>> m_vecSegments;
-	EPathType m_eType = EPT_Empty;
+	EPathType m_eType = EPathType::Empty;
 
 	ERRCODE ParsePath(const CStr8 &strPath);
 	bool SafeDotAppend(const CFilePath8 &path1, const CFilePath8 &path2);
@@ -786,23 +786,23 @@ class CFilePathW final
 private:
 	friend class CFilePath8;
 
-	enum EPathType : uint8_t
+	enum class EPathType : uint8_t
 	{
-		EPT_Empty = 0,
-		EPT_FullyRooted,			// Path fully rooted - "C:\Windows" or "/etc/system"
-		EPT_Relative,				// Path fragment - "files\drivers" or "files/drivers"
-		EPT_DriveRelative,			// Path relative to a given drive - "C:temp"
-		EPT_CurrentDriveRelative,	// Path relative to current drive - "\Files\Current"
-		EPT_UNC						// UNC paths - "\\server\share" or "//server/share"
+		Empty,
+		FullyRooted,			// Path fully rooted - "C:\Windows" or "/etc/system"
+		Relative,				// Path fragment - "files\drivers" or "files/drivers"
+		DriveRelative,			// Path relative to a given drive - "C:temp"
+		CurrentDriveRelative,	// Path relative to current drive - "\Files\Current"
+		UNC						// UNC paths - "\\server\share" or "//server/share"
 	};
 
 public:
 #ifdef _WIN32
-	enum EKernelPath : uint8_t
+	enum class EKernelPath : uint8_t
 	{
-		EKP_Never = 0,				// Never add the kernel prefix to paths
-		EKP_Always,					// Always add the kernel prefix to paths
-		EKP_Auto					// Add the kernel prefix if the path length exceeds 256
+		Never,					// Never add the kernel prefix to paths
+		Always,					// Always add the kernel prefix to paths
+		Auto					// Add the kernel prefix if the path length exceeds 256
 	};
 #endif
 
@@ -828,11 +828,11 @@ public:
 	operator CStrW(void) const;
 #ifdef _WIN32
 	// Returns a string representing the full path, set eKernalPath to allow for paths greater than 256 in length
-	CStrW Get(const EKernelPath eKernelPath = EKP_Auto) const;
+	CStrW Get(const EKernelPath eKernelPath = EKernelPath::Auto) const;
 	// Returns the length in characters, set eKernalPath to allow for paths greater than 256 in length
-	size_t GetLength(const bool bIncludeNullTerm = false, const EKernelPath eKernelPath = EKP_Auto) const;
+	size_t GetLength(const bool bIncludeNullTerm = false, const EKernelPath eKernelPath = EKernelPath::Auto) const;
 	// Returns the size in bytes, set eKernalPath to allow for paths greater than 256 in length
-	size_t GetSize(const bool bIncludeNullTerm = false, const EKernelPath eKernelPath = EKP_Auto) const;
+	size_t GetSize(const bool bIncludeNullTerm = false, const EKernelPath eKernelPath = EKernelPath::Auto) const;
 #else
 	// Returns a string representing the full path
 	CStrW Get(void) const;
@@ -1094,7 +1094,7 @@ public:
 
 private:
 	std::vector<std::unique_ptr<CFilePathSegmentW>> m_vecSegments;
-	EPathType m_eType = EPT_Empty;
+	EPathType m_eType = EPathType::Empty;
 
 	ERRCODE ParsePath(const CStrW &strPath);
 	bool SafeDotAppend(const CFilePathW &path1, const CFilePathW &path2);

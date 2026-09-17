@@ -461,29 +461,29 @@ ERRCODE FileCreate(PCNSTR szPath, const EFileMode eMode, NHANDLE &hFile)
 	DWORD dwDisposition = 0;
 	switch(eMode)
 	{
-	case EFM_ExistingReadOnly:
+	case EFileMode::ExistingReadOnly:
 		dwAccess = GENERIC_READ;
 		ADD_FLAG(dwShare, FILE_SHARE_WRITE | FILE_SHARE_DELETE);
 		dwDisposition = OPEN_EXISTING;
 		break;
 
-	case EFM_ExistingReadWrite:
+	case EFileMode::ExistingReadWrite:
 		dwAccess = GENERIC_READ | GENERIC_WRITE;
 		dwDisposition = OPEN_EXISTING;
 		break;
 
-	case EFM_AlwaysReadWrite:
+	case EFileMode::AlwaysReadWrite:
 		dwAccess = GENERIC_READ | GENERIC_WRITE;
 		dwDisposition = OPEN_ALWAYS;
 		break;
 
-	case EFM_CreateWriteOnly:
+	case EFileMode::CreateWriteOnly:
 		dwAccess = GENERIC_WRITE;
 		ADD_FLAG(dwShare, FILE_SHARE_WRITE | FILE_SHARE_DELETE);
 		dwDisposition = CREATE_ALWAYS;
 		break;
 
-	case EFM_CreateReadWrite:
+	case EFileMode::CreateReadWrite:
 		dwAccess = GENERIC_READ | GENERIC_WRITE;
 		dwDisposition = CREATE_ALWAYS;
 		break;
@@ -499,23 +499,23 @@ ERRCODE FileCreate(PCNSTR szPath, const EFileMode eMode, NHANDLE &hFile)
 	int nFlags = 0;
 	switch(eMode)
 	{
-	case EFM_ExistingReadOnly:
+	case EFileMode::ExistingReadOnly:
 		nFlags = O_RDONLY;
 		break;
 
-	case EFM_ExistingReadWrite:
+	case EFileMode::ExistingReadWrite:
 		nFlags = O_RDWR;
 		break;
 
-	case EFM_AlwaysReadWrite:
+	case EFileMode::AlwaysReadWrite:
 		nFlags = O_RDWR | O_CREAT;
 		break;
 
-	case EFM_CreateWriteOnly:
+	case EFileMode::CreateWriteOnly:
 		nFlags = O_WRONLY | O_CREAT | O_TRUNC;
 		break;
 
-	case EFM_CreateReadWrite:
+	case EFileMode::CreateReadWrite:
 		nFlags = O_RDWR | O_CREAT | O_TRUNC;
 		break;
 	}
@@ -711,15 +711,15 @@ ERRCODE FileSetPosition(const NHANDLE hFile, const int64_t nOffset, EFileSeek eS
 	int nMode = FILE_BEGIN;
 	switch(eSeek)
 	{
-	case EFS_Begin:
+	case EFileSeek::Begin:
 		nMode = FILE_BEGIN;
 		break;
 
-	case EFS_Current:
+	case EFileSeek::Current:
 		nMode = FILE_CURRENT;
 		break;
 
-	case EFS_End:
+	case EFileSeek::End:
 		nMode = FILE_END;
 		break;
 	}
@@ -730,15 +730,15 @@ ERRCODE FileSetPosition(const NHANDLE hFile, const int64_t nOffset, EFileSeek eS
 	int nSeek;
 	switch(eSeek)
 	{
-	case EFS_Begin:
+	case EFileSeek::Begin:
 		nSeek = SEEK_SET;
 		break;
 
-	case EFS_Current:
+	case EFileSeek::Current:
 		nSeek = SEEK_CUR;
 		break;
 
-	case EFS_End:
+	case EFileSeek::End:
 		nSeek = SEEK_END;
 		break;
 	}

@@ -27,13 +27,13 @@ CStr GetFQDNName(void);
 CStr GetMachineDomain(void);
 CStr GetSessionUsername(void);
 
-enum EArch : uint8_t
+enum class EArch : uint8_t
 {
-	EA_Unknown = 0,
-	EA_x86,
-	EA_x64,
-	EA_arm32,
-	EA_arm64
+	Unknown,
+	x86,
+	x64,
+	arm32,
+	arm64
 };
 
 EArch GetSystemArchitecture(void);

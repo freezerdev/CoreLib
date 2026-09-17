@@ -8,17 +8,17 @@ NS_BEGIN
 class CTextFile final
 {
 public:
-	enum EEncodingType : uint8_t
+	enum class EEncodingType : uint8_t
 	{
-		EET_Native = 0,
-		EET_Utf8,
-		EET_Utf16
+		Native,
+		Utf8,
+		Utf16
 	};
 
 	CTextFile(void) = default;
 
 	bool Load(PCNSTR szTxtPath);
-	bool SaveAs(PCNSTR szTxtPath, const EEncodingType eType = EET_Native) const;
+	bool SaveAs(PCNSTR szTxtPath, const EEncodingType eType = EEncodingType::Native) const;
 
 	void ParseFromString(const CStr8 &strTxt);
 	void ParseFromString(const CStrW &strTxt);
@@ -33,7 +33,7 @@ public:
 	void AppendLine(PCNSTR sz);
 	void AppendBlankLine(void);
 
-	size_t GetFileSize(const EEncodingType eType = EET_Native) const;
+	size_t GetFileSize(const EEncodingType eType = EEncodingType::Native) const;
 
 	std::vector<CStr>::const_iterator begin(void) const;
 	std::vector<CStr>::const_iterator end(void) const;

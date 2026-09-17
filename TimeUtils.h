@@ -15,21 +15,21 @@ int GetTimeZoneOffset(void);
 CStr GetFormattedTime(const time_point<system_clock> &tp = GetCurrentUtcTime(), const bool bConvertToLocal = true, const NCHAR chDateSeparator = _N('-'), const NCHAR chTimeSeparator = _N(':'), const NCHAR chFieldSeparator = _N(' '));
 CStr GetFormattedDate(const time_point<system_clock> &tp = GetCurrentUtcTime(), const bool bConvertToLocal = true, const NCHAR chDateSeparator = _N('-'));
 
-enum EEpochType : uint8_t
+enum class EEpochType : uint8_t
 {
-	EET_Auto = 0,		// Automatically detect most likely epoch time format
-	EET_Seconds,
-	EET_Milliseconds,
-	EET_Microseconds,
-	EET_Nanoseconds
+	Auto,		// Automatically detect most likely epoch time format
+	Seconds,
+	Milliseconds,
+	Microseconds,
+	Nanoseconds
 };
 
 // Converts an epoch time (in seconds, milliseconds, or microseconds) to a time_point object
-void EpochToTimePoint(const uint64_t nEpoch, time_point<system_clock> &tp, const EEpochType eType = EET_Auto);
-void EpochToTimePoint(PCNSTR szEpoch, time_point<system_clock> &tp, const EEpochType eType = EET_Auto);
+void EpochToTimePoint(const uint64_t nEpoch, time_point<system_clock> &tp, const EEpochType eType = EEpochType::Auto);
+void EpochToTimePoint(PCNSTR szEpoch, time_point<system_clock> &tp, const EEpochType eType = EEpochType::Auto);
 
 // Converts a time_point object to epoch time (in seconds, milliseconds, or microseconds)
-void TimePointToEpoch(const time_point<system_clock> &tp, uint64_t &nEpoch, const EEpochType eType = EET_Auto);
+void TimePointToEpoch(const time_point<system_clock> &tp, uint64_t &nEpoch, const EEpochType eType = EEpochType::Auto);
 
 // Converts a time_point object to/from a FILETIME
 void TimePointToFileTime(const time_point<system_clock> &tp, FILETIME &ft);

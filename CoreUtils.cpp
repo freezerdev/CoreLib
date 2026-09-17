@@ -49,6 +49,7 @@ std::vector<CStr> GetCommandLineArguments(void)
 
 #ifdef _WIN32
 	CWhitespaceParser cmdline(GetCommandLineW());
+	vecArgs.reserve(cmdline.GetCount());
 	for(size_t n = 0; n < cmdline.GetCount(); ++n)
 		vecArgs.push_back(cmdline.Get(n));
 #elif __APPLE__
@@ -56,12 +57,13 @@ std::vector<CStr> GetCommandLineArguments(void)
 	char ***pppszArguments = _NSGetArgv();
 	if(pnCount && pppszArguments && *pppszArguments)
 	{
+		vecArgs.reserve(*pnCount);
 		for(int n = 0; n < *pnCount; ++n)
 			vecArgs.emplace_back((*pppszArguments)[n]);
 	}
 #elif __linux__
 	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate("/proc/self/cmdline", EFM_ExistingReadOnly, hFile) == FW_NO_ERROR)
+	if(FileCreate("/proc/self/cmdline", EFileMode::ExistingReadOnly, hFile) == FW_NO_ERROR)
 	{
 		DEFER(FileClose(hFile));
 
@@ -221,7 +223,7 @@ CStr GetSessionUsername(void)
 //#################################################################################################
 EArch GetSystemArchitecture(void)
 {
-	EArch eArch = EA_Unknown;
+	EArch eArch = EArch::Unknown;
 
 #ifdef _WIN32
 	using PFNISWOW64PROCESS2 = BOOL (WINAPI*)(HANDLE, PUSHORT, PUSHORT);
@@ -243,36 +245,36 @@ EArch GetSystemArchitecture(void)
 				if(pfnIsWow64Process2(hProcess, &nProcess, &nNative))
 				{
 					if(nNative == IMAGE_FILE_MACHINE_I386)
-						eArch = EA_x86;
+						eArch = EArch::x86;
 					else if(nNative == IMAGE_FILE_MACHINE_AMD64)
-						eArch = EA_x64;
+						eArch = EArch::x64;
 					else if(nNative == IMAGE_FILE_MACHINE_ARM)
-						eArch = EA_arm32;
+						eArch = EArch::arm32;
 					else if(nNative == IMAGE_FILE_MACHINE_ARM64)
-						eArch = EA_arm64;
+						eArch = EArch::arm64;
 				}
 			}
 		}
 	}
 
-	if(eArch == EA_Unknown)
+	if(eArch == EArch::Unknown)
 	{
 		SYSTEM_INFO si = {0};
 		GetNativeSystemInfo(&si);
 		if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL)
-			eArch = EA_x86;
+			eArch = EArch::x86;
 		else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
-			eArch = EA_x64;
+			eArch = EArch::x64;
 		else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
-			eArch = EA_arm32;
+			eArch = EArch::arm32;
 		else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64)
-			eArch = EA_arm64;
+			eArch = EArch::arm64;
 	}
 #elif __APPLE__
 #ifdef __aarch64__
-	eArch = EA_arm64;
+	eArch = EArch::arm64;
 #else
-	eArch = EA_x64;
+	eArch = EArch::x64;
 #endif
 #else
 	// TODO
@@ -707,7 +709,7 @@ CStr8 UUEncode8(const CMemBuffer &bufDecoded)
 	{
 		strEncoded.ReserveBuffer(bufDecoded.GetDataSize() * 2 + 1);
 		for(size_t n = 0; n < bufDecoded.GetDataSize(); ++n)
-			strEncoded += CStr8(CStr8::EPT_Printf, "%02X", bufDecoded.GetAt(n));
+			strEncoded += CStr8(CStr8::EPrintfType::Printf, "%02X", bufDecoded.GetAt(n));
 	}
 
 	return strEncoded;
@@ -722,7 +724,7 @@ CStr8 UUEncode8(PCBYTE pDecoded, const size_t nDecodedSize)
 	{
 		strEncoded.ReserveBuffer(nDecodedSize * 2 + 1);
 		for(size_t n = 0; n < nDecodedSize; ++n)
-			strEncoded += CStr8(CStr8::EPT_Printf, "%02X", *(pDecoded + n));
+			strEncoded += CStr8(CStr8::EPrintfType::Printf, "%02X", *(pDecoded + n));
 	}
 
 	return strEncoded;
@@ -737,7 +739,7 @@ CStrW UUEncodeW(const CMemBuffer &bufDecoded)
 	{
 		strEncoded.ReserveBuffer(bufDecoded.GetDataSize() * 2 + 1);
 		for(size_t n = 0; n < bufDecoded.GetDataSize(); ++n)
-			strEncoded += CStrW(CStrW::EPT_Printf, L"%02X", bufDecoded.GetAt(n));
+			strEncoded += CStrW(CStrW::EPrintfType::Printf, L"%02X", bufDecoded.GetAt(n));
 	}
 
 	return strEncoded;
@@ -752,7 +754,7 @@ CStrW UUEncodeW(PCBYTE pDecoded, const size_t nDecodedSize)
 	{
 		strEncoded.ReserveBuffer(nDecodedSize * 2 + 1);
 		for(size_t n = 0; n < nDecodedSize; ++n)
-			strEncoded += CStrW(CStrW::EPT_Printf, L"%02X", *(pDecoded + n));
+			strEncoded += CStrW(CStrW::EPrintfType::Printf, L"%02X", *(pDecoded + n));
 	}
 
 	return strEncoded;

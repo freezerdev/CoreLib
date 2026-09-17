@@ -22,14 +22,14 @@ private:
 	friend class CStr16;
 
 public:
-	enum EPrintfType : uint8_t
+	enum class EPrintfType : uint8_t
 	{
-		EPT_Printf = 0
+		Printf
 	};
 
-	enum EFormatType : uint8_t
+	enum class EFormatType : uint8_t
 	{
-		EFT_Format = 0
+		Format
 	};
 
 	static const size_t not_found;
@@ -52,9 +52,9 @@ public:
 	// Constructs a string object set to a substring, given the starting location and length
 	CStr8(const CStr8 &str, const size_t nStart, const size_t nLen = end);
 	CStr8(PCSTR sz, const size_t nStart, const size_t nLen = end);
-	// Constructs a formatted string using printf formatting; set 'eIgnored' to 'EPT_Printf' and 'szFormat' contains the string with format specifiers
+	// Constructs a formatted string using printf formatting; set 'eIgnored' to 'EPrintfType::Printf' and 'szFormat' contains the string with format specifiers
 	CStr8(const EPrintfType eIgnored, PCSTR szFormat, ...);
-	// Constructs a formatted string using C++ variadic templates; set 'eIgnored' to 'EFT_Format' and 'szFormat' contains the string with format specifiers
+	// Constructs a formatted string using C++ variadic templates; set 'eIgnored' to 'EFormatType::Format' and 'szFormat' contains the string with format specifiers
 	template<typename ...ARGS>
 	CStr8(const EFormatType eIgnored, PCSTR szFormat, const ARGS&... args)
 		: m_sz((PSTR)g_szNull8),
@@ -62,7 +62,7 @@ public:
 		m_nStrLen(0)
 	{
 		UNUSED(eIgnored);
-		Assert(eIgnored == EFT_Format);
+		Assert(eIgnored == EFormatType::Format);
 
 		*this = VFormat(szFormat, args...);
 	}
@@ -502,14 +502,14 @@ private:
 	friend class CStr16;
 
 public:
-	enum EPrintfType : uint8_t
+	enum class EPrintfType : uint8_t
 	{
-		EPT_Printf = 0
+		Printf
 	};
 
-	enum EFormatType : uint8_t
+	enum class EFormatType : uint8_t
 	{
-		EFT_Format = 0
+		Format
 	};
 
 	static const size_t not_found;
@@ -532,9 +532,9 @@ public:
 	// Constructs a string object set to a substring, given the starting location and length
 	CStrW(const CStrW &str, const size_t nStart, const size_t nLen = end);
 	CStrW(PCWSTR sz, const size_t nStart, const size_t nLen = end);
-	// Constructs a formatted string using printf formatting; set 'eIgnored' to 'EPT_Printf' and 'szFormat' contains the string with format specifiers
+	// Constructs a formatted string using printf formatting; set 'eIgnored' to 'EPrintfType::Printf' and 'szFormat' contains the string with format specifiers
 	CStrW(const EPrintfType eIgnored, PCWSTR szFormat, ...);
-	// Constructs a formatted string using C++ variadic templates; set 'eIgnored' to 'EFT_Format' and 'szFormat' contains the string with format specifiers
+	// Constructs a formatted string using C++ variadic templates; set 'eIgnored' to 'EFormatType::Format' and 'szFormat' contains the string with format specifiers
 	template<typename ...ARGS>
 	CStrW(const EFormatType eIgnored, PCWSTR szFormat, const ARGS&... args)
 		: m_sz((PWSTR)g_szNullW),
@@ -542,15 +542,15 @@ public:
 		m_nStrLen(0)
 	{
 		UNUSED(eIgnored);
-		Assert(eIgnored == EFT_Format);
+		Assert(eIgnored == EFormatType::Format);
 
 		*this = VFormat(szFormat, args...);
 	}
 
 #ifdef _WIN32
-	enum ELoadType : uint8_t
+	enum class ELoadType : uint8_t
 	{
-		ELT_Load = 0
+		Load
 	};
 	// Constructs a string by loading it from the string resources table for the current application module
 	CStrW(const ELoadType eIgnored, const int nId);

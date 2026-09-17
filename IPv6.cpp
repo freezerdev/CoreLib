@@ -71,7 +71,7 @@ PCBYTE CIPv6::Get(void) const noexcept
 //#################################################################################################
 CStr CIPv6::GetAsString(void) const
 {
-	return CStr(CStr::EPT_Printf, _N("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X"),
+	return CStr(CStr::EPrintfType::Printf, _N("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X"),
 		m_ip[0], m_ip[1], m_ip[2], m_ip[3], m_ip[4], m_ip[5], m_ip[6], m_ip[7],
 		m_ip[8], m_ip[9], m_ip[10], m_ip[11], m_ip[12], m_ip[13], m_ip[14], m_ip[15]);
 }
@@ -104,7 +104,7 @@ void CIPv6::Assign(PCNSTR szIP)
 //#################################################################################################
 std::ostream &operator<<(std::ostream &stream, const CIPv6 &ip)
 {
-	CStr8 strIP(CStr8::EPT_Printf, "%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X",
+	CStr8 strIP(CStr8::EPrintfType::Printf, "%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X",
 		ip.m_ip[0], ip.m_ip[1], ip.m_ip[2], ip.m_ip[3], ip.m_ip[4], ip.m_ip[5], ip.m_ip[6], ip.m_ip[7],
 		ip.m_ip[8], ip.m_ip[9], ip.m_ip[10], ip.m_ip[11], ip.m_ip[12], ip.m_ip[13], ip.m_ip[14], ip.m_ip[15]);
 	stream << strIP;
@@ -114,7 +114,7 @@ std::ostream &operator<<(std::ostream &stream, const CIPv6 &ip)
 //#################################################################################################
 std::wostream &operator<<(std::wostream &stream, const CIPv6 &ip)
 {
-	CStrW strIP(CStrW::EPT_Printf, L"%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X",
+	CStrW strIP(CStrW::EPrintfType::Printf, L"%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X",
 		ip.m_ip[0], ip.m_ip[1], ip.m_ip[2], ip.m_ip[3], ip.m_ip[4], ip.m_ip[5], ip.m_ip[6], ip.m_ip[7],
 		ip.m_ip[8], ip.m_ip[9], ip.m_ip[10], ip.m_ip[11], ip.m_ip[12], ip.m_ip[13], ip.m_ip[14], ip.m_ip[15]);
 	stream << strIP;

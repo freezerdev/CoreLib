@@ -38,7 +38,7 @@ bool CCrc32::Crc32File(PCNSTR szFilename, uint32_t &nCrc32) const
 		return bResult;
 
 	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(szFilename, EFM_ExistingReadOnly, hFile) == FW_NO_ERROR)
+	if(FileCreate(szFilename, EFileMode::ExistingReadOnly, hFile) == FW_NO_ERROR)
 	{
 		DEFER(FileClose(hFile));
 
@@ -126,7 +126,7 @@ bool CCrc32Mpeg2::Crc32File(PCNSTR szFilename, uint32_t &nCrc32) const
 	nCrc32 = (uint32_t)-1;
 
 	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(szFilename, EFM_ExistingReadOnly, hFile) == FW_NO_ERROR)
+	if(FileCreate(szFilename, EFileMode::ExistingReadOnly, hFile) == FW_NO_ERROR)
 	{
 		DEFER(FileClose(hFile));
 
