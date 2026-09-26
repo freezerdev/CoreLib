@@ -843,4 +843,28 @@ size_t CIniFile::GetEntryCount(const CStr &strSection)
 	return nCount;
 }
 
+//#################################################################################################
+std::list<CStr>::const_iterator CIniFile::begin(void) const
+{
+	return m_lstLines.begin();
+}
+
+//#################################################################################################
+std::list<CStr>::const_iterator CIniFile::end(void) const
+{
+	return m_lstLines.end();
+}
+
+//#################################################################################################
+std::list<CStr>::iterator CIniFile::begin(void)
+{
+	return m_lstLines.begin();
+}
+
+//#################################################################################################
+std::list<CStr>::iterator CIniFile::end(void)
+{
+	return m_lstLines.end();
+}
+
 NS_END

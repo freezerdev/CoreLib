@@ -1,0 +1,7 @@
+/bin/
+/Windows/.vs/
+/Windows/arm64/
+/Windows/x64/
+/Windows/x86/
+/Windows/CoreLib.sln
+/Windows/CoreLib.vcxproj.user

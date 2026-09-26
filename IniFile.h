@@ -102,7 +102,13 @@ public:
 	size_t GetSectionCount(void) const;
 	size_t GetEntryCount(const CStr &strSection);
 
-private:
+	std::list<CStr>::const_iterator begin(void) const;
+	std::list<CStr>::const_iterator end(void) const;
+
+	std::list<CStr>::iterator begin(void);
+	std::list<CStr>::iterator end(void);
+
+	private:
 	std::list<CStr> m_lstLines;
 };
 
