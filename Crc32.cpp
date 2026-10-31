@@ -1,7 +1,6 @@
 #include "Base.h"
 #include "Crc32.h"
-#include "Defer.h"
-#include "FileSystemUtils.h"
+#include "File.h"
 
 NS_BEGIN
 
@@ -37,20 +36,18 @@ bool CCrc32::Crc32File(PCNSTR szFilename, uint32_t &nCrc32) const
 	if(szFilename == nullptr)
 		return bResult;
 
-	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(szFilename, EFileMode::ExistingReadOnly, hFile) == FW_NO_ERROR)
+	CFile file;
+	if(file.Create(szFilename, CFile::EFileMode::ExistingReadOnly) == FW_NO_ERROR)
 	{
-		DEFER(FileClose(hFile));
-
 		auto pBuffer = std::make_unique<BYTE[]>(CRC_BUFFER_SIZE);
 		size_t nBytesRead;
-		bool bSuccess = (FileRead(hFile, pBuffer.get(), CRC_BUFFER_SIZE, nBytesRead) == FW_NO_ERROR);
+		bool bSuccess = (file.Read(pBuffer.get(), CRC_BUFFER_SIZE, nBytesRead) == FW_NO_ERROR);
 		while(bSuccess && nBytesRead)
 		{
 			for(size_t n = 0; n < nBytesRead; ++n)
 				nCrc32 = (nCrc32 >> 8) ^ m_pnCrc32Table[pBuffer[n] ^ (nCrc32 & 0x000000FF)];
 
-			bSuccess = (FileRead(hFile, pBuffer.get(), CRC_BUFFER_SIZE, nBytesRead) == FW_NO_ERROR);
+			bSuccess = (file.Read(pBuffer.get(), CRC_BUFFER_SIZE, nBytesRead) == FW_NO_ERROR);
 		}
 
 		nCrc32 = ~nCrc32;
@@ -125,20 +122,18 @@ bool CCrc32Mpeg2::Crc32File(PCNSTR szFilename, uint32_t &nCrc32) const
 
 	nCrc32 = (uint32_t)-1;
 
-	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(szFilename, EFileMode::ExistingReadOnly, hFile) == FW_NO_ERROR)
+	CFile file;
+	if(file.Create(szFilename, CFile::EFileMode::ExistingReadOnly) == FW_NO_ERROR)
 	{
-		DEFER(FileClose(hFile));
-
 		auto pBuffer = std::make_unique<BYTE[]>(CRC_BUFFER_SIZE);
 		size_t nBytesRead;
-		bool bSuccess = (FileRead(hFile, pBuffer.get(), CRC_BUFFER_SIZE, nBytesRead) == FW_NO_ERROR);
+		bool bSuccess = (file.Read(pBuffer.get(), CRC_BUFFER_SIZE, nBytesRead) == FW_NO_ERROR);
 		while(bSuccess && nBytesRead)
 		{
 			for(size_t n = 0; n < nBytesRead; ++n)
 				nCrc32 = m_pnCrc32Table[(nCrc32 >> 24) ^ (pBuffer[n] & 0xFF)] ^ (nCrc32 << 8);
 
-			bSuccess = (FileRead(hFile, pBuffer.get(), CRC_BUFFER_SIZE, nBytesRead) == FW_NO_ERROR);
+			bSuccess = (file.Read(pBuffer.get(), CRC_BUFFER_SIZE, nBytesRead) == FW_NO_ERROR);
 		}
 
 		bResult = true;

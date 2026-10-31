@@ -23,7 +23,7 @@
 #include <netdb.h>
 #include <pwd.h>
 #elif __linux__
-#include "FileSystemUtils.h"
+#include "File.h"
 #include "TextFile.h"
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -62,15 +62,13 @@ std::vector<CStr> GetCommandLineArguments(void)
 			vecArgs.emplace_back((*pppszArguments)[n]);
 	}
 #elif __linux__
-	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate("/proc/self/cmdline", EFileMode::ExistingReadOnly, hFile) == FW_NO_ERROR)
+	CFile file;
+	if(file.Create("/proc/self/cmdline", CFile::EFileMode::ExistingReadOnly) == FW_NO_ERROR)
 	{
-		DEFER(FileClose(hFile));
-
 		size_t nSize = 4096;
 		auto pBuffer = std::make_unique<BYTE[]>(nSize);
 		size_t nBytesRead;
-		if(FileRead(hFile, pBuffer.get(), nSize, nBytesRead) == FW_NO_ERROR)
+		if(file.Read(pBuffer.get(), nSize, nBytesRead) == FW_NO_ERROR)
 		{
 			PCSTR szScan = (PCSTR)pBuffer.get();
 			size_t nRemaining = nBytesRead;

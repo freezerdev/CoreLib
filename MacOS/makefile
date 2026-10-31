@@ -26,7 +26,7 @@ else ifeq ($(SANITIZER), undefined)
 SFLAGS=-fsanitize=undefined
 endif
 
-all: $(BUILDDIR)/CityHash.o $(BUILDDIR)/Container.o $(BUILDDIR)/CoreLib.o $(BUILDDIR)/CoreUtils.o $(BUILDDIR)/Crc32.o $(BUILDDIR)/Diagnostic.o $(BUILDDIR)/DoubleNullStr.o $(BUILDDIR)/Errors.o $(BUILDDIR)/Event.o $(BUILDDIR)/ExceptionUtils.o $(BUILDDIR)/FilePath.o $(BUILDDIR)/FilePathUtils.o $(BUILDDIR)/FileSystemUtils.o $(BUILDDIR)/FileTraverse.o $(BUILDDIR)/IniFile.o $(BUILDDIR)/IPv6.o $(BUILDDIR)/Mac.o $(BUILDDIR)/MemBuffer.o $(BUILDDIR)/MemStream.o $(BUILDDIR)/NetUtils.o $(BUILDDIR)/Object.o $(BUILDDIR)/PlatformUtils.o $(BUILDDIR)/PowerUtils.o $(BUILDDIR)/ProcessUtils.o $(BUILDDIR)/RandUtils.o $(BUILDDIR)/RegexUtils.o $(BUILDDIR)/StlHelper.o $(BUILDDIR)/Str.o $(BUILDDIR)/StrUtils.o $(BUILDDIR)/TextFile.o $(BUILDDIR)/Thread.o $(BUILDDIR)/ThreadUtils.o $(BUILDDIR)/TimeUtils.o $(BUILDDIR)/Url.o $(BUILDDIR)/UrlUtils.o $(BUILDDIR)/WhitespaceParser.o
+all: $(BUILDDIR)/CityHash.o $(BUILDDIR)/Container.o $(BUILDDIR)/CoreLib.o $(BUILDDIR)/CoreUtils.o $(BUILDDIR)/Crc32.o $(BUILDDIR)/Diagnostic.o $(BUILDDIR)/DoubleNullStr.o $(BUILDDIR)/Errors.o $(BUILDDIR)/Event.o $(BUILDDIR)/ExceptionUtils.o $(BUILDDIR)/File.o $(BUILDDIR)/FilePath.o $(BUILDDIR)/FilePathUtils.o $(BUILDDIR)/FileSystemUtils.o $(BUILDDIR)/FileTraverse.o $(BUILDDIR)/IniFile.o $(BUILDDIR)/IPv6.o $(BUILDDIR)/Mac.o $(BUILDDIR)/MemBuffer.o $(BUILDDIR)/MemStream.o $(BUILDDIR)/NetUtils.o $(BUILDDIR)/Object.o $(BUILDDIR)/PlatformUtils.o $(BUILDDIR)/PowerUtils.o $(BUILDDIR)/ProcessUtils.o $(BUILDDIR)/RandUtils.o $(BUILDDIR)/RegexUtils.o $(BUILDDIR)/StlHelper.o $(BUILDDIR)/Str.o $(BUILDDIR)/StrUtils.o $(BUILDDIR)/TextFile.o $(BUILDDIR)/Thread.o $(BUILDDIR)/ThreadUtils.o $(BUILDDIR)/TimeUtils.o $(BUILDDIR)/Url.o $(BUILDDIR)/UrlUtils.o $(BUILDDIR)/WhitespaceParser.o
 	mkdir -p ../bin/MacOS/$(BUILDDIR)
 	libtool -static -o ../bin/MacOS/$(BUILDDIR)/libCoreLib.a $(BUILDDIR)/*.o
 
@@ -81,6 +81,10 @@ $(BUILDDIR)/Event.o: ../Event.cpp ../Event.h
 $(BUILDDIR)/ExceptionUtils.o: ../ExceptionUtils.cpp ../ExceptionUtils.h
 	mkdir -p $(BUILDDIR)
 	$(CC) $(CFLAGS) $(SFLAGS) -c ../ExceptionUtils.cpp -o $(BUILDDIR)/ExceptionUtils.o
+
+$(BUILDDIR)/File.o: ../File.cpp ../File.h
+	mkdir -p $(BUILDDIR)
+	$(CC) $(CFLAGS) $(SFLAGS) -c ../File.cpp -o $(BUILDDIR)/File.o
 
 $(BUILDDIR)/FilePath.o: ../FilePath.cpp ../FilePath.h
 	mkdir -p $(BUILDDIR)

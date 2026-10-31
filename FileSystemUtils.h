@@ -38,74 +38,29 @@ void DirEnum(const CFilePath &path, std::vector<CFilePath> *pvecFiles, std::vect
 // Returns whether the given path exists as a file
 bool FileExists(PCNSTR szPath);
 
-enum class EFileMode : uint8_t
-{
-	ExistingReadOnly,		// Open existing file for read only
-	ExistingReadWrite,		// Open existing file for read/write
-	AlwaysReadWrite,		// Open existing file (or create new if not existing) for read/write
-	CreateWriteOnly,		// Create new file for write only (overwrites existing)
-	CreateReadWrite			// Create new file for read/write (overwrites existing)
-};
-
-// Opens an existing file or creates a new file, returns FW_NO_ERROR on success or an error code
-ERRCODE FileCreate(PCNSTR szPath, const EFileMode eMode, NHANDLE &hFile);
-// Closes an open file handle
-ERRCODE FileClose(const NHANDLE hFile);
 // Removes a file from the file system
 ERRCODE FileDelete(PCNSTR szPath);
 // Forces removal of a file from the file system, clearing read-only attribute if necessary
 ERRCODE FileForceDelete(PCNSTR szPath);
 
-// Reads 'nBytesToRead' of data from the open file handle and copies the data to 'pBuffer', the number of bytes read is returned in 'nBytesRead'
-ERRCODE FileRead(const NHANDLE hFile, PVOID pBuffer, const size_t nBytesToRead, size_t &nBytesRead);
-// Writes 'nBytesToWrite' of data to the open file handle from 'pBuffer', the number of bytes written is returned in 'nBytesWritten'
-ERRCODE FileWrite(const NHANDLE hFile, PCVOID pBuffer, const size_t nBytesToWrite, size_t &nBytesWritten);
-// Flushes data to disk
-ERRCODE FileFlush(const NHANDLE hFile);
-
-enum class EFileSeek : uint8_t
-{
-	Begin,					// Seek from the beginning of the file
-	Current,				// Seek from the current position
-	End						// Seek from the end of the file
-};
-
-// Gets the current file position
-ERRCODE FileGetPosition(const NHANDLE hFile, uint64_t &nOffset);
-// Sets the current file position relative to 'eSeek'
-ERRCODE FileSetPosition(const NHANDLE hFile, const int64_t nOffset, const EFileSeek eSeek = EFileSeek::Current);
-
-// Sets the current file position as the end of the file (truncates any file after current position)
-ERRCODE FileSetEnd(const NHANDLE hFile);
-
 // Returns the file size given the path or open file handle
 ERRCODE FileGetSize(PCNSTR szPath, uint64_t &nSize);
-ERRCODE FileGetSize(const NHANDLE hFile, uint64_t &nSize);
 
 // Returns the file modification time given the path or open file handle
 ERRCODE FileGetTime(PCNSTR szPath, time_point<system_clock> &tp);
-ERRCODE FileGetTime(const NHANDLE hFile, time_point<system_clock> &tp);
 
 // Sets the file modification time given the path or open file handle
 ERRCODE FileSetTime(PCNSTR szPath, const time_point<system_clock> &tp);
-ERRCODE FileSetTime(const NHANDLE hFile, const time_point<system_clock> &tp);
 
 // Returns the file size and modification time given the path or open file handle
 ERRCODE FileGetInfo(PCNSTR szPath, uint64_t &nSize, time_point<system_clock> &tp);
-ERRCODE FileGetInfo(const NHANDLE hFile, uint64_t &nSize, time_point<system_clock> &tp);
 
 #ifdef _WIN32
 ERRCODE FileGetAttributes(PCNSTR szPath, DWORD &dwAttrib);
-ERRCODE FileGetAttributes(const NHANDLE hFile, DWORD &dwAttrib);
-
 ERRCODE FileSetAttributes(PCNSTR szPath, const DWORD dwAttrib);
-ERRCODE FileSetAttributes(const NHANDLE hFile, const DWORD dwAttrib);
 #else
 ERRCODE FileGetPermissions(PCNSTR szPath, mode_t &nMode);
-ERRCODE FileGetPermissions(const NHANDLE hFile, mode_t &nMode);
-
 ERRCODE FileSetPermissions(PCNSTR szPath, const mode_t nMode);
-ERRCODE FileSetPermissions(const NHANDLE hFile, const mode_t nMode);
 #endif
 
 // Copies a file from the source to the destination, overwriting if it exists

@@ -1,6 +1,7 @@
 #include "Base.h"
 #include "ExceptionUtils.h"
 #include "TimeUtils.h"
+#include "File.h"
 #include "FileSystemUtils.h"
 #include "FilePathUtils.h"
 #include <csignal>
@@ -271,8 +272,8 @@ void CreateMiniDump(PEXCEPTION_POINTERS pep)
 	}
 	pathDumpFile += CFilePathSegmentW(strFilename);
 
-	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(pathDumpFile.Get(), EFileMode::CreateReadWrite, hFile) == FW_NO_ERROR)
+	CFile file;
+	if(file.Create(pathDumpFile.Get(), CFile::EFileMode::CreateReadWrite) == FW_NO_ERROR)
 	{
 		MINIDUMP_EXCEPTION_INFORMATION mdei = {0};
 		mdei.ThreadId = GetCurrentThreadId();
@@ -285,9 +286,7 @@ void CreateMiniDump(PEXCEPTION_POINTERS pep)
 		else
 			eType = (MINIDUMP_TYPE)(MiniDumpWithFullMemoryInfo | MiniDumpWithHandleData | MiniDumpWithThreadInfo | MiniDumpWithUnloadedModules);
 
-		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, eType, (pep != nullptr) ? &mdei : nullptr, nullptr, nullptr);
-
-		FileClose(hFile);
+		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), file, eType, (pep != nullptr) ? &mdei : nullptr, nullptr, nullptr);
 	}
 }
 
@@ -356,16 +355,14 @@ void CreateMiniDump(const CStr8 &strDetails)
 	}
 	pathDumpFile += CFilePathSegment8(strFilename);
 
-	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(pathDumpFile.Get(), EFileMode::CreateReadWrite, hFile) == FW_NO_ERROR)
+	CFile file;
+	if(file.Create(pathDumpFile.Get(), CFile::EFileMode::CreateReadWrite) == FW_NO_ERROR)
 	{
 		size_t nBytesWritten;
-		FileWrite(hFile, strDetails, strDetails.GetSize(), nBytesWritten);
+		file.Write(strDetails, strDetails.GetSize(), nBytesWritten);
 
 		CStr8 strTrace = GetStackTrace();
-		FileWrite(hFile, strTrace, strTrace.GetSize(), nBytesWritten);
-
-		FileClose(hFile);
+		file.Write(strTrace, strTrace.GetSize(), nBytesWritten);
 	}
 }
 

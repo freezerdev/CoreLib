@@ -237,6 +237,7 @@
     <ClInclude Include="..\Errors.h" />
     <ClInclude Include="..\Event.h" />
     <ClInclude Include="..\ExceptionUtils.h" />
+    <ClInclude Include="..\File.h" />
     <ClInclude Include="..\FilePath.h" />
     <ClInclude Include="..\FilePathConverter.h" />
     <ClInclude Include="..\FilePathUtils.h" />
@@ -285,6 +286,7 @@
     <ClCompile Include="..\Errors.cpp" />
     <ClCompile Include="..\Event.cpp" />
     <ClCompile Include="..\ExceptionUtils.cpp" />
+    <ClCompile Include="..\File.cpp" />
     <ClCompile Include="..\FilePath.cpp" />
     <ClCompile Include="..\FilePathConverter.cpp" />
     <ClCompile Include="..\FilePathUtils.cpp" />

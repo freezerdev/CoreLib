@@ -19,7 +19,7 @@
 #include <sys/wait.h>
 #include <map>
 #elif __linux__
-#include "FileSystemUtils.h"
+#include "File.h"
 #include "WhitespaceParser.h"
 #include <fcntl.h>
 #include <sys/wait.h>
@@ -257,7 +257,7 @@ CStr GetProcessCommandLine(const uint32_t nPid)
 			{
 				if(*pScan)
 				{
-					if(bNull == true)
+					if(bNull)
 					{
 						vec.push_back(std::move(str));
 						++nFound;
@@ -290,16 +290,14 @@ CStr GetProcessCommandLine(const uint32_t nPid)
 	pathProc += CFilePathSegment(IntegerToString(nPid));
 	pathProc += CFilePathSegment("cmdline");
 
-	NHANDLE hFile = INVALID_NHANDLE;
-	ERRCODE nErrorCode = FileCreate(pathProc.Get(), EFileMode::ExistingReadOnly, hFile);
+	CFile file;
+	ERRCODE nErrorCode = file.Create(pathProc.Get(), CFile::EFileMode::ExistingReadOnly);
 	if(nErrorCode == FW_NO_ERROR)
 	{
-		DEFER(FileClose(hFile));
-
 		auto pBuffer = std::make_unique<BYTE[]>(BUFFER_SIZE);
 		std::memset(pBuffer.get(), 0, BUFFER_SIZE);
 		size_t nBytesRead;
-		if(FileRead(hFile, pBuffer.get(), BUFFER_SIZE, nBytesRead) == FW_NO_ERROR)
+		if(file.Read(pBuffer.get(), BUFFER_SIZE, nBytesRead) == FW_NO_ERROR)
 		{
 			for(size_t n = 0; n < nBytesRead; ++n)
 			{	// Linux replaces spaces between parameters with nulls

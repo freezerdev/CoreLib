@@ -42,7 +42,7 @@ else ifeq ($(SANITIZER), undefined)
 SFLAGS=-fsanitize=undefined
 endif
 
-all: $(ARCHDIR)/$(BUILDDIR)/CityHash.o $(ARCHDIR)/$(BUILDDIR)/Container.o $(ARCHDIR)/$(BUILDDIR)/CoreLib.o $(ARCHDIR)/$(BUILDDIR)/CoreUtils.o $(ARCHDIR)/$(BUILDDIR)/Crc32.o $(ARCHDIR)/$(BUILDDIR)/Diagnostic.o $(ARCHDIR)/$(BUILDDIR)/DoubleNullStr.o $(ARCHDIR)/$(BUILDDIR)/Errors.o $(ARCHDIR)/$(BUILDDIR)/Event.o $(ARCHDIR)/$(BUILDDIR)/ExceptionUtils.o $(ARCHDIR)/$(BUILDDIR)/FilePath.o $(ARCHDIR)/$(BUILDDIR)/FilePathUtils.o $(ARCHDIR)/$(BUILDDIR)/FileSystemUtils.o $(ARCHDIR)/$(BUILDDIR)/FileTraverse.o $(ARCHDIR)/$(BUILDDIR)/IniFile.o $(ARCHDIR)/$(BUILDDIR)/IPv6.o $(ARCHDIR)/$(BUILDDIR)/Mac.o $(ARCHDIR)/$(BUILDDIR)/MemBuffer.o $(ARCHDIR)/$(BUILDDIR)/MemStream.o $(ARCHDIR)/$(BUILDDIR)/NetUtils.o $(ARCHDIR)/$(BUILDDIR)/PlatformUtils.o $(ARCHDIR)/$(BUILDDIR)/PowerUtils.o $(ARCHDIR)/$(BUILDDIR)/ProcessUtils.o $(ARCHDIR)/$(BUILDDIR)/RandUtils.o $(ARCHDIR)/$(BUILDDIR)/RegexUtils.o $(ARCHDIR)/$(BUILDDIR)/StlHelper.o $(ARCHDIR)/$(BUILDDIR)/Str.o $(ARCHDIR)/$(BUILDDIR)/StrUtils.o $(ARCHDIR)/$(BUILDDIR)/TextFile.o $(ARCHDIR)/$(BUILDDIR)/Thread.o $(ARCHDIR)/$(BUILDDIR)/ThreadUtils.o $(ARCHDIR)/$(BUILDDIR)/TimeUtils.o $(ARCHDIR)/$(BUILDDIR)/Url.o $(ARCHDIR)/$(BUILDDIR)/UrlUtils.o $(ARCHDIR)/$(BUILDDIR)/WhitespaceParser.o
+all: $(ARCHDIR)/$(BUILDDIR)/CityHash.o $(ARCHDIR)/$(BUILDDIR)/Container.o $(ARCHDIR)/$(BUILDDIR)/CoreLib.o $(ARCHDIR)/$(BUILDDIR)/CoreUtils.o $(ARCHDIR)/$(BUILDDIR)/Crc32.o $(ARCHDIR)/$(BUILDDIR)/Diagnostic.o $(ARCHDIR)/$(BUILDDIR)/DoubleNullStr.o $(ARCHDIR)/$(BUILDDIR)/Errors.o $(ARCHDIR)/$(BUILDDIR)/Event.o $(ARCHDIR)/$(BUILDDIR)/ExceptionUtils.o $(ARCHDIR)/$(BUILDDIR)/File.o $(ARCHDIR)/$(BUILDDIR)/FilePath.o $(ARCHDIR)/$(BUILDDIR)/FilePathUtils.o $(ARCHDIR)/$(BUILDDIR)/FileSystemUtils.o $(ARCHDIR)/$(BUILDDIR)/FileTraverse.o $(ARCHDIR)/$(BUILDDIR)/IniFile.o $(ARCHDIR)/$(BUILDDIR)/IPv6.o $(ARCHDIR)/$(BUILDDIR)/Mac.o $(ARCHDIR)/$(BUILDDIR)/MemBuffer.o $(ARCHDIR)/$(BUILDDIR)/MemStream.o $(ARCHDIR)/$(BUILDDIR)/NetUtils.o $(ARCHDIR)/$(BUILDDIR)/PlatformUtils.o $(ARCHDIR)/$(BUILDDIR)/PowerUtils.o $(ARCHDIR)/$(BUILDDIR)/ProcessUtils.o $(ARCHDIR)/$(BUILDDIR)/RandUtils.o $(ARCHDIR)/$(BUILDDIR)/RegexUtils.o $(ARCHDIR)/$(BUILDDIR)/StlHelper.o $(ARCHDIR)/$(BUILDDIR)/Str.o $(ARCHDIR)/$(BUILDDIR)/StrUtils.o $(ARCHDIR)/$(BUILDDIR)/TextFile.o $(ARCHDIR)/$(BUILDDIR)/Thread.o $(ARCHDIR)/$(BUILDDIR)/ThreadUtils.o $(ARCHDIR)/$(BUILDDIR)/TimeUtils.o $(ARCHDIR)/$(BUILDDIR)/Url.o $(ARCHDIR)/$(BUILDDIR)/UrlUtils.o $(ARCHDIR)/$(BUILDDIR)/WhitespaceParser.o
 	mkdir -p ../bin/Linux/$(ARCHDIR)/$(BUILDDIR)
 	ar rcs ../bin/Linux/$(ARCHDIR)/$(BUILDDIR)/libCoreLib.a $(ARCHDIR)/$(BUILDDIR)/*.o
 
@@ -101,6 +101,10 @@ $(ARCHDIR)/$(BUILDDIR)/Event.o: ../Event.cpp ../Event.h
 $(ARCHDIR)/$(BUILDDIR)/ExceptionUtils.o: ../ExceptionUtils.cpp ../ExceptionUtils.h
 	mkdir -p $(ARCHDIR)/$(BUILDDIR)
 	$(CC) $(CFLAGS) $(SFLAGS) $(ARCH) -c ../ExceptionUtils.cpp -o $(ARCHDIR)/$(BUILDDIR)/ExceptionUtils.o
+
+$(ARCHDIR)/$(BUILDDIR)/File.o: ../File.cpp ../File.h
+	mkdir -p $(ARCHDIR)/$(BUILDDIR)
+	$(CC) $(CFLAGS) $(SFLAGS) $(ARCH) -c ../File.cpp -o $(ARCHDIR)/$(BUILDDIR)/File.o
 
 $(ARCHDIR)/$(BUILDDIR)/FilePath.o: ../FilePath.cpp ../FilePath.h
 	mkdir -p $(ARCHDIR)/$(BUILDDIR)

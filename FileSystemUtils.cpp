@@ -444,107 +444,6 @@ bool FileExists(PCNSTR szPath)
 }
 
 //#################################################################################################
-ERRCODE FileCreate(PCNSTR szPath, const EFileMode eMode, NHANDLE &hFile)
-{
-	Assert(hFile == INVALID_NHANDLE);
-
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	hFile = INVALID_NHANDLE;
-
-	if(szPath == nullptr || *szPath == _N('\0'))
-		return FW_ERROR_INVALID_PARAMETER;
-
-#ifdef _WIN32
-	DWORD dwAccess = 0;
-	DWORD dwShare = FILE_SHARE_READ;
-	DWORD dwDisposition = 0;
-	switch(eMode)
-	{
-	case EFileMode::ExistingReadOnly:
-		dwAccess = GENERIC_READ;
-		ADD_FLAG(dwShare, FILE_SHARE_WRITE | FILE_SHARE_DELETE);
-		dwDisposition = OPEN_EXISTING;
-		break;
-
-	case EFileMode::ExistingReadWrite:
-		dwAccess = GENERIC_READ | GENERIC_WRITE;
-		dwDisposition = OPEN_EXISTING;
-		break;
-
-	case EFileMode::AlwaysReadWrite:
-		dwAccess = GENERIC_READ | GENERIC_WRITE;
-		dwDisposition = OPEN_ALWAYS;
-		break;
-
-	case EFileMode::CreateWriteOnly:
-		dwAccess = GENERIC_WRITE;
-		ADD_FLAG(dwShare, FILE_SHARE_WRITE | FILE_SHARE_DELETE);
-		dwDisposition = CREATE_ALWAYS;
-		break;
-
-	case EFileMode::CreateReadWrite:
-		dwAccess = GENERIC_READ | GENERIC_WRITE;
-		dwDisposition = CREATE_ALWAYS;
-		break;
-	}
-
-	hFile = CreateFileW(szPath, dwAccess, dwShare, nullptr, dwDisposition, FILE_ATTRIBUTE_NORMAL, nullptr);
-	if(hFile == INVALID_HANDLE_VALUE)
-	{
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-		hFile = INVALID_NHANDLE;
-	}
-#else
-	int nFlags = 0;
-	switch(eMode)
-	{
-	case EFileMode::ExistingReadOnly:
-		nFlags = O_RDONLY;
-		break;
-
-	case EFileMode::ExistingReadWrite:
-		nFlags = O_RDWR;
-		break;
-
-	case EFileMode::AlwaysReadWrite:
-		nFlags = O_RDWR | O_CREAT;
-		break;
-
-	case EFileMode::CreateWriteOnly:
-		nFlags = O_WRONLY | O_CREAT | O_TRUNC;
-		break;
-
-	case EFileMode::CreateReadWrite:
-		nFlags = O_RDWR | O_CREAT | O_TRUNC;
-		break;
-	}
-
-	hFile = open(szPath, nFlags, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-	if(hFile == -1)
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
-ERRCODE FileClose(const NHANDLE hFile)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-#ifdef _WIN32
-	if(hFile != INVALID_NHANDLE && !CloseHandle(hFile))
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#else
-	if(hFile != INVALID_NHANDLE && close(hFile) == -1)
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
 ERRCODE FileDelete(PCNSTR szPath)
 {
 	ERRCODE nErrorCode = FW_NO_ERROR;
@@ -586,196 +485,6 @@ ERRCODE FileForceDelete(PCNSTR szPath)
 }
 
 //#################################################################################################
-ERRCODE FileRead(const NHANDLE hFile, PVOID pBuffer, const size_t nBytesToRead, size_t &nBytesRead)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	nBytesRead = 0;
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-#ifdef _WIN32
-	DWORD dwBytesToRead = (DWORD)nBytesToRead;
-	DWORD dwBytesRead;
-	if(ReadFile(hFile, pBuffer, dwBytesToRead, &dwBytesRead, nullptr))
-	{
-		nBytesRead = (size_t)dwBytesRead;
-		if(nBytesRead == 0)
-			nErrorCode = FW_ERROR_HANDLE_EOF;
-	}
-	else
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#else
-	ssize_t nResult = read(hFile, pBuffer, nBytesToRead);
-	if(nResult >= 0)
-	{
-		nBytesRead = (size_t)nResult;
-		if(nBytesRead == 0)
-			nErrorCode = FW_ERROR_HANDLE_EOF;
-	}
-	else
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
-ERRCODE FileWrite(const NHANDLE hFile, PCVOID pBuffer, const size_t nBytesToWrite, size_t &nBytesWritten)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	nBytesWritten = 0;
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-#ifdef _WIN32
-	DWORD dwBytesToWrite = (DWORD)nBytesToWrite;
-	DWORD dwBytesWritten;
-	if(WriteFile(hFile, pBuffer, dwBytesToWrite, &dwBytesWritten, nullptr))
-		nBytesWritten = (size_t)dwBytesWritten;
-	else
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#else
-	ssize_t nResult = write(hFile, pBuffer, nBytesToWrite);
-	if(nResult >= 0)
-		nBytesWritten = (size_t)nResult;
-	else
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
-ERRCODE FileFlush(const NHANDLE hFile)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-#ifdef _WIN32
-	if(!FlushFileBuffers(hFile))
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#else
-	if(fsync(hFile) == -1)
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
-ERRCODE FileGetPosition(const NHANDLE hFile, uint64_t &nOffset)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	nOffset = 0;
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-#ifdef _WIN32
-	LARGE_INTEGER liMove = {0};
-	LARGE_INTEGER liCurrent;
-	if(SetFilePointerEx(hFile, liMove, &liCurrent, FILE_CURRENT))
-		nOffset = liCurrent.QuadPart;
-	else
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#else
-	off_t nCurrent = lseek(hFile, 0, SEEK_CUR);
-	if(nCurrent != -1)
-		nOffset = (uint64_t)nCurrent;
-	else
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
-ERRCODE FileSetPosition(const NHANDLE hFile, const int64_t nOffset, EFileSeek eSeek)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-#ifdef _WIN32
-	LARGE_INTEGER liMove;
-	liMove.QuadPart = nOffset;
-
-	int nMode = FILE_BEGIN;
-	switch(eSeek)
-	{
-	case EFileSeek::Begin:
-		nMode = FILE_BEGIN;
-		break;
-
-	case EFileSeek::Current:
-		nMode = FILE_CURRENT;
-		break;
-
-	case EFileSeek::End:
-		nMode = FILE_END;
-		break;
-	}
-
-	if(!SetFilePointerEx(hFile, liMove, nullptr, nMode))
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#else
-	int nSeek;
-	switch(eSeek)
-	{
-	case EFileSeek::Begin:
-		nSeek = SEEK_SET;
-		break;
-
-	case EFileSeek::Current:
-		nSeek = SEEK_CUR;
-		break;
-
-	case EFileSeek::End:
-		nSeek = SEEK_END;
-		break;
-	}
-
-	if(lseek(hFile, nOffset, nSeek) == -1)
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
-ERRCODE FileSetEnd(const NHANDLE hFile)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-#ifdef _WIN32
-	if(!SetEndOfFile(hFile))
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#else
-	off_t nOffset = lseek(hFile, 0, SEEK_CUR);
-	if(nOffset != -1)
-	{
-		if(ftruncate(hFile, nOffset) == -1)
-			nErrorCode = ConvertFromNativeErrorCode(errno);
-	}
-	else
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
 ERRCODE FileGetSize(PCNSTR szPath, uint64_t &nSize)
 {
 	ERRCODE nErrorCode = FW_NO_ERROR;
@@ -804,44 +513,6 @@ ERRCODE FileGetSize(PCNSTR szPath, uint64_t &nSize)
 }
 
 //#################################################################################################
-ERRCODE FileGetSize(const NHANDLE hFile, uint64_t &nSize)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	nSize = 0;
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-#ifdef _WIN32
-	LARGE_INTEGER li;
-	if(GetFileSizeEx(hFile, &li))
-		nSize = li.QuadPart;
-	else
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#else
-	off_t nCurrent = lseek(hFile, 0, SEEK_CUR);
-	if(nCurrent != -1)
-	{
-		off_t nEnd = lseek(hFile, 0, SEEK_END);
-		if(nEnd != -1)
-		{
-			nSize = (uint64_t)nEnd;
-
-			if(lseek(hFile, nCurrent, SEEK_SET) == -1)
-				nErrorCode = ConvertFromNativeErrorCode(errno);
-		}
-		else
-			nErrorCode = ConvertFromNativeErrorCode(errno);
-	}
-	else
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
 ERRCODE FileGetTime(PCNSTR szPath, time_point<system_clock> &tp)
 {
 	ERRCODE nErrorCode = FW_NO_ERROR;
@@ -861,38 +532,6 @@ ERRCODE FileGetTime(PCNSTR szPath, time_point<system_clock> &tp)
 #else
 	struct stat s;
 	if(stat(szPath, &s) == 0)
-		tp = system_clock::from_time_t(s.st_mtime);
-	else
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
-ERRCODE FileGetTime(const NHANDLE hFile, time_point<system_clock> &tp)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	tp = time_point<system_clock>();
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-#ifdef _WIN32
-	FILE_BASIC_INFO fbi = {0};
-	if(GetFileInformationByHandleEx(hFile, FileBasicInfo, &fbi, sizeof(fbi)))
-	{
-		FILETIME ft;
-		ft.dwHighDateTime = fbi.LastWriteTime.HighPart;
-		ft.dwLowDateTime = fbi.LastWriteTime.LowPart;
-		FileTimeToTimePoint(ft, tp);
-	}
-	else
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#else
-	struct stat s;
-	if(fstat(hFile, &s) == 0)
 		tp = system_clock::from_time_t(s.st_mtime);
 	else
 		nErrorCode = ConvertFromNativeErrorCode(errno);
@@ -934,40 +573,6 @@ ERRCODE FileSetTime(PCNSTR szPath, const time_point<system_clock> &tp)
 }
 
 //#################################################################################################
-ERRCODE FileSetTime(const NHANDLE hFile, const time_point<system_clock> &tp)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-#ifdef _WIN32
-	FILETIME ft;
-	TimePointToFileTime(tp, ft);
-	if(!SetFileTime(hFile, nullptr, nullptr, &ft))
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#elif __APPLE__
-	auto ns = tp.time_since_epoch() - seconds(tp.time_since_epoch() / seconds(1));
-
-	timeval times[2];
-	times[0].tv_sec = times[1].tv_sec = system_clock::to_time_t(tp);
-	times[0].tv_usec = times[1].tv_usec = (int)(ns.count() / 1000);
-	if(futimes(hFile, times) == -1)
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#elif __linux__
-	auto ns = tp.time_since_epoch() - seconds(tp.time_since_epoch() / seconds(1));
-
-	struct timespec times[2];
-	times[0].tv_sec = times[1].tv_sec = system_clock::to_time_t(tp);
-	times[0].tv_nsec = times[1].tv_nsec = ns.count();
-	if(futimens(hFile, times) == -1)
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
-//#################################################################################################
 ERRCODE FileGetInfo(PCNSTR szPath, uint64_t &nSize, time_point<system_clock> &tp)
 {
 	ERRCODE nErrorCode = FW_NO_ERROR;
@@ -1000,40 +605,6 @@ ERRCODE FileGetInfo(PCNSTR szPath, uint64_t &nSize, time_point<system_clock> &tp
 	return nErrorCode;
 }
 
-//#################################################################################################
-ERRCODE FileGetInfo(const NHANDLE hFile, uint64_t &nSize, time_point<system_clock> &tp)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	nSize = 0;
-	tp = time_point<system_clock>();
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-#ifdef _WIN32
-	BY_HANDLE_FILE_INFORMATION bhfi = {0};
-	if(GetFileInformationByHandle(hFile, &bhfi))
-	{
-		nSize = MAKEUINT64(bhfi.nFileSizeHigh, bhfi.nFileSizeLow);
-		FileTimeToTimePoint(bhfi.ftLastWriteTime, tp);
-	}
-	else
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-#else
-	struct stat s;
-	if(fstat(hFile, &s) == 0)
-	{
-		nSize = (uint64_t)s.st_size;
-		tp = system_clock::from_time_t(s.st_mtime);
-	}
-	else
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-#endif
-
-	return nErrorCode;
-}
-
 #ifdef _WIN32
 //#################################################################################################
 ERRCODE FileGetAttributes(PCNSTR szPath, DWORD &dwAttrib)
@@ -1052,25 +623,6 @@ ERRCODE FileGetAttributes(PCNSTR szPath, DWORD &dwAttrib)
 }
 
 //#################################################################################################
-ERRCODE FileGetAttributes(const NHANDLE hFile, DWORD &dwAttrib)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	dwAttrib = 0;
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-	FILE_BASIC_INFO fbi = {0};
-	if(GetFileInformationByHandleEx(hFile, FileBasicInfo, &fbi, sizeof(fbi)))
-		dwAttrib = fbi.FileAttributes;
-	else
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-
-	return nErrorCode;
-}
-
-//#################################################################################################
 ERRCODE FileSetAttributes(PCNSTR szPath, const DWORD dwAttrib)
 {
 	ERRCODE nErrorCode = FW_NO_ERROR;
@@ -1078,30 +630,6 @@ ERRCODE FileSetAttributes(PCNSTR szPath, const DWORD dwAttrib)
 	Assert((dwAttrib & ~ATTRIB_MASK) == 0);
 
 	if(!SetFileAttributesW(szPath, dwAttrib))
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-
-	return nErrorCode;
-}
-
-//#################################################################################################
-ERRCODE FileSetAttributes(const NHANDLE hFile, const DWORD dwAttrib)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	Assert((dwAttrib & ~ATTRIB_MASK) == 0);
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-	FILE_BASIC_INFO fbi = {0};
-	if(GetFileInformationByHandleEx(hFile, FileBasicInfo, &fbi, sizeof(fbi)))
-	{
-		REMOVE_FLAG(fbi.FileAttributes, ATTRIB_MASK);
-		ADD_FLAG(fbi.FileAttributes, dwAttrib);
-		if(!SetFileInformationByHandle(hFile, FileBasicInfo, &fbi, sizeof(fbi)))
-			nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-	}
-	else
 		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
 
 	return nErrorCode;
@@ -1126,25 +654,6 @@ ERRCODE FileGetPermissions(PCNSTR szPath, mode_t &nMode)
 }
 
 //#################################################################################################
-ERRCODE FileGetPermissions(const NHANDLE hFile, mode_t &nMode)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	nMode = 0;
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-	struct stat s;
-	if(fstat(hFile, &s) == 0)
-		nMode = s.st_mode & ~S_IFMT;
-	else
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-
-	return nErrorCode;
-}
-
-//#################################################################################################
 ERRCODE FileSetPermissions(PCNSTR szPath, const mode_t nMode)
 {
 	ERRCODE nErrorCode = FW_NO_ERROR;
@@ -1152,22 +661,6 @@ ERRCODE FileSetPermissions(PCNSTR szPath, const mode_t nMode)
 	Assert(!HAS_FLAG(nMode, S_IFMT));
 
 	if(chmod(szPath, nMode) == -1)
-		nErrorCode = ConvertFromNativeErrorCode(errno);
-
-	return nErrorCode;
-}
-
-//#################################################################################################
-ERRCODE FileSetPermissions(const NHANDLE hFile, const mode_t nMode)
-{
-	ERRCODE nErrorCode = FW_NO_ERROR;
-
-	Assert(!HAS_FLAG(nMode, S_IFMT));
-
-	if(hFile == INVALID_NHANDLE)
-		return FW_ERROR_INVALID_HANDLE;
-
-	if(fchmod(hFile, nMode) == -1)
 		nErrorCode = ConvertFromNativeErrorCode(errno);
 
 	return nErrorCode;

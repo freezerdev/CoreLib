@@ -1,7 +1,7 @@
 #include "Base.h"
 #include "IniFile.h"
 #include "Defer.h"
-#include "FileSystemUtils.h"
+#include "File.h"
 #include "StrUtils.h"
 
 NS_BEGIN
@@ -384,15 +384,13 @@ bool CIniFile::Load(PCNSTR szIniPath)
 
 	Empty();
 
-	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(szIniPath, EFileMode::ExistingReadOnly, hFile) == FW_NO_ERROR)
+	CFile file;
+	if(file.Create(szIniPath, CFile::EFileMode::ExistingReadOnly) == FW_NO_ERROR)
 	{
-		DEFER(FileClose(hFile));
-
 		auto pBuf = std::make_unique<BYTE[]>(BUFFER_SIZE);
 		size_t nBytesRead;
 
-		ERRCODE nErrorCode = FileRead(hFile, pBuf.get(), BUFFER_SIZE, nBytesRead);
+		ERRCODE nErrorCode = file.Read(pBuf.get(), BUFFER_SIZE, nBytesRead);
 
 		if(nBytesRead >= sizeof(g_Utf16LE_Bom) && std::memcmp(pBuf.get(), g_Utf16LE_Bom, sizeof(g_Utf16LE_Bom)) == 0)
 		{	// UTF16 file
@@ -418,7 +416,7 @@ bool CIniFile::Load(PCNSTR szIniPath)
 					++szScanFile;
 				}
 
-				nErrorCode = FileRead(hFile, pBuf.get(), BUFFER_SIZE, nBytesRead);
+				nErrorCode = file.Read(pBuf.get(), BUFFER_SIZE, nBytesRead);
 				szScanFile = (char16_t*)pBuf.get();
 			}
 
@@ -449,7 +447,7 @@ bool CIniFile::Load(PCNSTR szIniPath)
 					++szScanFile;
 				}
 
-				nErrorCode = FileRead(hFile, pBuf.get(), BUFFER_SIZE, nBytesRead);
+				nErrorCode = file.Read(pBuf.get(), BUFFER_SIZE, nBytesRead);
 				szScanFile = (PSTR)pBuf.get();
 			}
 
@@ -468,14 +466,12 @@ bool CIniFile::SaveAs(PCNSTR szIniPath, const EEncodingType eType) const
 {
 	bool bSaved = false;
 
-	NHANDLE hFile = INVALID_NHANDLE;
-	if(FileCreate(szIniPath, EFileMode::CreateWriteOnly, hFile) == FW_NO_ERROR)
+	CFile file;
+	if(file.Create(szIniPath, CFile::EFileMode::CreateWriteOnly) == FW_NO_ERROR)
 	{
-		DEFER(FileClose(hFile));
-
 		size_t nBytesWritten;
 
-		FileSetPosition(hFile, 0, EFileSeek::Begin);
+		file.SetPosition(0, CFile::EFileSeek::Begin);
 
 #ifdef _WIN32
 		if(eType == EEncodingType::Utf16 || eType == EEncodingType::Native)
@@ -483,7 +479,7 @@ bool CIniFile::SaveAs(PCNSTR szIniPath, const EEncodingType eType) const
 		if(eType == EEncodingType::Utf16)
 #endif
 		{	// UTF16 file
-			FileWrite(hFile, g_Utf16LE_Bom, sizeof(g_Utf16LE_Bom), nBytesWritten);
+			file.Write(g_Utf16LE_Bom, sizeof(g_Utf16LE_Bom), nBytesWritten);
 
 			CStrW strLine;
 			for(const auto &line : m_lstLines)
@@ -493,9 +489,9 @@ bool CIniFile::SaveAs(PCNSTR szIniPath, const EEncodingType eType) const
 
 				// Insert a blank line before each new section
 				if(GetFirstNonWhiteSpace(strLine) == g_chOpenBracket)
-					FileWrite(hFile, g_szEolW, g_nEolLen * sizeof(wchar_t), nBytesWritten);
+					file.Write(g_szEolW, g_nEolLen * sizeof(wchar_t), nBytesWritten);
 
-				FileWrite(hFile, strLine, strLine.GetSize(), nBytesWritten);
+				file.Write(strLine, strLine.GetSize(), nBytesWritten);
 			}
 		}
 		else
@@ -512,15 +508,15 @@ bool CIniFile::SaveAs(PCNSTR szIniPath, const EEncodingType eType) const
 				if(GetFirstNonWhiteSpace(strLine) == g_chOpenBracket)
 				{
 					if(!bFirstSection)
-						FileWrite(hFile, g_szEol8, g_nEolLen, nBytesWritten);
+						file.Write(g_szEol8, g_nEolLen, nBytesWritten);
 					bFirstSection = false;
 				}
 
-				FileWrite(hFile, strLine, strLine.GetSize(), nBytesWritten);
+				file.Write(strLine, strLine.GetSize(), nBytesWritten);
 			}
 		}
 
-		FileSetEnd(hFile);
+		file.SetEnd();
 		bSaved = true;
 	}
 

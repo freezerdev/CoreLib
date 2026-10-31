@@ -34,6 +34,7 @@
 		ECA9391D2679277C00788BBF /* Errors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938B82679277B00788BBF /* Errors.cpp */; };
 		ECA9391E2679277C00788BBF /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938B92679277B00788BBF /* TimeUtils.cpp */; };
 		ECA9391F2679277C00788BBF /* FileSystemUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938BA2679277B00788BBF /* FileSystemUtils.h */; };
+		ECA939242679277C00788BBF /* File.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938BF2679277B00788BBF /* File.h */; };
 		ECA939202679277C00788BBF /* Defer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938202679277B00788BBF /* Defer.h */; };
 		ECA939212679277C00788BBF /* Container.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938BC2679277B00788BBF /* Container.cpp */; };
 		ECA939222679277C00788BBF /* UrlUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938BD2679277B00788BBF /* UrlUtils.h */; };
@@ -47,6 +48,7 @@
 		ECA9392D2679277C00788BBF /* StrUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938C82679277B00788BBF /* StrUtils.h */; };
 		ECA9392E2679277C00788BBF /* IPv6.h in Headers */ = {isa = PBXBuildFile; fileRef = ECA938C92679277B00788BBF /* IPv6.h */; };
 		ECA939302679277C00788BBF /* FileSystemUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938CB2679277B00788BBF /* FileSystemUtils.cpp */; };
+		ECA939302679277C00788BBF /* File.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938CD2679277B00788BBF /* File.cpp */; };
 		ECA939342679277C00788BBF /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938CF2679277B00788BBF /* Event.cpp */; };
 		ECA939362679277C00788BBF /* CoreLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938D12679277B00788BBF /* CoreLib.cpp */; };
 		ECA939372679277C00788BBF /* RandUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ECA938D22679277B00788BBF /* RandUtils.cpp */; };
@@ -116,6 +118,7 @@
 		ECA938B82679277B00788BBF /* Errors.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Errors.cpp; path = ../Errors.cpp; sourceTree = "<group>"; };
 		ECA938B92679277B00788BBF /* TimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TimeUtils.cpp; path = ../TimeUtils.cpp; sourceTree = "<group>"; };
 		ECA938BA2679277B00788BBF /* FileSystemUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileSystemUtils.h; path = ../FileSystemUtils.h; sourceTree = "<group>"; };
+		ECA938BF2679277B00788BBF /* File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = File.h; path = ../File.h; sourceTree = "<group>"; };
 		ECA938BC2679277B00788BBF /* Container.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Container.cpp; path = ../Container.cpp; sourceTree = "<group>"; };
 		ECA938BD2679277B00788BBF /* UrlUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UrlUtils.h; path = ../UrlUtils.h; sourceTree = "<group>"; };
 		ECA938BE2679277B00788BBF /* FilePath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FilePath.cpp; path = ../FilePath.cpp; sourceTree = "<group>"; };
@@ -128,6 +131,7 @@
 		ECA938C82679277B00788BBF /* StrUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StrUtils.h; path = ../StrUtils.h; sourceTree = "<group>"; };
 		ECA938C92679277B00788BBF /* IPv6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IPv6.h; path = ../IPv6.h; sourceTree = "<group>"; };
 		ECA938CB2679277B00788BBF /* FileSystemUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FileSystemUtils.cpp; path = ../FileSystemUtils.cpp; sourceTree = "<group>"; };
+		ECA938CD2679277B00788BBF /* File.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = File.cpp; path = ../File.cpp; sourceTree = "<group>"; };
 		ECA938CF2679277B00788BBF /* Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Event.cpp; path = ../Event.cpp; sourceTree = "<group>"; };
 		ECA938D12679277B00788BBF /* CoreLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreLib.cpp; path = ../CoreLib.cpp; sourceTree = "<group>"; };
 		ECA938D22679277B00788BBF /* RandUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RandUtils.cpp; path = ../RandUtils.cpp; sourceTree = "<group>"; };
@@ -214,6 +218,8 @@
 				ECA938FD2679277C00788BBF /* FilePathUtils.h */,
 				ECA938CB2679277B00788BBF /* FileSystemUtils.cpp */,
 				ECA938BA2679277B00788BBF /* FileSystemUtils.h */,
+				ECA938CD2679277B00788BBF /* File.cpp */,
+				ECA938BF2679277B00788BBF /* File.h */,
 				ECA938182679277B00788BBF /* Fuzz.h */,
 				ECA938E72679277B00788BBF /* IniFile.cpp */,
 				ECA938D52679277B00788BBF /* IniFile.h */,
@@ -308,6 +314,7 @@
 				ECA9393A2679277C00788BBF /* IniFile.h in Headers */,
 				ECA939472679277C00788BBF /* Event.h in Headers */,
 				ECA9391F2679277C00788BBF /* FileSystemUtils.h in Headers */,
+				ECA939242679277C00788BBF /* File.h in Headers */,
 				ECA9394E2679277C00788BBF /* Errors.h in Headers */,
 				ECA939142679277C00788BBF /* Thread.h in Headers */,
 				ECA9390D2679277C00788BBF /* PlatformUtils.h in Headers */,
@@ -405,6 +412,7 @@
 				ECA939432679277C00788BBF /* Crc32.cpp in Sources */,
 				ECA9392A2679277C00788BBF /* UrlUtils.cpp in Sources */,
 				ECA939302679277C00788BBF /* FileSystemUtils.cpp in Sources */,
+				ECA939322679277C00788BBF /* File.cpp in Sources */,
 				ECA939092679277C00788BBF /* CityHash.cpp in Sources */,
 				ECA9394B2679277C00788BBF /* MemBuffer.cpp in Sources */,
 				ECA939132679277C00788BBF /* MemStream.cpp in Sources */,

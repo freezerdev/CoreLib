@@ -2,7 +2,7 @@
 #include "Diagnostic.h"
 #ifdef _DEBUG
 #include "TimeUtils.h"
-#include "FileSystemUtils.h"
+#include "File.h"
 #include "FilePathUtils.h"
 #include <mutex>
 
@@ -36,13 +36,13 @@ void DiagnosticAssert(const bool bCondition, PCNSTR szFile, const long nLine)
 
 			NHANDLE hFile = INVALID_NHANDLE;
 
+			CFile file;
 			std::lock_guard<std::mutex> lock(*g_pDiagnosticMutex);
-			if(FileCreate(pathFile.Get(), EFileMode::AlwaysReadWrite, hFile) == FW_NO_ERROR)
+			if(file.Create(pathFile.Get(), CFile::EFileMode::AlwaysReadWrite) == FW_NO_ERROR)
 			{
 				size_t nBytesWritten;
-				FileSetPosition(hFile, 0, EFileSeek::End);		// Move to the end so we append
-				FileWrite(hFile, (PCBYTE)(PCNSTR)strMsg, strMsg.GetSize(), nBytesWritten);
-				FileClose(hFile);
+				file.SetPosition(0, CFile::EFileSeek::End);		// Move to the end so we append
+				file.Write((PCBYTE)(PCNSTR)strMsg, strMsg.GetSize(), nBytesWritten);
 			}
 		}
 
@@ -67,13 +67,13 @@ void DiagnosticMessage(PCNSTR szMsg)
 
 		NHANDLE hFile = INVALID_NHANDLE;
 
+		CFile file;
 		std::lock_guard<std::mutex> lock(*g_pDiagnosticMutex);
-		if(FileCreate(pathFile.Get(), EFileMode::AlwaysReadWrite, hFile) == FW_NO_ERROR)
+		if(file.Create(pathFile.Get(), CFile::EFileMode::AlwaysReadWrite) == FW_NO_ERROR)
 		{
 			size_t nBytesWritten;
-			FileSetPosition(hFile, 0, EFileSeek::End);		// Move to the end so we append
-			FileWrite(hFile, (PCBYTE)(PCNSTR)strMsg, strMsg.GetSize(), nBytesWritten);
-			FileClose(hFile);
+			file.SetPosition(0, CFile::EFileSeek::End);		// Move to the end so we append
+			file.Write((PCBYTE)(PCNSTR)strMsg, strMsg.GetSize(), nBytesWritten);
 		}
 	}
 

@@ -1,6 +1,7 @@
 #include "Base.h"
 #include "NetUtils.h"
 #include "Defer.h"
+#include "File.h"
 #include "FileSystemUtils.h"
 #include "MemBuffer.h"
 #ifdef _WIN32
@@ -759,18 +760,18 @@ ERRCODE DownloadFile(const CUrl &url, const CFilePath &pathFile)
 	nErrorCode = DownloadFile(url, buf);
 	if(nErrorCode == FW_NO_ERROR)
 	{
-		NHANDLE hFile = INVALID_NHANDLE;
-		nErrorCode = FileCreate(pathFile.Get(), EFileMode::CreateWriteOnly, hFile);
+		CFile file;
+		nErrorCode = file.Create(pathFile.Get(), CFile::EFileMode::CreateWriteOnly);
 		if(nErrorCode == FW_NO_ERROR)
 		{
-			DEFER(FileClose(hFile); if(nErrorCode != FW_NO_ERROR) FileDelete(pathFile.Get()));
+			DEFER(file.Close(); if(nErrorCode != FW_NO_ERROR) FileDelete(pathFile.Get()));
 
-				size_t nBytesToWrite = buf.GetDataSize();
+			size_t nBytesToWrite = buf.GetDataSize();
 			size_t nOffset = 0;
 			while(nBytesToWrite)
 			{
 				size_t nBytesWritten;
-				nErrorCode = FileWrite(hFile, buf.GetBuffer() + nOffset, nBytesToWrite, nBytesWritten);
+				nErrorCode = file.Write(buf.GetBuffer() + nOffset, nBytesToWrite, nBytesWritten);
 				if(nErrorCode != FW_NO_ERROR)
 					break;
 				nBytesToWrite -= nBytesWritten;
