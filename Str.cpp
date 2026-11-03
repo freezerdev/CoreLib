@@ -2629,7 +2629,7 @@ size_t CStr8::Replace(const CStr8 &strOld, const CStr8 &strNew, const bool bCase
 	if(!m_nStrLen || !strOld.m_nStrLen)
 		return nCount;
 
-	using PFNFIND = PSTR (*)(PCSTR, size_t, PCSTR, size_t);
+	using PFNFIND = PSTR(*)(PCSTR, size_t, PCSTR, size_t);
 	PFNFIND pfnFind = bCaseInsensitive ? FindStrPtrI : FindStrPtr;
 
 	if(strOld.m_nStrLen != strNew.m_nStrLen)
@@ -2705,7 +2705,7 @@ size_t CStr8::Replace(PCSTR szOld, PCSTR szNew, const bool bCaseInsensitive)
 	if(!m_nStrLen)
 		return nCount;
 
-	using PFNFIND = PSTR (*)(PCSTR, size_t, PCSTR, size_t);
+	using PFNFIND = PSTR(*)(PCSTR, size_t, PCSTR, size_t);
 	PFNFIND pfnFind = bCaseInsensitive ? FindStrPtrI : FindStrPtr;
 
 	size_t nOldLen = StringGetLength(szOld);
@@ -6366,7 +6366,7 @@ size_t CStrW::Replace(const CStrW &strOld, const CStrW &strNew, const bool bCase
 	if(!m_nStrLen || !strOld.m_nStrLen)
 		return nCount;
 
-	using PFNFIND = PWSTR (*)(PCWSTR, size_t, PCWSTR, size_t);
+	using PFNFIND = PWSTR(*)(PCWSTR, size_t, PCWSTR, size_t);
 	PFNFIND pfnFind = bCaseInsensitive ? FindStrPtrI : FindStrPtr;
 
 	if(strOld.m_nStrLen != strNew.m_nStrLen)
@@ -6442,7 +6442,7 @@ size_t CStrW::Replace(PCWSTR szOld, PCWSTR szNew, const bool bCaseInsensitive)
 	if(!m_nStrLen)
 		return nCount;
 
-	using PFNFIND = PWSTR (*)(PCWSTR, size_t, PCWSTR, size_t);
+	using PFNFIND = PWSTR(*)(PCWSTR, size_t, PCWSTR, size_t);
 	PFNFIND pfnFind = bCaseInsensitive ? FindStrPtrI : FindStrPtr;
 
 	size_t nOldLen = StringGetLength(szOld);

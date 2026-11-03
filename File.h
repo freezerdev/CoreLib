@@ -22,7 +22,7 @@ public:
 		End						// Seek from the end of the file
 	};
 
-	CFile(void) noexcept;
+	CFile(void) = default;
 	CFile(const CFile &src) = delete;
 	CFile(CFile &&src) noexcept;
 	~CFile(void);
@@ -77,7 +77,7 @@ public:
 #endif
 
 private:
-	NHANDLE m_hFile;
+	NHANDLE m_hFile = INVALID_NHANDLE;
 };
 
 NS_END

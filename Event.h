@@ -27,7 +27,7 @@ public:
 private:
 	std::condition_variable m_cv;
 	std::mutex m_mutex;
-	bool m_bSignaled;
+	bool m_bSignaled = false;
 };
 
 NS_END

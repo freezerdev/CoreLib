@@ -34,8 +34,6 @@ void DiagnosticAssert(const bool bCondition, PCNSTR szFile, const long nLine)
 			CFilePath pathFile = GetExecutablePath();
 			pathFile.SetExtension(_N("txt"));
 
-			NHANDLE hFile = INVALID_NHANDLE;
-
 			CFile file;
 			std::lock_guard<std::mutex> lock(*g_pDiagnosticMutex);
 			if(file.Create(pathFile.Get(), CFile::EFileMode::AlwaysReadWrite) == FW_NO_ERROR)
@@ -64,8 +62,6 @@ void DiagnosticMessage(PCNSTR szMsg)
 	{
 		CFilePath pathFile = GetExecutablePath();
 		pathFile.SetExtension(_N("txt"));
-
-		NHANDLE hFile = INVALID_NHANDLE;
 
 		CFile file;
 		std::lock_guard<std::mutex> lock(*g_pDiagnosticMutex);

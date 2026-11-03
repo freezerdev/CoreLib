@@ -224,7 +224,7 @@ EArch GetSystemArchitecture(void)
 	EArch eArch = EArch::Unknown;
 
 #ifdef _WIN32
-	using PFNISWOW64PROCESS2 = BOOL (WINAPI*)(HANDLE, PUSHORT, PUSHORT);
+	using PFNISWOW64PROCESS2 = BOOL(WINAPI*)(HANDLE, PUSHORT, PUSHORT);
 	HMODULE hKernelDll = SystemLoadLibrary(_N("kernel32.dll"));
 	if(hKernelDll)
 	{

@@ -9,7 +9,7 @@
 
 NS_BEGIN
 
-using PFNPROC = void (*)(PVOID);
+using PFNPROC = void(*)(PVOID);
 
 //#################################################################################################
 class CThread

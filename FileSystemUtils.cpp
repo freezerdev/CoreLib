@@ -5,6 +5,7 @@
 #include "TimeUtils.h"
 #include <queue>
 #ifdef _WIN32
+#include "File.h"
 #include <versionhelpers.h>
 #else
 #ifdef __APPLE__
@@ -543,21 +544,12 @@ ERRCODE FileGetTime(PCNSTR szPath, time_point<system_clock> &tp)
 //#################################################################################################
 ERRCODE FileSetTime(PCNSTR szPath, const time_point<system_clock> &tp)
 {
-	ERRCODE nErrorCode = FW_NO_ERROR;
+	ERRCODE nErrorCode;
 
 #ifdef _WIN32
-	HANDLE hFile = CreateFileW(szPath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-	if(hFile != INVALID_HANDLE_VALUE)
-	{
-		DEFER(CloseHandle(hFile));
-
-		FILETIME ft;
-		TimePointToFileTime(tp, ft);
-		if(!SetFileTime(hFile, nullptr, nullptr, &ft))
-			nErrorCode = ConvertFromNativeErrorCode(GetLastError());
-	}
-	else
-		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
+	CFile file;
+	if((nErrorCode = file.Create(szPath, CFile::EFileMode::ExistingReadWrite)) == SPI_NO_ERROR)
+		nErrorCode = file.SetTime(tp);
 #else
 	int hFile = open(szPath, O_RDWR);
 	if(hFile == -1)

@@ -12,12 +12,6 @@ constexpr auto ATTRIB_MASK = FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN | F
 #endif
 
 //#################################################################################################
-CFile::CFile(void) noexcept
-	: m_hFile(INVALID_NHANDLE)
-{
-}
-
-//#################################################################################################
 CFile::CFile(CFile &&src) noexcept
 	: m_hFile(src.m_hFile)
 {
@@ -182,7 +176,7 @@ ERRCODE CFile::MarkForDeletion(const bool bDelete) const
 	if(m_hFile == INVALID_NHANDLE)
 		return FW_ERROR_INVALID_HANDLE;
 
-	FILE_DISPOSITION_INFO fdi = {0};
+	FILE_DISPOSITION_INFO fdi;
 	fdi.DeleteFile = bDelete;
 	if(!SetFileInformationByHandle(m_hFile, FileDispositionInfo, &fdi, sizeof(fdi)))
 		nErrorCode = ConvertFromNativeErrorCode(GetLastError());
