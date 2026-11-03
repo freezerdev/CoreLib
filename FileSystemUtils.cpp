@@ -548,7 +548,7 @@ ERRCODE FileSetTime(PCNSTR szPath, const time_point<system_clock> &tp)
 
 #ifdef _WIN32
 	CFile file;
-	if((nErrorCode = file.Create(szPath, CFile::EFileMode::ExistingReadWrite)) == SPI_NO_ERROR)
+	if((nErrorCode = file.Create(szPath, CFile::EFileMode::ExistingReadWrite)) == FW_NO_ERROR)
 		nErrorCode = file.SetTime(tp);
 #else
 	int hFile = open(szPath, O_RDWR);
