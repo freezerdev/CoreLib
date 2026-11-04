@@ -196,7 +196,7 @@ ERRCODE CFile::Read(PVOID pBuffer, const size_t nBytesToRead, size_t &nBytesRead
 		return FW_ERROR_INVALID_HANDLE;
 
 #ifdef _WIN32
-	DWORD dwBytesToRead = (DWORD)nBytesToRead;
+	const DWORD dwBytesToRead = (DWORD)nBytesToRead;
 	DWORD dwBytesRead;
 	if(ReadFile(m_hFile, pBuffer, dwBytesToRead, &dwBytesRead, nullptr))
 	{
@@ -232,7 +232,7 @@ ERRCODE CFile::Write(PCVOID pBuffer, const size_t nBytesToWrite, size_t &nBytesW
 		return FW_ERROR_INVALID_HANDLE;
 
 #ifdef _WIN32
-	DWORD dwBytesToWrite = (DWORD)nBytesToWrite;
+	const DWORD dwBytesToWrite = (DWORD)nBytesToWrite;
 	DWORD dwBytesWritten;
 	if(WriteFile(m_hFile, pBuffer, dwBytesToWrite, &dwBytesWritten, nullptr))
 		nBytesWritten = (size_t)dwBytesWritten;
@@ -279,7 +279,7 @@ ERRCODE CFile::GetPosition(uint64_t &nOffset) const
 		return FW_ERROR_INVALID_HANDLE;
 
 #ifdef _WIN32
-	LARGE_INTEGER liMove = {0};
+	const LARGE_INTEGER liMove = {0};
 	LARGE_INTEGER liCurrent;
 	if(SetFilePointerEx(m_hFile, liMove, &liCurrent, FILE_CURRENT))
 		nOffset = liCurrent.QuadPart;

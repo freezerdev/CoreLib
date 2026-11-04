@@ -47,6 +47,6 @@ constexpr auto FW_ERROR_SOME_FAILED = 0xC027;
 
 constexpr auto FW_ERROR_UNKNOWN = 0xCFFF;
 
-ERRCODE ConvertFromNativeErrorCode(const ERRCODE nNativeErrorCode) noexcept;
+ERRCODE ConvertFromNativeErrorCode(const ERRCODE nNativeErrorCode);
 
 NS_END

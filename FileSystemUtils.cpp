@@ -156,7 +156,7 @@ bool DirCreateTree(const CFilePath &path)
 
 	CFilePath pathTemp;
 	size_t nCurrentSegment = 1;
-	size_t nTotalSegments = path.GetSegmentCount();
+	const size_t nTotalSegments = path.GetSegmentCount();
 
 	if(path.IsUNC())
 		nCurrentSegment = MIN(2, nTotalSegments);

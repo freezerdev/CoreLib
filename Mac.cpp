@@ -98,8 +98,8 @@ CStr CMac::GetAsString(const NCHAR chDelim) const
 {
 	if(chDelim == g_chNull || chDelim == _N('\n') || chDelim == _N('\r'))
 		return CStr(CStr::EPrintfType::Printf, _N("%02X%02X%02X%02X%02X%02X"), m_mac[0], m_mac[1], m_mac[2], m_mac[3], m_mac[4], m_mac[5]);
-	else
-		return CStr(CStr::EPrintfType::Printf, _N("%02X%c%02X%c%02X%c%02X%c%02X%c%02X"), m_mac[0], chDelim, m_mac[1], chDelim, m_mac[2], chDelim, m_mac[3], chDelim, m_mac[4], chDelim, m_mac[5]);
+
+	return CStr(CStr::EPrintfType::Printf, _N("%02X%c%02X%c%02X%c%02X%c%02X%c%02X"), m_mac[0], chDelim, m_mac[1], chDelim, m_mac[2], chDelim, m_mac[3], chDelim, m_mac[4], chDelim, m_mac[5]);
 }
 
 //#################################################################################################
@@ -151,7 +151,7 @@ void CMac::Assign(const uint64_t nMac)
 //#################################################################################################
 std::ostream &operator<<(std::ostream &stream, const CMac &mac)
 {
-	CStr8 strMac(CStr8::EPrintfType::Printf, "%02X:%02X:%02X:%02X:%02X:%02X", mac.m_mac[0], mac.m_mac[1], mac.m_mac[2], mac.m_mac[3], mac.m_mac[4], mac.m_mac[5]);
+	const CStr8 strMac(CStr8::EPrintfType::Printf, "%02X:%02X:%02X:%02X:%02X:%02X", mac.m_mac[0], mac.m_mac[1], mac.m_mac[2], mac.m_mac[3], mac.m_mac[4], mac.m_mac[5]);
 	stream << strMac;
 	return stream;
 }
@@ -159,7 +159,7 @@ std::ostream &operator<<(std::ostream &stream, const CMac &mac)
 //#################################################################################################
 std::wostream &operator<<(std::wostream &stream, const CMac &mac)
 {
-	CStrW strMac(CStrW::EPrintfType::Printf, L"%02X:%02X:%02X:%02X:%02X:%02X", mac.m_mac[0], mac.m_mac[1], mac.m_mac[2], mac.m_mac[3], mac.m_mac[4], mac.m_mac[5]);
+	const CStrW strMac(CStrW::EPrintfType::Printf, L"%02X:%02X:%02X:%02X:%02X:%02X", mac.m_mac[0], mac.m_mac[1], mac.m_mac[2], mac.m_mac[3], mac.m_mac[4], mac.m_mac[5]);
 	stream << strMac;
 	return stream;
 }

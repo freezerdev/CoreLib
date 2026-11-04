@@ -309,7 +309,7 @@ size_t WideToUtf16(PCWSTR szW, const size_t nStrLenW, char16_t *sz16, const size
 		nLen16 = nStrLenW;
 		if(sz16 != nullptr)
 		{
-			size_t nLen = MIN(nStrLenW, nStrLen16);
+			const size_t nLen = MIN(nStrLenW, nStrLen16);
 			for(size_t n = 0; n < nLen; ++n)
 				sz16[n] = szW[n];
 		}
@@ -439,7 +439,7 @@ size_t Utf16ToWide(const char16_t *sz16, const size_t nStrLen16, PWSTR szW, cons
 	{
 #ifdef _WIN32
 		nLenW = nStrLen16;
-		size_t nLen = MIN(nStrLenW, nStrLen16);
+		const size_t nLen = MIN(nStrLenW, nStrLen16);
 		for(size_t n = 0; n < nLen; ++n)
 			szW[n] = sz16[n];
 #else
@@ -503,7 +503,7 @@ size_t Utf16ToWide(const char16_t ch16, PWSTR szW, const size_t nStrLenW)
 void StringToLower(PSTR sz, const size_t nStrLen)
 {	// It is not possible to lowercase UTF8 strings one byte at a time, so convert to wide characters for processing
 	auto szW = std::make_unique<wchar_t[]>(nStrLen);
-	size_t nStrLenW = Utf8ToWide(sz, nStrLen, szW.get(), nStrLen);
+	const size_t nStrLenW = Utf8ToWide(sz, nStrLen, szW.get(), nStrLen);
 	Assert(nStrLenW <= nStrLen);
 	StringToLower(szW.get(), nStrLenW);
 	WideToUtf8(szW.get(), nStrLenW, sz, nStrLen);
@@ -513,7 +513,7 @@ void StringToLower(PSTR sz, const size_t nStrLen)
 void StringToUpper(PSTR sz, const size_t nStrLen)
 {	// It is not possible to uppercase UTF8 strings one byte at a time, so convert to wide characters for processing
 	auto szW = std::make_unique<wchar_t[]>(nStrLen);
-	size_t nStrLenW = Utf8ToWide(sz, nStrLen, szW.get(), nStrLen);
+	const size_t nStrLenW = Utf8ToWide(sz, nStrLen, szW.get(), nStrLen);
 	Assert(nStrLenW <= nStrLen);
 	StringToUpper(szW.get(), nStrLenW);
 	WideToUtf8(szW.get(), nStrLenW, sz, nStrLen);
@@ -523,7 +523,7 @@ void StringToUpper(PSTR sz, const size_t nStrLen)
 void StringToLower(char16_t *sz, const size_t nStrLen)
 {	// It is not possible to lowercase UTF16 strings one byte at a time, so convert to wide characters for processing
 	auto szW = std::make_unique<wchar_t[]>(nStrLen);
-	size_t nStrLenW = Utf16ToWide(sz, nStrLen, szW.get(), nStrLen);
+	const size_t nStrLenW = Utf16ToWide(sz, nStrLen, szW.get(), nStrLen);
 	StringToLower(szW.get(), nStrLenW);
 	WideToUtf16(szW.get(), nStrLenW, sz, nStrLen);
 }
@@ -532,13 +532,13 @@ void StringToLower(char16_t *sz, const size_t nStrLen)
 void StringToUpper(char16_t *sz, const size_t nStrLen)
 {	// It is not possible to uppercase UTF16 strings one byte at a time, so convert to wide characters for processing
 	auto szW = std::make_unique<wchar_t[]>(nStrLen);
-	size_t nStrLenW = Utf16ToWide(sz, nStrLen, szW.get(), nStrLen);
+	const size_t nStrLenW = Utf16ToWide(sz, nStrLen, szW.get(), nStrLen);
 	StringToUpper(szW.get(), nStrLenW);
 	WideToUtf16(szW.get(), nStrLenW, sz, nStrLen);
 }
 
 //#################################################################################################
-void CharAdvance(PCSTR &sz) noexcept
+void CharAdvance(PCSTR &sz)
 {
 	Assert(sz);
 
@@ -553,7 +553,7 @@ void CharAdvance(PCSTR &sz) noexcept
 }
 
 //#################################################################################################
-size_t CharAdvance(PCSTR &sz, const size_t nStrSize) noexcept
+size_t CharAdvance(PCSTR &sz, const size_t nStrSize)
 {
 	Assert(sz);
 
@@ -587,7 +587,7 @@ size_t CharAdvance(PCSTR &sz, const size_t nStrSize) noexcept
 }
 
 //#################################################################################################
-uint8_t StringGetCharSize(PCSTR sz) noexcept
+uint8_t StringGetCharSize(PCSTR sz)
 {	// Use with caution, this function assumes the string is at least 4 characters long and/or null terminated
 	Assert(sz);
 
@@ -606,7 +606,7 @@ uint8_t StringGetCharSize(PCSTR sz) noexcept
 }
 
 //#################################################################################################
-uint8_t StringGetCharSize(PCSTR sz, const size_t nStrSize) noexcept
+uint8_t StringGetCharSize(PCSTR sz, const size_t nStrSize)
 {
 	Assert(sz);
 
@@ -685,8 +685,8 @@ int StringCompare8(PCSTR sz1, const size_t nStrLen1, PCSTR sz2, const size_t nSt
 	int nCompareRtn = 0;
 
 	// CompareString does not like nullptr pointers, so check for those first
-	bool bStr1Null = (nStrLen1 == 0 || (sz1 == nullptr || *sz1 == g_chNull8));
-	bool bStr2Null = (nStrLen2 == 0 || (sz2 == nullptr || *sz2 == g_chNull8));
+	const bool bStr1Null = (nStrLen1 == 0 || (sz1 == nullptr || *sz1 == g_chNull8));
+	const bool bStr2Null = (nStrLen2 == 0 || (sz2 == nullptr || *sz2 == g_chNull8));
 
 	if(bStr1Null && !bStr2Null)
 		nCompareRtn = -1;
@@ -699,25 +699,26 @@ int StringCompare8(PCSTR sz1, const size_t nStrLen1, PCSTR sz2, const size_t nSt
 		if(bCaseInsensitive)
 		{
 			auto szW1 = std::make_unique<wchar_t[]>(nStrLen1);
-			size_t nStrLenW1 = Utf8ToWide(sz1, nStrLen1, szW1.get(), nStrLen1);
+			const size_t nStrLenW1 = Utf8ToWide(sz1, nStrLen1, szW1.get(), nStrLen1);
 
 			auto szW2 = std::make_unique<wchar_t[]>(nStrLen2);
-			size_t nStrLenW2 = Utf8ToWide(sz2, nStrLen2, szW2.get(), nStrLen2);
+			const size_t nStrLenW2 = Utf8ToWide(sz2, nStrLen2, szW2.get(), nStrLen2);
 
 			PWSTR szScan1 = szW1.get();
 			PWSTR szScan2 = szW2.get();
 
 			while((size_t)(szScan1 - szW1.get()) < nStrLenW1 && (size_t)(szScan2 - szW2.get()) < nStrLenW2)
 			{
-				wchar_t ch1 = CharToLower(*szScan1);
-				wchar_t ch2 = CharToLower(*szScan2);
+				const wchar_t ch1 = CharToLower(*szScan1);
+				const wchar_t ch2 = CharToLower(*szScan2);
 
 				if(ch1 < ch2)
 				{
 					nCompareRtn = -1;
 					break;
 				}
-				else if(ch1 > ch2)
+
+				if(ch1 > ch2)
 				{
 					nCompareRtn = 1;
 					break;
@@ -744,7 +745,8 @@ int StringCompare8(PCSTR sz1, const size_t nStrLen1, PCSTR sz2, const size_t nSt
 					nCompareRtn = -1;
 					break;
 				}
-				else if(*szScan1 > *szScan2)
+
+				if(*szScan1 > *szScan2)
 				{
 					nCompareRtn = 1;
 					break;
@@ -770,8 +772,8 @@ int StringCompareW(PCWSTR sz1, const size_t nStrLen1, PCWSTR sz2, const size_t n
 	int nCompareRtn = 0;
 
 	// CompareString does not like nullptr pointers, so check for those first
-	bool bStr1Null = (nStrLen1 == 0 || (sz1 == nullptr || *sz1 == g_chNullW));
-	bool bStr2Null = (nStrLen2 == 0 || (sz2 == nullptr || *sz2 == g_chNullW));
+	const bool bStr1Null = (nStrLen1 == 0 || (sz1 == nullptr || *sz1 == g_chNullW));
+	const bool bStr2Null = (nStrLen2 == 0 || (sz2 == nullptr || *sz2 == g_chNullW));
 
 	if(bStr1Null && !bStr2Null)
 		nCompareRtn = -1;
@@ -788,15 +790,16 @@ int StringCompareW(PCWSTR sz1, const size_t nStrLen1, PCWSTR sz2, const size_t n
 
 			while((size_t)(szScan1 - sz1) < nStrLen1 && (size_t)(szScan2 - sz2) < nStrLen2)
 			{
-				wchar_t ch1 = CharToLower(*szScan1);
-				wchar_t ch2 = CharToLower(*szScan2);
+				const wchar_t ch1 = CharToLower(*szScan1);
+				const wchar_t ch2 = CharToLower(*szScan2);
 
 				if(ch1 < ch2)
 				{
 					nCompareRtn = -1;
 					break;
 				}
-				else if(ch1 > ch2)
+
+				if(ch1 > ch2)
 				{
 					nCompareRtn = 1;
 					break;
@@ -823,7 +826,8 @@ int StringCompareW(PCWSTR sz1, const size_t nStrLen1, PCWSTR sz2, const size_t n
 					nCompareRtn = -1;
 					break;
 				}
-				else if(*szScan1 > *szScan2)
+
+				if(*szScan1 > *szScan2)
 				{
 					nCompareRtn = 1;
 					break;
@@ -849,8 +853,8 @@ int StringCompare16(const char16_t *sz1, const size_t nStrLen1, const char16_t *
 	int nCompareRtn = 0;
 
 	// CompareString does not like nullptr pointers, so check for those first
-	bool bStr1Null = (nStrLen1 == 0 || (sz1 == nullptr || *sz1 == g_chNull16));
-	bool bStr2Null = (nStrLen2 == 0 || (sz2 == nullptr || *sz2 == g_chNull16));
+	const bool bStr1Null = (nStrLen1 == 0 || (sz1 == nullptr || *sz1 == g_chNull16));
+	const bool bStr2Null = (nStrLen2 == 0 || (sz2 == nullptr || *sz2 == g_chNull16));
 
 	if(bStr1Null && !bStr2Null)
 		nCompareRtn = -1;
@@ -863,25 +867,26 @@ int StringCompare16(const char16_t *sz1, const size_t nStrLen1, const char16_t *
 		if(bCaseInsensitive)
 		{
 			auto szW1 = std::make_unique<wchar_t[]>(nStrLen1);
-			size_t nStrLenW1 = Utf16ToWide(sz1, nStrLen1, szW1.get(), nStrLen1);
+			const size_t nStrLenW1 = Utf16ToWide(sz1, nStrLen1, szW1.get(), nStrLen1);
 
 			auto szW2 = std::make_unique<wchar_t[]>(nStrLen2);
-			size_t nStrLenW2 = Utf16ToWide(sz2, nStrLen2, szW2.get(), nStrLen2);
+			const size_t nStrLenW2 = Utf16ToWide(sz2, nStrLen2, szW2.get(), nStrLen2);
 
 			PWSTR szScan1 = szW1.get();
 			PWSTR szScan2 = szW2.get();
 
 			while((size_t)(szScan1 - szW1.get()) < nStrLenW1 && (size_t)(szScan2 - szW2.get()) < nStrLenW2)
 			{
-				wchar_t ch1 = CharToLower(*szScan1);
-				wchar_t ch2 = CharToLower(*szScan2);
+				const wchar_t ch1 = CharToLower(*szScan1);
+				const wchar_t ch2 = CharToLower(*szScan2);
 
 				if(ch1 < ch2)
 				{
 					nCompareRtn = -1;
 					break;
 				}
-				else if(ch1 > ch2)
+
+				if(ch1 > ch2)
 				{
 					nCompareRtn = 1;
 					break;
@@ -908,7 +913,8 @@ int StringCompare16(const char16_t *sz1, const size_t nStrLen1, const char16_t *
 					nCompareRtn = -1;
 					break;
 				}
-				else if(*szScan1 > *szScan2)
+
+				if(*szScan1 > *szScan2)
 				{
 					nCompareRtn = 1;
 					break;

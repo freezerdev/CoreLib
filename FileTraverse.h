@@ -14,7 +14,7 @@ NS_USE
 class CFileTraverse
 {
 public:
-	CFileTraverse(CEvent &event);
+	explicit CFileTraverse(CEvent &event);
 
 	// Classes derived from CFileTraverse must call Free() in their destructor
 	virtual ~CFileTraverse(void) = default;

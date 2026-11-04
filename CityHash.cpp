@@ -108,7 +108,7 @@ uint32_t Hash32Len5to12(PCBYTE pBuf, const uint32_t nLen)
 	uint32_t nA = nLen;
 	uint32_t nB = nLen * 5;
 	uint32_t nC = 9;
-	uint32_t nD = nB;
+	const uint32_t nD = nB;
 	nA += Fetch32(pBuf);
 	nB += Fetch32(pBuf + nLen - 4);
 	nC += Fetch32(pBuf + ((nLen >> 1) & 4));
@@ -119,13 +119,13 @@ uint32_t Hash32Len5to12(PCBYTE pBuf, const uint32_t nLen)
 //#################################################################################################
 uint32_t Hash32Len13to24(PCBYTE pBuf, const uint32_t nLen)
 {
-	uint32_t nA = Fetch32(pBuf + (nLen >> 1) - 4);
-	uint32_t nB = Fetch32(pBuf + 4);
-	uint32_t nC = Fetch32(pBuf + nLen - 8);
-	uint32_t nD = Fetch32(pBuf + (nLen >> 1));
-	uint32_t nE = Fetch32(pBuf);
-	uint32_t nF = Fetch32(pBuf + nLen - 4);
-	uint32_t nH = nLen;
+	const uint32_t nA = Fetch32(pBuf + (nLen >> 1) - 4);
+	const uint32_t nB = Fetch32(pBuf + 4);
+	const uint32_t nC = Fetch32(pBuf + nLen - 8);
+	const uint32_t nD = Fetch32(pBuf + (nLen >> 1));
+	const uint32_t nE = Fetch32(pBuf);
+	const uint32_t nF = Fetch32(pBuf + nLen - 4);
+	const uint32_t nH = nLen;
 
 	return fmix(Mur(nF, Mur(nE, Mur(nD, Mur(nC, Mur(nB, Mur(nA, nH)))))));
 }
@@ -149,28 +149,28 @@ uint64_t Hash64Len0to16(PCBYTE pBuf, const uint32_t nLen)
 
 	if(nLen >= 8)
 	{
-		uint64_t nMul = g_nPrime3 + (uint64_t)nLen * 2;
-		uint64_t nA = Fetch64(pBuf) + g_nPrime3;
-		uint64_t nB = Fetch64(pBuf + nLen - 8);
-		uint64_t nC = ROTATE64(nB, 37) * nMul + nA;
-		uint64_t nD = (ROTATE64(nA, 25) + nB) * nMul;
+		const uint64_t nMul = g_nPrime3 + (uint64_t)nLen * 2;
+		const uint64_t nA = Fetch64(pBuf) + g_nPrime3;
+		const uint64_t nB = Fetch64(pBuf + nLen - 8);
+		const uint64_t nC = ROTATE64(nB, 37) * nMul + nA;
+		const uint64_t nD = (ROTATE64(nA, 25) + nB) * nMul;
 
 		nResult = Hash64Len16(nC, nD, nMul);
 	}
 	else if(nLen >= 4)
 	{
-		uint64_t nMul = g_nPrime3 + (uint64_t)nLen * 2;
-		uint64_t nA = Fetch32(pBuf);
+		const uint64_t nMul = g_nPrime3 + (uint64_t)nLen * 2;
+		const uint64_t nA = Fetch32(pBuf);
 
 		nResult = Hash64Len16(nLen + (nA << 3), Fetch32(pBuf + nLen - 4), nMul);
 	}
 	else if(nLen != 0)
 	{
-		BYTE nA = pBuf[0];
-		BYTE nB = pBuf[nLen >> 1];
-		BYTE nC = pBuf[nLen - 1];
-		uint32_t nY = (uint32_t)nA + ((uint32_t)nB << 8);
-		uint32_t nZ = (uint32_t)nLen + ((uint32_t)nC << 2);
+		const BYTE nA = pBuf[0];
+		const BYTE nB = pBuf[nLen >> 1];
+		const BYTE nC = pBuf[nLen - 1];
+		const uint32_t nY = (uint32_t)nA + ((uint32_t)nB << 8);
+		const uint32_t nZ = (uint32_t)nLen + ((uint32_t)nC << 2);
 
 		nResult = SHIFTMIX(nY * g_nPrime3 ^ nZ * g_nPrime1) * g_nPrime3;
 	}
@@ -181,11 +181,11 @@ uint64_t Hash64Len0to16(PCBYTE pBuf, const uint32_t nLen)
 //#################################################################################################
 uint64_t Hash64Len17to32(PCBYTE pBuf, const uint32_t nLen)
 {
-	uint64_t nMul = g_nPrime3 + (uint64_t)nLen * 2;
-	uint64_t nA = Fetch64(pBuf) * g_nPrime2;
-	uint64_t nB = Fetch64(pBuf + 8);
-	uint64_t nC = Fetch64(pBuf + nLen - 8) * nMul;
-	uint64_t nD = Fetch64(pBuf + nLen - 16) * g_nPrime3;
+	const uint64_t nMul = g_nPrime3 + (uint64_t)nLen * 2;
+	const uint64_t nA = Fetch64(pBuf) * g_nPrime2;
+	const uint64_t nB = Fetch64(pBuf + 8);
+	const uint64_t nC = Fetch64(pBuf + nLen - 8) * nMul;
+	const uint64_t nD = Fetch64(pBuf + nLen - 16) * g_nPrime3;
 
 	return Hash64Len16(ROTATE64(nA + nB, 43) + ROTATE64(nC, 30) + nD, nA + ROTATE64(nB + g_nPrime3, 18) + nC, nMul);
 }
@@ -193,21 +193,21 @@ uint64_t Hash64Len17to32(PCBYTE pBuf, const uint32_t nLen)
 //#################################################################################################
 uint64_t Hash64Len33to64(PCBYTE pBuf, const uint32_t nLen)
 {
-	uint64_t nMul = g_nPrime3 + (uint64_t)nLen * 2;
+	const uint64_t nMul = g_nPrime3 + (uint64_t)nLen * 2;
 	uint64_t nA = Fetch64(pBuf) * g_nPrime3;
 	uint64_t nB = Fetch64(pBuf + 8);
-	uint64_t nC = Fetch64(pBuf + nLen - 24);
-	uint64_t nD = Fetch64(pBuf + nLen - 32);
-	uint64_t nE = Fetch64(pBuf + 16) * g_nPrime3;
-	uint64_t nF = Fetch64(pBuf + 24) * 9;
-	uint64_t nG = Fetch64(pBuf + nLen - 8);
-	uint64_t nH = Fetch64(pBuf + nLen - 16) * nMul;
-	uint64_t nU = ROTATE64(nA + nG, 43) + (ROTATE64(nB, 30) + nC) * 9;
-	uint64_t nV = ((nA + nG) ^ nD) + nF + 1;
-	uint64_t nW = ByteSwap64((nU + nV) * nMul) + nH;
-	uint64_t nX = ROTATE64(nE + nF, 42) + nC;
-	uint64_t nY = (ByteSwap64((nV + nW) * nMul) + nG) * nMul;
-	uint64_t nZ = nE + nF + nC;
+	const uint64_t nC = Fetch64(pBuf + nLen - 24);
+	const uint64_t nD = Fetch64(pBuf + nLen - 32);
+	const uint64_t nE = Fetch64(pBuf + 16) * g_nPrime3;
+	const uint64_t nF = Fetch64(pBuf + 24) * 9;
+	const uint64_t nG = Fetch64(pBuf + nLen - 8);
+	const uint64_t nH = Fetch64(pBuf + nLen - 16) * nMul;
+	const uint64_t nU = ROTATE64(nA + nG, 43) + (ROTATE64(nB, 30) + nC) * 9;
+	const uint64_t nV = ((nA + nG) ^ nD) + nF + 1;
+	const uint64_t nW = ByteSwap64((nU + nV) * nMul) + nH;
+	const uint64_t nX = ROTATE64(nE + nF, 42) + nC;
+	const uint64_t nY = (ByteSwap64((nV + nW) * nMul) + nG) * nMul;
+	const uint64_t nZ = nE + nF + nC;
 
 	nA = ByteSwap64((nX + nZ) * nMul + nY) + nB;
 	nB = SHIFTMIX((nZ + nA) * nMul + nD + nH) * nMul;
@@ -218,14 +218,14 @@ uint64_t Hash64Len33to64(PCBYTE pBuf, const uint32_t nLen)
 //#################################################################################################
 void WeakHashLen32WithSeeds(PCBYTE pBuf, uint64_t nA, uint64_t nB, uint64_t &nLow, uint64_t &nHigh)
 {
-	uint64_t nW = Fetch64(pBuf);
-	uint64_t nX = Fetch64(pBuf + 8);
-	uint64_t nY = Fetch64(pBuf + 16);
-	uint64_t nZ = Fetch64(pBuf + 24);
+	const uint64_t nW = Fetch64(pBuf);
+	const uint64_t nX = Fetch64(pBuf + 8);
+	const uint64_t nY = Fetch64(pBuf + 16);
+	const uint64_t nZ = Fetch64(pBuf + 24);
 
 	nA += nW;
 	nB = ROTATE64(nB + nA + nZ, 21);
-	uint64_t nC = nA;
+	const uint64_t nC = nA;
 	nA += nX;
 	nA += nY;
 	nB += ROTATE64(nA, 44);
@@ -244,11 +244,11 @@ uint32_t CityHash32(PCBYTE pBuf, const size_t nSize)
 		uint32_t nH = (uint32_t)nSize;
 		uint32_t nG = g_nMagic1 * (uint32_t)nSize;
 		uint32_t nF = nG;
-		uint32_t nA0 = ROTATE32(Fetch32(pBuf + nSize - 4) * g_nMagic1, 17) * g_nMagic2;
-		uint32_t nA1 = ROTATE32(Fetch32(pBuf + nSize - 8) * g_nMagic1, 17) * g_nMagic2;
-		uint32_t nA2 = ROTATE32(Fetch32(pBuf + nSize - 16) * g_nMagic1, 17) * g_nMagic2;
-		uint32_t nA3 = ROTATE32(Fetch32(pBuf + nSize - 12) * g_nMagic1, 17) * g_nMagic2;
-		uint32_t nA4 = ROTATE32(Fetch32(pBuf + nSize - 20) * g_nMagic1, 17) * g_nMagic2;
+		const uint32_t nA0 = ROTATE32(Fetch32(pBuf + nSize - 4) * g_nMagic1, 17) * g_nMagic2;
+		const uint32_t nA1 = ROTATE32(Fetch32(pBuf + nSize - 8) * g_nMagic1, 17) * g_nMagic2;
+		const uint32_t nA2 = ROTATE32(Fetch32(pBuf + nSize - 16) * g_nMagic1, 17) * g_nMagic2;
+		const uint32_t nA3 = ROTATE32(Fetch32(pBuf + nSize - 12) * g_nMagic1, 17) * g_nMagic2;
+		const uint32_t nA4 = ROTATE32(Fetch32(pBuf + nSize - 20) * g_nMagic1, 17) * g_nMagic2;
 		nH ^= nA0;
 		nH = ROTATE32(nH, 19);
 		nH = nH * 5 + 0xE6546B64;
@@ -267,11 +267,11 @@ uint32_t CityHash32(PCBYTE pBuf, const size_t nSize)
 
 		size_t n = (nSize - 1) / 20;
 		do{
-			uint32_t nA5 = ROTATE32(Fetch32(pBuf) * g_nMagic1, 17) * g_nMagic2;
-			uint32_t nA6 = Fetch32(pBuf + 4);
-			uint32_t nA7 = ROTATE32(Fetch32(pBuf + 8) * g_nMagic1, 17) * g_nMagic2;
-			uint32_t nA8 = ROTATE32(Fetch32(pBuf + 12) * g_nMagic1, 17) * g_nMagic2;
-			uint32_t nA9 = Fetch32(pBuf + 16);
+			const uint32_t nA5 = ROTATE32(Fetch32(pBuf) * g_nMagic1, 17) * g_nMagic2;
+			const uint32_t nA6 = Fetch32(pBuf + 4);
+			const uint32_t nA7 = ROTATE32(Fetch32(pBuf + 8) * g_nMagic1, 17) * g_nMagic2;
+			const uint32_t nA8 = ROTATE32(Fetch32(pBuf + 12) * g_nMagic1, 17) * g_nMagic2;
+			const uint32_t nA9 = Fetch32(pBuf + 16);
 			nH ^= nA5;
 			nH = ROTATE32(nH, 18);
 			nH = nH * 5 + 0xE6546B64;
@@ -289,7 +289,7 @@ uint32_t CityHash32(PCBYTE pBuf, const size_t nSize)
 			nH += nA9 * 5;
 			nH = ByteSwap32(nH);
 			nF += nA5;
-			uint32_t nTmp = nG;
+			const uint32_t nTmp = nG;
 			nG = nH;
 			nH = nF;
 			nF = nTmp;

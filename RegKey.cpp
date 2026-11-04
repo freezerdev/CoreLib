@@ -399,35 +399,33 @@ bool CRegKey::CreateTree(const CRegPath &path)
 	if(path.GetSegmentCount() <= 1)
 		return false;
 
-	CRegPath pathTemp(path.GetHive());
+	const CRegPath pathTemp(path.GetHive());
 	size_t nCurrentSegment = 1;
-	size_t nTotalSegments = path.GetSegmentCount();
+	const size_t nTotalSegments = path.GetSegmentCount();
 
 	if(nCurrentSegment == nTotalSegments)
 	{	// Path contains one segment, the registry hive
 		CRegKey key;
 		return (key.Open(pathTemp) == FW_NO_ERROR);
 	}
-	else
-	{
-		CRegKey key;
-		CRegKey keyNew;
-		if(key.Open(pathTemp) == FW_NO_ERROR)
-		{
-			while(nCurrentSegment < nTotalSegments)
-			{
-				ERRCODE nErrorCode = key.Open(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, keyNew);
-				if(nErrorCode == FW_ERROR_NOT_FOUND)
-				{
-					if(key.Create(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, nullptr, keyNew) != FW_NO_ERROR)
-						return false;
-				}
-				else if(nErrorCode != FW_NO_ERROR)
-					return false;
 
-				key.Attach(keyNew.Detach());
-				++nCurrentSegment;
+	CRegKey key;
+	CRegKey keyNew;
+	if(key.Open(pathTemp) == FW_NO_ERROR)
+	{
+		while(nCurrentSegment < nTotalSegments)
+		{
+			const ERRCODE nErrorCode = key.Open(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, keyNew);
+			if(nErrorCode == FW_ERROR_NOT_FOUND)
+			{
+				if(key.Create(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, nullptr, keyNew) != FW_NO_ERROR)
+					return false;
 			}
+			else if(nErrorCode != FW_NO_ERROR)
+				return false;
+
+			key.Attach(keyNew.Detach());
+			++nCurrentSegment;
 		}
 	}
 
@@ -440,35 +438,33 @@ bool CRegKey::CreateTree32(const CRegPath &path)
 	if(path.GetSegmentCount() <= 1)
 		return false;
 
-	CRegPath pathTemp(path.GetHive());
+	const CRegPath pathTemp(path.GetHive());
 	size_t nCurrentSegment = 1;
-	size_t nTotalSegments = path.GetSegmentCount();
+	const size_t nTotalSegments = path.GetSegmentCount();
 
 	if(nCurrentSegment == nTotalSegments)
 	{	// Path contains one segment, the registry hive
 		CRegKey key;
 		return (key.Open32(pathTemp) == FW_NO_ERROR);
 	}
-	else
-	{
-		CRegKey key;
-		CRegKey keyNew;
-		if(key.Open32(pathTemp) == FW_NO_ERROR)
-		{
-			while(nCurrentSegment < nTotalSegments)
-			{
-				ERRCODE nErrorCode = key.Open32(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, keyNew);
-				if(nErrorCode == FW_ERROR_NOT_FOUND)
-				{
-					if(key.Create32(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, nullptr, keyNew) != FW_NO_ERROR)
-						return false;
-				}
-				else if(nErrorCode != FW_NO_ERROR)
-					return false;
 
-				key.Attach(keyNew.Detach());
-				++nCurrentSegment;
+	CRegKey key;
+	CRegKey keyNew;
+	if(key.Open32(pathTemp) == FW_NO_ERROR)
+	{
+		while(nCurrentSegment < nTotalSegments)
+		{
+			const ERRCODE nErrorCode = key.Open32(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, keyNew);
+			if(nErrorCode == FW_ERROR_NOT_FOUND)
+			{
+				if(key.Create32(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, nullptr, keyNew) != FW_NO_ERROR)
+					return false;
 			}
+			else if(nErrorCode != FW_NO_ERROR)
+				return false;
+
+			key.Attach(keyNew.Detach());
+			++nCurrentSegment;
 		}
 	}
 
@@ -481,35 +477,33 @@ bool CRegKey::CreateTree64(const CRegPath &path)
 	if(path.GetSegmentCount() <= 1)
 		return false;
 
-	CRegPath pathTemp(path.GetHive());
+	const CRegPath pathTemp(path.GetHive());
 	size_t nCurrentSegment = 1;
-	size_t nTotalSegments = path.GetSegmentCount();
+	const size_t nTotalSegments = path.GetSegmentCount();
 
 	if(nCurrentSegment == nTotalSegments)
 	{	// Path contains one segment, the registry hive
 		CRegKey key;
 		return (key.Open64(pathTemp) == FW_NO_ERROR);
 	}
-	else
-	{
-		CRegKey key;
-		CRegKey keyNew;
-		if(key.Open64(pathTemp) == FW_NO_ERROR)
-		{
-			while(nCurrentSegment < nTotalSegments)
-			{
-				ERRCODE nErrorCode = key.Open64(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, keyNew);
-				if(nErrorCode == FW_ERROR_NOT_FOUND)
-				{
-					if(key.Create64(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, nullptr, keyNew) != FW_NO_ERROR)
-						return false;
-				}
-				else if(nErrorCode != FW_NO_ERROR)
-					return false;
 
-				key.Attach(keyNew.Detach());
-				++nCurrentSegment;
+	CRegKey key;
+	CRegKey keyNew;
+	if(key.Open64(pathTemp) == FW_NO_ERROR)
+	{
+		while(nCurrentSegment < nTotalSegments)
+		{
+			const ERRCODE nErrorCode = key.Open64(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, keyNew);
+			if(nErrorCode == FW_ERROR_NOT_FOUND)
+			{
+				if(key.Create64(path.GetSegment(nCurrentSegment), KEY_READ | KEY_WRITE, nullptr, keyNew) != FW_NO_ERROR)
+					return false;
 			}
+			else if(nErrorCode != FW_NO_ERROR)
+				return false;
+
+			key.Attach(keyNew.Detach());
+			++nCurrentSegment;
 		}
 	}
 
@@ -851,7 +845,7 @@ ERRCODE CRegKey::GetValue(PCWSTR szValue, CStrW &strData, bool *pbExpandSz) cons
 	{
 		if(dwDataType == REG_SZ || dwDataType == REG_EXPAND_SZ)
 		{
-			DWORD dwStrLen = dwDataSize / sizeof(wchar_t) + 1;	// RegQueryValueEx() does not guarantee null termination
+			const DWORD dwStrLen = dwDataSize / sizeof(wchar_t) + 1;	// RegQueryValueEx() does not guarantee null termination
 			auto sz = std::make_unique<wchar_t[]>(dwStrLen);
 			dwDataSize = dwStrLen * sizeof(wchar_t);
 			nErrorCode = ConvertFromNativeErrorCode(RegQueryValueExW(m_hKey, szValue, nullptr, &dwDataType, (PBYTE)sz.get(), &dwDataSize));
@@ -924,7 +918,7 @@ ERRCODE CRegKey::GetValue(PCWSTR szValue, CDoubleNullStrW &strData) const
 	{
 		if(dwDataType == REG_MULTI_SZ)
 		{
-			DWORD dwStrLen = dwDataSize / sizeof(wchar_t) + 2;	// RegQueryValueEx() does not guarantee null termination
+			const DWORD dwStrLen = dwDataSize / sizeof(wchar_t) + 2;	// RegQueryValueEx() does not guarantee null termination
 			auto sz = std::make_unique<wchar_t[]>(dwStrLen);
 			dwDataSize = dwStrLen * sizeof(wchar_t);
 			nErrorCode = ConvertFromNativeErrorCode(RegQueryValueExW(m_hKey, szValue, nullptr, &dwDataType, (PBYTE)sz.get(), &dwDataSize));
@@ -937,7 +931,7 @@ ERRCODE CRegKey::GetValue(PCWSTR szValue, CDoubleNullStrW &strData) const
 		}
 		else if(dwDataType == REG_SZ || dwDataType == REG_EXPAND_SZ)
 		{
-			DWORD dwStrLen = dwDataSize / sizeof(wchar_t) + 2;	// RegQueryValueEx() does not guarantee null termination
+			const DWORD dwStrLen = dwDataSize / sizeof(wchar_t) + 2;	// RegQueryValueEx() does not guarantee null termination
 			auto sz = std::make_unique<wchar_t[]>(dwStrLen);
 			dwDataSize = dwStrLen * sizeof(wchar_t);
 			nErrorCode = ConvertFromNativeErrorCode(RegQueryValueExW(m_hKey, szValue, nullptr, &dwDataType, (PBYTE)sz.get(), &dwDataSize));

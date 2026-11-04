@@ -72,7 +72,7 @@ bool CCrc32::Crc32Buffer(PCBYTE pBuffer, const size_t nSize, uint32_t &nCrc32) c
 }
 
 //#################################################################################################
-bool CCrc32::Crc32StreamInit(uint32_t &nCrc32) const noexcept
+bool CCrc32::Crc32StreamInit(uint32_t &nCrc32) noexcept
 {
 	nCrc32 = (uint32_t)-1;
 	return true;

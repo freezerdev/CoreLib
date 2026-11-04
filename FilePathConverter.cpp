@@ -71,7 +71,7 @@ bool CFilePathConverter::DeviceToUser(CStr &strPath) const
 
 	if(strPath.CompareLeft(_N("\\Device\\Mup\\;LanmanRedirector\\;"), 31) == 0)
 	{
-		size_t nPos = strPath.Find(_N('\\'), 31);
+		const size_t nPos = strPath.Find(_N('\\'), 31);
 		if(nPos != CStr::not_found)
 			strPath.Delete(12, nPos - 11);
 	}

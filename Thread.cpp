@@ -29,7 +29,7 @@ bool CThread::Start(void)
 {
 	bool bStarted = false;
 
-	std::lock_guard<std::mutex> lock(m_mutexThread);
+	const std::lock_guard<std::mutex> lock(m_mutexThread);
 	if(!m_pThread)
 	{
 		m_pThread = std::make_unique<std::thread>(InternalThreadProc, this);
@@ -46,7 +46,7 @@ bool CThread::Start(PFNPROC pfnProc, PVOID pParam)
 {
 	bool bStarted = false;
 
-	std::lock_guard<std::mutex> lock(m_mutexThread);
+	const std::lock_guard<std::mutex> lock(m_mutexThread);
 	if(!m_pThread && pfnProc)
 	{
 		m_pfnProc = pfnProc;
@@ -63,7 +63,7 @@ bool CThread::Start(PFNPROC pfnProc, PVOID pParam)
 //#################################################################################################
 void CThread::Wait(void)
 {
-	std::lock_guard<std::mutex> lock(m_mutexThread);
+	const std::lock_guard<std::mutex> lock(m_mutexThread);
 	if(m_pThread && m_pThread->joinable())
 		m_pThread->join();
 }
@@ -71,7 +71,7 @@ void CThread::Wait(void)
 //#################################################################################################
 void CThread::Reset(void)
 {
-	std::lock_guard<std::mutex> lock(m_mutexThread);
+	const std::lock_guard<std::mutex> lock(m_mutexThread);
 	if(m_pThread)
 	{
 		if(m_pThread->joinable())
@@ -91,7 +91,7 @@ const CStr &CThread::GetName(void) const noexcept
 //#################################################################################################
 std::thread::native_handle_type CThread::GetHandle(void) const
 {
-	std::lock_guard<std::mutex> lock(m_mutexThread);
+	const std::lock_guard<std::mutex> lock(m_mutexThread);
 #ifndef __linux__
 	return (m_pThread) ? m_pThread->native_handle() : nullptr;
 #else
@@ -102,7 +102,7 @@ std::thread::native_handle_type CThread::GetHandle(void) const
 //#################################################################################################
 std::thread::id CThread::GetId(void) const
 {
-	std::lock_guard<std::mutex> lock(m_mutexThread);
+	const std::lock_guard<std::mutex> lock(m_mutexThread);
 	return (m_pThread) ? m_pThread->get_id() : std::thread::id();
 }
 
@@ -117,10 +117,10 @@ CStr CThread::GetThreadName(const std::thread::id &id)
 {
 	CStr strThreadName;
 
-	size_t nThreadId = GetThreadId(id);
+	const size_t nThreadId = GetThreadId(id);
 
 	std::unique_lock<std::mutex> lock(s_mutexThreads);
-	auto itr = s_mapThreads.find(nThreadId);
+	const auto itr = s_mapThreads.find(nThreadId);
 	if(itr != s_mapThreads.end())
 		strThreadName = itr->second;
 	lock.unlock();
@@ -136,7 +136,7 @@ bool CThread::MonitorThread(const CStr &strThreadName, PFNPROC pfnProc, PVOID pP
 	if(pfnProc == nullptr)
 		return bMonitored;
 
-	size_t nThreadId = GetThreadId();
+	const size_t nThreadId = GetThreadId();
 
 	bMonitored = AddThread(nThreadId, strThreadName);
 	if(bMonitored)
@@ -187,7 +187,7 @@ bool CThread::AddThread(const size_t nThreadId, PCNSTR szThreadName)
 	bool bAdded = false;
 
 	std::unique_lock<std::mutex> lock(s_mutexThreads);
-	auto itr = s_mapThreads.find(nThreadId);
+	const auto itr = s_mapThreads.find(nThreadId);
 	if(itr == s_mapThreads.end())
 	{
 		s_mapThreads[nThreadId] = szThreadName;
@@ -205,8 +205,8 @@ void CThread::RemoveThread(const size_t nThreadId)
 	StrCleanup();
 #endif
 
-	std::lock_guard<std::mutex> lock(s_mutexThreads);
-	auto itr = s_mapThreads.find(nThreadId);
+	const std::lock_guard<std::mutex> lock(s_mutexThreads);
+	const auto itr = s_mapThreads.find(nThreadId);
 	if(itr != s_mapThreads.end())
 		s_mapThreads.erase(itr);
 }
@@ -218,7 +218,7 @@ void CThread::InternalThreadProc(CThread *pThis)
 	{
 		pThis->m_event.Wait();	// Wait for the spawning thread to finish initialization of the m_pThread object
 
-		size_t nThreadId = GetThreadId();
+		const size_t nThreadId = GetThreadId();
 		PCNSTR szThreadName = pThis->GetName();
 		AddThread(nThreadId, szThreadName);
 

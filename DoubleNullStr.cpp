@@ -47,7 +47,7 @@ size_t CDoubleNullStr8::GetLength(void) const noexcept
 		PCSTR szScan = m_szBuffer;
 		for(size_t n = 0; n < m_nCount; ++n)
 		{
-			size_t nStrLen = StringGetLength(szScan);
+			const size_t nStrLen = StringGetLength(szScan);
 			if(nStrLen == 0)
 				break;
 			szScan += nStrLen + 1;
@@ -152,7 +152,7 @@ void CDoubleNullStr8::Assign(PCSTR sz, const bool bDoubleNullTerm)
 	size_t nCount = 0;
 
 	do{
-		size_t nStrLen = StringGetLength(szScan);
+		const size_t nStrLen = StringGetLength(szScan);
 		if(nStrLen == 0)
 			break;
 		szScan += nStrLen + 1;
@@ -226,7 +226,7 @@ void CDoubleNullStr8::Append(PCSTR sz, const bool bDoubleNullTerm)
 	size_t nCount = 0;
 
 	do{
-		size_t nStrLen = StringGetLength(szScan);
+		const size_t nStrLen = StringGetLength(szScan);
 		if(nStrLen == 0)
 			break;
 		szScan += nStrLen + 1;
@@ -297,7 +297,7 @@ PCSTR CDoubleNullStr8::GetAt(const size_t nIndex) const
 		size_t n = nIndex;
 		while(n--)
 		{
-			size_t nStrLen = StringGetLength(szScan);
+			const size_t nStrLen = StringGetLength(szScan);
 			if(nStrLen == 0)
 				break;
 			szScan += nStrLen + 1;
@@ -323,7 +323,7 @@ PCSTR *CDoubleNullStr8::GetArray(void) const
 			for(size_t n = 0; n < m_nCount; ++n)
 			{
 				pszArr[n] = szScan;
-				size_t nStrLen = StringGetLength(szScan);
+				const size_t nStrLen = StringGetLength(szScan);
 				if(nStrLen == 0)
 					break;
 				szScan += nStrLen + 1;
@@ -398,7 +398,7 @@ size_t CDoubleNullStrW::GetLength(void) const noexcept
 		PCWSTR szScan = m_szBuffer;
 		for(size_t n = 0; n < m_nCount; ++n)
 		{
-			size_t nStrLen = StringGetLength(szScan);
+			const size_t nStrLen = StringGetLength(szScan);
 			if(nStrLen == 0)
 				break;
 			szScan += nStrLen + 1;
@@ -503,7 +503,7 @@ void CDoubleNullStrW::Assign(PCWSTR sz, const bool bDoubleNullTerm)
 	size_t nCount = 0;
 
 	do{
-		size_t nStrLen = StringGetLength(szScan);
+		const size_t nStrLen = StringGetLength(szScan);
 		if(nStrLen == 0)
 			break;
 		szScan += nStrLen + 1;
@@ -577,7 +577,7 @@ void CDoubleNullStrW::Append(PCWSTR sz, const bool bDoubleNullTerm)
 	size_t nCount = 0;
 
 	do{
-		size_t nStrLen = StringGetLength(szScan);
+		const size_t nStrLen = StringGetLength(szScan);
 		if(nStrLen == 0)
 			break;
 		szScan += nStrLen + 1;
@@ -648,7 +648,7 @@ PCWSTR CDoubleNullStrW::GetAt(const size_t nIndex) const
 		size_t n = nIndex;
 		while(n--)
 		{
-			size_t nStrLen = StringGetLength(szScan);
+			const size_t nStrLen = StringGetLength(szScan);
 			if(nStrLen == 0)
 				break;
 			szScan += nStrLen + 1;
@@ -674,7 +674,7 @@ PCWSTR *CDoubleNullStrW::GetArray(void) const
 			for(size_t n = 0; n < m_nCount; ++n)
 			{
 				pszArr[n] = szScan;
-				size_t nStrLen = StringGetLength(szScan);
+				const size_t nStrLen = StringGetLength(szScan);
 				if(nStrLen == 0)
 					break;
 				szScan += nStrLen + 1;

@@ -4,7 +4,7 @@
 NS_BEGIN
 
 //#################################################################################################
-ERRCODE ConvertFromNativeErrorCode(const ERRCODE nNativeErrorCode) noexcept
+ERRCODE ConvertFromNativeErrorCode(const ERRCODE nNativeErrorCode)
 {
 	ERRCODE nErrorCode;
 

@@ -188,12 +188,10 @@ void CWhitespaceParser::Append(const CStr &str)
 				m_vecParams.emplace_back(str, nStart);
 				break;
 			}
-			else
-			{
-				if(nEnd != nStart)
-					m_vecParams.emplace_back(str, nStart, nEnd - nStart);
-				nStart = nEnd + 1;
-			}
+
+			if(nEnd != nStart)
+				m_vecParams.emplace_back(str, nStart, nEnd - nStart);
+			nStart = nEnd + 1;
 		}
 		else
 		{
@@ -203,11 +201,9 @@ void CWhitespaceParser::Append(const CStr &str)
 				m_vecParams.emplace_back(str, nStart);
 				break;
 			}
-			else
-			{
-				m_vecParams.emplace_back(str, nStart, nEnd - nStart);
-				nStart = nEnd;
-			}
+
+			m_vecParams.emplace_back(str, nStart, nEnd - nStart);
+			nStart = nEnd;
 		}
 
 		nStart = str.FindFirstNotOf(g_szWhitespace, nStart);

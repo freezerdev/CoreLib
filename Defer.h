@@ -6,8 +6,9 @@ NS_BEGIN
 
 //#################################################################################################
 template<typename F>
-struct DeferGuard final
+class DeferGuard final
 {
+public:
 	explicit DeferGuard(F &&fnDefer) : m_fnDefer(std::move(fnDefer)) {}
 	DeferGuard(const DeferGuard &src) = delete;
 	DeferGuard(DeferGuard &&src) = default;		// Move constructor is required for C++14 support
@@ -16,6 +17,7 @@ struct DeferGuard final
 	DeferGuard &operator=(const DeferGuard &src) = delete;
 	DeferGuard &operator=(DeferGuard &&src) = delete;
 
+private:
 	F m_fnDefer;
 };
 
@@ -23,7 +25,7 @@ struct DeferGuard final
 template<typename F>
 DeferGuard<F> MakeDefer(F &&fnDefer)
 {
-	return DeferGuard<F>(std::move(fnDefer));
+	return DeferGuard<F>(std::forward<F>(fnDefer));
 }
 
 #define CONCAT_IMPL(a, b) a##b

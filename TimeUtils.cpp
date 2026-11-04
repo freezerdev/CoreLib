@@ -34,8 +34,8 @@ int GetTimeZoneOffset(void)
 	FILETIME ftLocal = {0};
 	GetSystemTimeAsFileTime(&ftUtc);
 	FileTimeToLocalFileTime(&ftUtc, &ftLocal);
-	int64_t nUtc = MAKEUINT64(ftUtc.dwHighDateTime, ftUtc.dwLowDateTime);
-	int64_t nLocal = MAKEUINT64(ftLocal.dwHighDateTime, ftLocal.dwLowDateTime);
+	const int64_t nUtc = MAKEUINT64(ftUtc.dwHighDateTime, ftUtc.dwLowDateTime);
+	const int64_t nLocal = MAKEUINT64(ftLocal.dwHighDateTime, ftLocal.dwLowDateTime);
 	nOffset = (int)((nLocal - nUtc) / 10000000LL);
 #else
 	std::time_t nTime = system_clock::to_time_t(GetCurrentUtcTime());
@@ -114,7 +114,7 @@ CStr GetFormattedDate(const time_point<system_clock> &tp, const bool bConvertToL
 //#################################################################################################
 void EpochToTimePoint(const uint64_t nEpoch, time_point<system_clock> &tp, const EEpochType eType)
 {
-	CStr strEpoch = IntegerToString(nEpoch);
+	const CStr strEpoch = IntegerToString(nEpoch);
 	EpochToTimePoint(strEpoch, tp, eType);
 }
 
@@ -124,8 +124,8 @@ void EpochToTimePoint(PCNSTR szEpoch, time_point<system_clock> &tp, const EEpoch
 	Assert(IsDigitString(szEpoch));
 	Assert(eType != EEpochType::Nanoseconds);
 
-	uint64_t nTime = StringToInteger<uint64_t>(szEpoch);
-	size_t nLen = StringGetLength(szEpoch);
+	const uint64_t nTime = StringToInteger<uint64_t>(szEpoch);
+	const size_t nLen = StringGetLength(szEpoch);
 
 	if(nLen >= 15 || eType == EEpochType::Microseconds)
 		tp = time_point<system_clock>(microseconds{nTime});
@@ -209,14 +209,14 @@ void TimePointToDosDateTime(const time_point<system_clock> &tp, uint16_t &nDosDa
 	localtime_r(&nTime, &tmTime);
 #endif
 
-	int nYearBits = ((tmTime.tm_year - 80) << 9) & 0xFE00;
-	int nMonthBits = ((tmTime.tm_mon + 1) << 5) & 0x1E0;
-	int nDayBits = tmTime.tm_mday & 0x1F;
+	const int nYearBits = ((tmTime.tm_year - 80) << 9) & 0xFE00;
+	const int nMonthBits = ((tmTime.tm_mon + 1) << 5) & 0x1E0;
+	const int nDayBits = tmTime.tm_mday & 0x1F;
 	nDosDate = (uint16_t)(nYearBits | nMonthBits | nDayBits);
 
-	int nHourBits = (tmTime.tm_hour << 11) & 0xF800;
-	int nMinuteBits = (tmTime.tm_min << 5) & 0x7E0;
-	int nSecondBits = (tmTime.tm_sec / 2) & 0x1F;
+	const int nHourBits = (tmTime.tm_hour << 11) & 0xF800;
+	const int nMinuteBits = (tmTime.tm_min << 5) & 0x7E0;
+	const int nSecondBits = (tmTime.tm_sec / 2) & 0x1F;
 	nDosTime = (uint16_t)(nHourBits | nMinuteBits | nSecondBits);
 }
 
@@ -241,8 +241,8 @@ void DosDateTimeToTimePoint(const uint16_t nDosDate, const uint16_t nDosTime, ti
 //#################################################################################################
 void TimePointToDoubleTime(const time_point<system_clock> &tp, double &dTime)
 {	// Converting from numbers to decimals may lose precision and result in a small microsecond difference
-	auto nDays = tp.time_since_epoch() / hours(24);
-	auto nSinceMidnight = (tp.time_since_epoch() - hours(nDays * 24)) / nanoseconds(1);
+	const auto nDays = tp.time_since_epoch() / hours(24);
+	const auto nSinceMidnight = (tp.time_since_epoch() - hours(nDays * 24)) / nanoseconds(1);
 
 	dTime = POSIX_EPOCH;
 	dTime += nDays;
@@ -267,7 +267,7 @@ void DoubleTimeToTimePoint(const double dTime, time_point<system_clock> &tp)
 	nMilliseconds = nMilliseconds % 1000;
 	uint64_t nMinutes = nSeconds / 60;
 	nSeconds = nSeconds % 60;
-	uint64_t nHours = nMinutes / 60;
+	const uint64_t nHours = nMinutes / 60;
 	nMinutes = nMinutes % 60;
 
 	tp = time_point<system_clock>();

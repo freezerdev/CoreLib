@@ -25,7 +25,7 @@ bool CTextFile::Load(PCNSTR szTxtPath)
 
 		if(nBytesRead >= sizeof(g_Utf16LE_Bom) && std::memcmp(pBuf.get(), g_Utf16LE_Bom, sizeof(g_Utf16LE_Bom)) == 0)
 		{	// UTF16 file
-			char16_t *szScanFile = (char16_t*)(pBuf.get() + sizeof(g_Utf16LE_Bom));
+			const char16_t *szScanFile = (const char16_t*)(pBuf.get() + sizeof(g_Utf16LE_Bom));
 			CStr16 strLine;
 
 			while(nErrorCode == FW_NO_ERROR && nBytesRead)

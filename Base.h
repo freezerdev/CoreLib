@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #ifdef _WIN32
 //#################################################################################################
 // Windows specific headers
@@ -197,41 +199,16 @@ union ULARGE_INTEGER
 #define BOUND(x, min, max)	((x) < (min) ? (min) : ((x) > (max) ? (max) : (x)))
 #endif
 
-#ifndef MAKEUINT64
-#define MAKEUINT64(high, low)	((uint64_t)((((uint64_t)((uint32_t)(high))) << 32) | ((uint32_t)(low))))
-#endif
+constexpr uint64_t MAKEUINT64(const uint32_t nHigh, const uint32_t nLow) {return ((uint64_t)nHigh << 32) | nLow;}
+constexpr uint32_t MAKEUINT32(const uint16_t nHigh, const uint16_t nLow) {return ((uint32_t)nHigh << 16) | nLow;}
+constexpr uint16_t MAKEUINT16(const uint8_t nHigh, const uint8_t nLow) {return ((uint16_t)nHigh << 8) | nLow;}
 
-#ifndef MAKEUINT32
-#define MAKEUINT32(high, low)	((uint32_t)((((uint32_t)((uint16_t)(high))) << 16) | ((uint16_t)(low))))
-#endif
-
-#ifndef MAKEUINT16
-#define MAKEUINT16(high, low)	((uint16_t)((((uint16_t)((uint8_t)(high))) << 8) | ((uint8_t)(low))))
-#endif
-
-#ifndef LO_UINT32
-#define LO_UINT32(n)	((uint32_t)(n))
-#endif
-
-#ifndef HI_UINT32
-#define HI_UINT32(n)	((uint32_t)((uint64_t)(n) >> 32))
-#endif
-
-#ifndef LO_UINT16
-#define LO_UINT16(n)	((uint16_t)(n))
-#endif
-
-#ifndef HI_UINT16
-#define HI_UINT16(n)	((uint16_t)((uint32_t)(n) >> 16))
-#endif
-
-#ifndef LO_UINT8
-#define LO_UINT8(n)		((uint8_t)(n))
-#endif
-
-#ifndef HI_UINT8
-#define HI_UINT8(n)		((uint8_t)((uint16_t)(n) >> 8))
-#endif
+constexpr uint32_t LO_UINT32(const uint64_t n) {return (uint32_t)n;}
+constexpr uint32_t HI_UINT32(const uint64_t n) {return (uint32_t)(n >> 32);}
+constexpr uint16_t LO_UINT16(const uint32_t n) {return (uint16_t)n;}
+constexpr uint16_t HI_UINT16(const uint32_t n) {return (uint16_t)(n >> 16);}
+constexpr uint8_t LO_UINT8(const uint16_t n) {return (uint8_t)n;}
+constexpr uint8_t HI_UINT8(const uint16_t n) {return (uint8_t)(n >> 8);}
 
 #ifndef HAS_FLAG
 #define HAS_FLAG(var, flag)	(((var) & (flag)) == (flag))
@@ -254,12 +231,12 @@ union ULARGE_INTEGER
 #endif
 
 // Swap two identically sized variables
-#define SWAP(a, b)			\
-	{						\
+#define SWAP(a, b)				\
+	{							\
 		static_assert(sizeof(a) == sizeof(b), "Mismatched variable size");\
-		auto _tmp = (a);	\
-		(a) = (b);			\
-		(b) = _tmp;			\
+		const auto _tmp = (a);	\
+		(a) = (b);				\
+		(b) = _tmp;				\
 	}
 
 // Macro to eliminate unused variable compiler warnings

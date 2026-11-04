@@ -104,7 +104,7 @@ void CIPv6::Assign(PCNSTR szIP)
 //#################################################################################################
 std::ostream &operator<<(std::ostream &stream, const CIPv6 &ip)
 {
-	CStr8 strIP(CStr8::EPrintfType::Printf, "%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X",
+	const CStr8 strIP(CStr8::EPrintfType::Printf, "%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X",
 		ip.m_ip[0], ip.m_ip[1], ip.m_ip[2], ip.m_ip[3], ip.m_ip[4], ip.m_ip[5], ip.m_ip[6], ip.m_ip[7],
 		ip.m_ip[8], ip.m_ip[9], ip.m_ip[10], ip.m_ip[11], ip.m_ip[12], ip.m_ip[13], ip.m_ip[14], ip.m_ip[15]);
 	stream << strIP;
@@ -114,7 +114,7 @@ std::ostream &operator<<(std::ostream &stream, const CIPv6 &ip)
 //#################################################################################################
 std::wostream &operator<<(std::wostream &stream, const CIPv6 &ip)
 {
-	CStrW strIP(CStrW::EPrintfType::Printf, L"%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X",
+	const CStrW strIP(CStrW::EPrintfType::Printf, L"%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X",
 		ip.m_ip[0], ip.m_ip[1], ip.m_ip[2], ip.m_ip[3], ip.m_ip[4], ip.m_ip[5], ip.m_ip[6], ip.m_ip[7],
 		ip.m_ip[8], ip.m_ip[9], ip.m_ip[10], ip.m_ip[11], ip.m_ip[12], ip.m_ip[13], ip.m_ip[14], ip.m_ip[15]);
 	stream << strIP;

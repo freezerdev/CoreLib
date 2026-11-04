@@ -35,7 +35,7 @@ void DiagnosticAssert(const bool bCondition, PCNSTR szFile, const long nLine)
 			pathFile.SetExtension(_N("txt"));
 
 			CFile file;
-			std::lock_guard<std::mutex> lock(*g_pDiagnosticMutex);
+			const std::lock_guard<std::mutex> lock(*g_pDiagnosticMutex);
 			if(file.Create(pathFile.Get(), CFile::EFileMode::AlwaysReadWrite) == FW_NO_ERROR)
 			{
 				size_t nBytesWritten;
@@ -64,7 +64,7 @@ void DiagnosticMessage(PCNSTR szMsg)
 		pathFile.SetExtension(_N("txt"));
 
 		CFile file;
-		std::lock_guard<std::mutex> lock(*g_pDiagnosticMutex);
+		const std::lock_guard<std::mutex> lock(*g_pDiagnosticMutex);
 		if(file.Create(pathFile.Get(), CFile::EFileMode::AlwaysReadWrite) == FW_NO_ERROR)
 		{
 			size_t nBytesWritten;

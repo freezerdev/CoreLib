@@ -80,7 +80,7 @@ uint64_t CFilePathWHashTraits::operator()(const CFilePathW &path) const
 //#################################################################################################
 uint64_t CUuidHashTraits::operator()(const uuid_t &id) const
 {
-	CStr strId = UuidToString(id);
+	const CStr strId = UuidToString(id);
 	return CityHash64((PCBYTE)(PCNSTR)strId, strId.GetSize());
 }
 #endif

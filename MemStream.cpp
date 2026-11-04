@@ -50,8 +50,7 @@ CMemStream::CMemStream(const CMemBuffer &buf)
 CMemStream::CMemStream(CMemBuffer &&buf) noexcept
 	: m_pBuf(buf.GetBuffer()),
 	m_nDataSize(buf.GetDataSize()),
-	m_nBufSize(buf.GetBufferSize()),
-	m_nReadPosition(0)
+	m_nBufSize(buf.GetBufferSize())
 {
 	buf.Detach();
 }

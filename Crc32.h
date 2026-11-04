@@ -12,7 +12,7 @@ public:
 
 	bool Crc32Buffer(PCBYTE pBuffer, const size_t nSize, uint32_t &nCrc32) const;
 
-	bool Crc32StreamInit(uint32_t &nCrc32) const noexcept;
+	static bool Crc32StreamInit(uint32_t &nCrc32) noexcept;
 	void Crc32Stream(PCBYTE pBuffer, const size_t nSize, uint32_t &nCrc32) const noexcept;
 	static void Crc32StreamEnd(uint32_t &nCrc32) noexcept;
 

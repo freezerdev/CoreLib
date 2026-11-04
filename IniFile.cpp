@@ -99,7 +99,7 @@ CStr CIniEntry::GetKey(void) const
 {
 	CStr strKey;
 
-	size_t nPos = m_itr->Find(g_chEqual);
+	const size_t nPos = m_itr->Find(g_chEqual);
 	if(nPos != CStr::not_found)
 		strKey.Assign(*m_itr, 0, nPos);
 	else
@@ -114,7 +114,7 @@ CStr CIniEntry::GetValue(void) const
 {
 	CStr strValue;
 
-	size_t nPos = m_itr->Find(g_chEqual);
+	const size_t nPos = m_itr->Find(g_chEqual);
 	if(nPos != CStr::not_found)
 	{
 		strValue.Assign(*m_itr, nPos + 1);
@@ -205,7 +205,8 @@ void CIniSection::SetValueInt(const CStr &strKey, const int nValue)
 			m_lstParent.insert(itr, str);
 			break;
 		}
-		else if(entry.GetKey().Compare(strKey, true) == 0)
+
+		if(entry.GetKey().Compare(strKey, true) == 0)
 		{
 			entry.SetValue(IntegerToString(nValue));
 			break;
@@ -235,7 +236,8 @@ void CIniSection::SetValueString(const CStr &strKey, const CStr &strValue)
 			m_lstParent.insert(itr, str);
 			break;
 		}
-		else if(entry.GetKey().Compare(strKey, true) == 0)
+
+		if(entry.GetKey().Compare(strKey, true) == 0)
 		{
 			entry.SetValue(strValue);
 			break;
@@ -394,7 +396,7 @@ bool CIniFile::Load(PCNSTR szIniPath)
 
 		if(nBytesRead >= sizeof(g_Utf16LE_Bom) && std::memcmp(pBuf.get(), g_Utf16LE_Bom, sizeof(g_Utf16LE_Bom)) == 0)
 		{	// UTF16 file
-			char16_t *szScanFile = (char16_t*)(pBuf.get() + sizeof(g_Utf16LE_Bom));
+			const char16_t *szScanFile = (const char16_t*)(pBuf.get() + sizeof(g_Utf16LE_Bom));
 			CStr16 strLine;
 
 			while(nErrorCode == FW_NO_ERROR && nBytesRead)
@@ -759,7 +761,7 @@ bool CIniFile::GetSection(const CStr &strSection, std::unique_ptr<CIniSection> &
 
 	bool bSuccess = false;
 
-	CStr strUnformattedSection(UnformatSectionName(strSection));
+	const CStr strUnformattedSection(UnformatSectionName(strSection));
 
 	// pSection was uninitialized or created for a different CIniFile object, create pointing at this CIniFile object
 	if(pSection == nullptr || pSection->m_lstParent != m_lstLines)

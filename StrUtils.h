@@ -75,7 +75,7 @@ inline void StringToLower(PWSTR sz, const size_t nStrLen)
 {
 #ifdef _WIN32
 #ifdef _DEBUG
-	int nResult = LCMapStringEx(LOCALE_NAME_SYSTEM_DEFAULT, LCMAP_LOWERCASE, sz, (int)nStrLen, sz, (int)nStrLen, nullptr, nullptr, 0);
+	const int nResult = LCMapStringEx(LOCALE_NAME_SYSTEM_DEFAULT, LCMAP_LOWERCASE, sz, (int)nStrLen, sz, (int)nStrLen, nullptr, nullptr, 0);
 	Assert(((size_t)nResult <= nStrLen) && (nResult != 0 || nStrLen == 0));
 #else
 	LCMapStringEx(LOCALE_NAME_SYSTEM_DEFAULT, LCMAP_LOWERCASE, sz, (int)nStrLen, sz, (int)nStrLen, nullptr, nullptr, 0);
@@ -91,7 +91,7 @@ inline void StringToUpper(PWSTR sz, const size_t nStrLen)
 {
 #ifdef _WIN32
 #ifdef _DEBUG
-	int nResult = LCMapStringEx(LOCALE_NAME_SYSTEM_DEFAULT, LCMAP_UPPERCASE, sz, (int)nStrLen, sz, (int)nStrLen, nullptr, nullptr, 0);
+	const int nResult = LCMapStringEx(LOCALE_NAME_SYSTEM_DEFAULT, LCMAP_UPPERCASE, sz, (int)nStrLen, sz, (int)nStrLen, nullptr, nullptr, 0);
 	Assert(((size_t)nResult <= nStrLen) && (nResult != 0 || nStrLen == 0));
 #else
 	LCMapStringEx(LOCALE_NAME_SYSTEM_DEFAULT, LCMAP_UPPERCASE, sz, (int)nStrLen, sz, (int)nStrLen, nullptr, nullptr, 0);
@@ -130,27 +130,27 @@ inline wchar_t CharToUpper(const wchar_t ch)
 // These functions advance the pointer by one character in the string.  These functions exist because multibyte UTF8 characters could be
 // between 1 and 4 bytes in size.  All other formats are a fixed size.  Note: These functions always advance the pointer, even if currently pointing
 // at the null character ('\0').  Passing a null pointer may result in an exception.
-void CharAdvance(PCSTR &sz) noexcept;
-inline void CharAdvance(PCWSTR &sz) noexcept {Assert(sz); ++sz;}
-inline void CharAdvance(const char16_t *&sz) noexcept {Assert(sz); ++sz;}
-inline void CharAdvance(const char32_t *&sz) noexcept {Assert(sz); ++sz;}
-size_t CharAdvance(PCSTR &sz, const size_t nStrSize) noexcept;
-inline size_t CharAdvance(PCWSTR &sz, const size_t nStrSize) noexcept {Assert(sz); if(nStrSize) ++sz; return sizeof(wchar_t);}
-inline size_t CharAdvance(const char16_t *&sz, const size_t nStrSize) noexcept {Assert(sz); if(nStrSize) ++sz; return sizeof(char16_t);}
-inline size_t CharAdvance(const char32_t *&sz, const size_t nStrSize) noexcept {Assert(sz); if(nStrSize) ++sz; return sizeof(char32_t);}
+void CharAdvance(PCSTR &sz);
+inline void CharAdvance(PCWSTR &sz) {Assert(sz); ++sz;}
+inline void CharAdvance(const char16_t *&sz) {Assert(sz); ++sz;}
+inline void CharAdvance(const char32_t *&sz) {Assert(sz); ++sz;}
+size_t CharAdvance(PCSTR &sz, const size_t nStrSize);
+inline size_t CharAdvance(PCWSTR &sz, const size_t nStrSize) {Assert(sz); if(nStrSize) ++sz; return sizeof(wchar_t);}
+inline size_t CharAdvance(const char16_t *&sz, const size_t nStrSize) {Assert(sz); if(nStrSize) ++sz; return sizeof(char16_t);}
+inline size_t CharAdvance(const char32_t *&sz, const size_t nStrSize) {Assert(sz); if(nStrSize) ++sz; return sizeof(char32_t);}
 
 //#################################################################################################
 // These functions return the size of the first character in the string.  These functions exist because multibyte UTF8 characters could be
 // between 1 and 4 bytes in size.  All other formats are a fixed size.  Note: The null character ('\0') is a character and returns a valid size.
 // Passing a null pointer may result in an exception.
-uint8_t StringGetCharSize(PCSTR sz) noexcept;
-inline uint8_t StringGetCharSize(PCWSTR sz) noexcept {UNUSED(sz); Assert(sz); return sizeof(wchar_t);}
-inline uint8_t StringGetCharSize(const char16_t *sz) noexcept {UNUSED(sz); Assert(sz); return sizeof(char16_t);}
-inline uint8_t StringGetCharSize(const char32_t *sz) noexcept {UNUSED(sz); Assert(sz); return sizeof(char32_t);}
-uint8_t StringGetCharSize(PCSTR sz, const size_t nStrSize) noexcept;
-inline uint8_t StringGetCharSize(PCWSTR sz, const size_t nStrSize) noexcept {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(wchar_t);}
-inline uint8_t StringGetCharSize(const char16_t *sz, const size_t nStrSize) noexcept {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(char16_t);}
-inline uint8_t StringGetCharSize(const char32_t *sz, const size_t nStrSize) noexcept {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(char32_t);}
+uint8_t StringGetCharSize(PCSTR sz);
+inline uint8_t StringGetCharSize(PCWSTR sz) {UNUSED(sz); Assert(sz); return sizeof(wchar_t);}
+inline uint8_t StringGetCharSize(const char16_t *sz) {UNUSED(sz); Assert(sz); return sizeof(char16_t);}
+inline uint8_t StringGetCharSize(const char32_t *sz) {UNUSED(sz); Assert(sz); return sizeof(char32_t);}
+uint8_t StringGetCharSize(PCSTR sz, const size_t nStrSize);
+inline uint8_t StringGetCharSize(PCWSTR sz, const size_t nStrSize) {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(wchar_t);}
+inline uint8_t StringGetCharSize(const char16_t *sz, const size_t nStrSize) {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(char16_t);}
+inline uint8_t StringGetCharSize(const char32_t *sz, const size_t nStrSize) {UNUSED(sz); Assert(sz); return (nStrSize == 0) ? 0 : sizeof(char32_t);}
 
 uint8_t GetMultiByteCharSize(PCSTR szSrc, const size_t nSrcSize) noexcept;
 uint8_t CopyMultiByteChar(PSTR szDest, const size_t nDestSize, PCSTR szSrc, const size_t nSrcSize) noexcept;
@@ -309,7 +309,7 @@ CStr8 IntegerToString8(const INTTYPE i, const uint8_t nBase = 10)
 
 	INTTYPE I = i;
 	do{
-		int8_t lsd = (int8_t)(I % nBase);
+		const int8_t lsd = (int8_t)(I % nBase);
 		I /= nBase;
 		--szScan;
 		*szScan = szDigits[lsd + 35];	// 35 is the midpoint of the string above
@@ -333,7 +333,7 @@ CStrW IntegerToStringW(const INTTYPE i, const uint8_t nBase = 10)
 
 	INTTYPE I = i;
 	do{
-		int8_t lsd = (int8_t)(I % nBase);
+		const int8_t lsd = (int8_t)(I % nBase);
 		I /= nBase;
 		--szScan;
 		*szScan = szDigits[lsd + 35];	// 35 is the midpoint of the string above

@@ -89,7 +89,7 @@ VARTYPE CWmiInstance::GetType(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 			vt = var.vt;
 	}
@@ -105,7 +105,7 @@ bool CWmiInstance::GetBool(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr) && var.vt == VT_BOOL)
 			bProperty = (var.boolVal != VARIANT_FALSE);
 	}
@@ -121,7 +121,7 @@ int64_t CWmiInstance::GetInteger(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			if(var.vt == VT_I1)
@@ -148,7 +148,7 @@ uint64_t CWmiInstance::GetUInteger(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			if(var.vt == VT_UI1)
@@ -175,7 +175,7 @@ double CWmiInstance::GetDouble(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			if(var.vt == VT_R4)
@@ -198,7 +198,7 @@ CStrW CWmiInstance::GetString(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr) && var.vt == VT_BSTR)
 			strProperty = var.bstrVal;
 	}
@@ -214,7 +214,7 @@ bool CWmiInstance::GetAsBool(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			if(var.vt == VT_BOOL)
@@ -263,7 +263,7 @@ int64_t CWmiInstance::GetAsInteger(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			if(var.vt == VT_BOOL)
@@ -312,7 +312,7 @@ uint64_t CWmiInstance::GetAsUInteger(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			if(var.vt == VT_BOOL)
@@ -361,7 +361,7 @@ double CWmiInstance::GetAsDouble(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			if(var.vt == VT_BOOL)
@@ -410,7 +410,7 @@ CStrW CWmiInstance::GetAsString(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			if(var.vt == VT_BOOL)
@@ -481,7 +481,7 @@ std::vector<bool> CWmiInstance::GetBoolVector(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			SAFEARRAY *psa = nullptr;
@@ -526,7 +526,7 @@ std::vector<int64_t> CWmiInstance::GetIntegerVector(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			SAFEARRAY *psa = nullptr;
@@ -619,7 +619,7 @@ std::vector<uint64_t> CWmiInstance::GetUIntegerVector(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			SAFEARRAY *psa = nullptr;
@@ -712,7 +712,7 @@ std::vector<double> CWmiInstance::GetDoubleVector(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			SAFEARRAY *psa = nullptr;
@@ -781,7 +781,7 @@ std::vector<CStrW> CWmiInstance::GetStringVector(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			SAFEARRAY *psa = nullptr;
@@ -826,7 +826,7 @@ std::vector<bool> CWmiInstance::GetAsBoolVector(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			SAFEARRAY *psa = nullptr;
@@ -1039,7 +1039,7 @@ std::vector<int64_t> CWmiInstance::GetAsIntegerVector(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			SAFEARRAY *psa = nullptr;
@@ -1252,7 +1252,7 @@ std::vector<uint64_t> CWmiInstance::GetAsUIntegerVector(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			SAFEARRAY *psa = nullptr;
@@ -1465,7 +1465,7 @@ std::vector<double> CWmiInstance::GetAsDoubleVector(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			SAFEARRAY *psa = nullptr;
@@ -1678,7 +1678,7 @@ std::vector<CStrW> CWmiInstance::GetAsStringVector(PCWSTR szProperty) const
 	if(m_pClass)
 	{
 		_variant_t var;
-		HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
+		const HRESULT hr = m_pClass->Get(szProperty, 0, &var, nullptr, nullptr);
 		if(SUCCEEDED(hr))
 		{
 			SAFEARRAY *psa = nullptr;
@@ -2077,7 +2077,7 @@ HRESULT CWmiService::Open(PCWSTR szNamespace, const DWORD dwAuthnLevel)
 	HRESULT hr = CoCreateInstance(__uuidof(WbemLocator), nullptr, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (PVOID*)&m_pLocator);
 	if(SUCCEEDED(hr) && m_pLocator)
 	{
-		_bstr_t bstrNamespace = SysAllocString(szNamespace);
+		const _bstr_t bstrNamespace = SysAllocString(szNamespace);
 		if(!!bstrNamespace)		// _bstr_t does not have a check for valid, so you need to negate the not valid operator
 		{
 			hr = m_pLocator->ConnectServer(bstrNamespace, nullptr, nullptr, nullptr, 0, nullptr, nullptr, &m_pService);
@@ -2128,10 +2128,10 @@ CWmiClass CWmiService::GetClass(PCWSTR szClassName) const
 		CStrW strQuery(L"select * from ");
 		strQuery += szClassName;
 
-		_bstr_t bstrWql = SysAllocString(g_szWql);
+		const _bstr_t bstrWql = SysAllocString(g_szWql);
 		if(!!bstrWql)	// _bstr_t does not have a check for valid, so you need to negate the not valid operator
 		{
-			_bstr_t bstrQuery = SysAllocString(strQuery);
+			const _bstr_t bstrQuery = SysAllocString(strQuery);
 			if(!!bstrQuery)
 				m_pService->ExecQuery(bstrWql, bstrQuery, WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &wmiClass.m_pClassEnumerator);
 		}
@@ -2165,10 +2165,10 @@ CWmiClass CWmiService::GetClass(PCWSTR szClassName, const std::vector<CStrW> &ve
 		strQuery += L" from ";
 		strQuery += szClassName;
 
-		_bstr_t bstrWql = SysAllocString(g_szWql);
+		const _bstr_t bstrWql = SysAllocString(g_szWql);
 		if(!!bstrWql)	// _bstr_t does not have a check for valid, so you need to negate the not valid operator
 		{
-			_bstr_t bstrQuery = SysAllocString(strQuery);
+			const _bstr_t bstrQuery = SysAllocString(strQuery);
 			if(!!bstrQuery)
 				m_pService->ExecQuery(bstrWql, bstrQuery, WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &wmiClass.m_pClassEnumerator);
 		}
@@ -2184,10 +2184,10 @@ CWmiClass CWmiService::GetClassByQuery(PCWSTR szQuery) const
 
 	if(m_pService)
 	{
-		_bstr_t bstrWql = SysAllocString(g_szWql);
+		const _bstr_t bstrWql = SysAllocString(g_szWql);
 		if(!!bstrWql)	// _bstr_t does not have a check for valid, so you need to negate the not valid operator
 		{
-			_bstr_t bstrQuery = SysAllocString(szQuery);
+			const _bstr_t bstrQuery = SysAllocString(szQuery);
 			if(!!bstrQuery)
 				m_pService->ExecQuery(bstrWql, bstrQuery, WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &wmiClass.m_pClassEnumerator);
 		}

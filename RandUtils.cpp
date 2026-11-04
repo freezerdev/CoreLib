@@ -38,7 +38,7 @@ bool CRandom::GetBool(void)
 	Assert(s_pMT->min() == 0);
 	Assert(s_pMT->max() == std::numeric_limits<uint64_t>::max());
 
-	std::lock_guard<std::mutex> lock(*s_pRandMutex);
+	const std::lock_guard<std::mutex> lock(*s_pRandMutex);
 	return ((*s_pMT)() >= 0x8000000000000000);
 }
 

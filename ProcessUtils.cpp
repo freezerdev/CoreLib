@@ -125,7 +125,7 @@ CFilePath GetProcessFilename(const uint32_t nPid)
 					CStr strName(szName);
 					if(strName.CompareLeft(_N("\\Device\\Mup\\;LanmanRedirector\\;"), 31) == 0)
 					{
-						size_t nPos = strName.Find(_N('\\'), 31);
+						const size_t nPos = strName.Find(_N('\\'), 31);
 						if(nPos != CStr::not_found)
 							strName.Delete(12, nPos - 11);
 					}

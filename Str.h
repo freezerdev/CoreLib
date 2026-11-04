@@ -57,9 +57,6 @@ public:
 	// Constructs a formatted string using C++ variadic templates; set 'eIgnored' to 'EFormatType::Format' and 'szFormat' contains the string with format specifiers
 	template<typename ...ARGS>
 	CStr8(const EFormatType eIgnored, PCSTR szFormat, const ARGS&... args)
-		: m_sz((PSTR)g_szNull8),
-		m_nBufLen(0),
-		m_nStrLen(0)
 	{
 		UNUSED(eIgnored);
 		Assert(eIgnored == EFormatType::Format);
@@ -537,9 +534,6 @@ public:
 	// Constructs a formatted string using C++ variadic templates; set 'eIgnored' to 'EFormatType::Format' and 'szFormat' contains the string with format specifiers
 	template<typename ...ARGS>
 	CStrW(const EFormatType eIgnored, PCWSTR szFormat, const ARGS&... args)
-		: m_sz((PWSTR)g_szNullW),
-		m_nBufLen(0),
-		m_nStrLen(0)
 	{
 		UNUSED(eIgnored);
 		Assert(eIgnored == EFormatType::Format);
@@ -928,7 +922,7 @@ private:
 		std::wostringstream stream;
 
 		const std::wstring arrArgs[] = {ToString(args)...};
-		size_t nArgsCount = sizeof...(args);
+		const size_t nArgsCount = sizeof...(args);
 
 		PCWSTR szScan = szFormat;
 		PCWSTR szEnd = szScan + GetLength(szFormat, end);
@@ -960,8 +954,8 @@ private:
 
 				if(bValidIndex)
 				{
-					CStrW strIndex(szLeft, 0, szRight - szLeft);
-					size_t nIndex = str2int(strIndex);
+					const CStrW strIndex(szLeft, 0, szRight - szLeft);
+					const size_t nIndex = str2int(strIndex);
 					if(nIndex < nArgsCount)
 						stream << arrArgs[nIndex];
 					else

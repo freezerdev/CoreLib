@@ -48,7 +48,7 @@ std::vector<CStr> GetCommandLineArguments(void)
 	std::vector<CStr> vecArgs;
 
 #ifdef _WIN32
-	CWhitespaceParser cmdline(GetCommandLineW());
+	const CWhitespaceParser cmdline(GetCommandLineW());
 	vecArgs.reserve(cmdline.GetCount());
 	for(size_t n = 0; n < cmdline.GetCount(); ++n)
 		vecArgs.push_back(cmdline.Get(n));
@@ -341,7 +341,7 @@ CStr GetEnvVariable(PCNSTR szVariable)
 	CStr strValue;
 
 #ifdef _WIN32
-	DWORD dwLen = GetEnvironmentVariableW(szVariable, nullptr, 0);
+	const DWORD dwLen = GetEnvironmentVariableW(szVariable, nullptr, 0);
 	if(dwLen)
 	{
 		auto szValue = std::make_unique<wchar_t[]>((size_t)dwLen + 1);
@@ -763,7 +763,7 @@ bool UUDecode8(const CStr8 &strEncoded, CMemBuffer &bufDecoded)
 {
 	bool bSuccess = false;
 
-	size_t nLen = strEncoded.GetLength();
+	const size_t nLen = strEncoded.GetLength();
 	if(nLen % 2 == 0)
 	{
 		bufDecoded.SetBufferSize(nLen / 2);
@@ -787,7 +787,7 @@ bool UUDecode8(const CStr8 &strEncoded, PBYTE pDecoded, size_t &nDecodedSize)
 {
 	bool bSuccess = false;
 
-	size_t nLen = strEncoded.GetLength();
+	const size_t nLen = strEncoded.GetLength();
 	if(nLen % 2 == 0)
 	{
 		if(nDecodedSize >= nLen / 2)
@@ -817,7 +817,7 @@ bool UUDecodeW(const CStrW &strEncoded, CMemBuffer &bufDecoded)
 {
 	bool bSuccess = false;
 
-	size_t nLen = strEncoded.GetLength();
+	const size_t nLen = strEncoded.GetLength();
 	if(nLen % 2 == 0)
 	{
 		bufDecoded.SetBufferSize(nLen / 2);
@@ -841,7 +841,7 @@ bool UUDecodeW(const CStrW &strEncoded, PBYTE pDecoded, size_t &nDecodedSize)
 {
 	bool bSuccess = false;
 
-	size_t nLen = strEncoded.GetLength();
+	const size_t nLen = strEncoded.GetLength();
 	if(nLen % 2 == 0)
 	{
 		if(nDecodedSize >= nLen / 2)

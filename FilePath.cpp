@@ -408,7 +408,7 @@ ERRCODE CFilePathSegment8::Assign(PCSTR sz)
 
 	if(IsValidSegment(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::memcpy(m_sz, sz, nStrLen);
@@ -437,7 +437,7 @@ ERRCODE CFilePathSegment8::Assign(PCWSTR sz)
 
 	if(CFilePathSegmentW::IsValidSegment(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(WideToUtf8(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = WideToUtf8(sz, nStrLen, m_sz, m_nBufLen);
@@ -715,7 +715,7 @@ int CFilePathSegment8::CompareBase(PCSTR szBase, const bool bCaseInsensitive) co
 	if(nThisLen == not_found)
 		nThisLen = m_nStrLen;
 
-	size_t nStrLen = StringGetLength(szBase);
+	const size_t nStrLen = StringGetLength(szBase);
 	if(nStrLen)
 	{
 		size_t nThatLen = nStrLen;
@@ -738,12 +738,12 @@ int CFilePathSegment8::CompareExtension(const CStr8 &strExt, const bool bCaseIns
 	size_t nThisStart = ReverseFind(m_sz, m_nStrLen, g_chPeriod8);
 	if(nThisStart != not_found)
 	{
-		size_t nThisLen = m_nStrLen - ++nThisStart;
+		const size_t nThisLen = m_nStrLen - ++nThisStart;
 		size_t nThatStart = 0;
 
 		if(strExt.GetFirst() == g_chPeriod8)
 			++nThatStart;
-		size_t nThatLen = strExt.GetLength() - nThatStart;
+		const size_t nThatLen = strExt.GetLength() - nThatStart;
 
 		nCompareRtn = StringCompare8(m_sz + nThisStart, nThisLen, (PCSTR)strExt + nThatStart, nThatLen, bCaseInsensitive);
 	}
@@ -758,19 +758,19 @@ int CFilePathSegment8::CompareExtension(PCSTR szExt, const bool bCaseInsensitive
 {
 	int nCompareRtn = 0;
 
-	size_t nStrLen = StringGetLength(szExt);
+	const size_t nStrLen = StringGetLength(szExt);
 
 	size_t nThisStart = ReverseFind(m_sz, m_nStrLen, g_chPeriod8);
 	if(nThisStart != not_found)
 	{
-		size_t nThisLen = m_nStrLen - ++nThisStart;
+		const size_t nThisLen = m_nStrLen - ++nThisStart;
 
 		if(nStrLen)
 		{
 			size_t nThatStart = 0;
 			if(szExt[0] == g_chPeriod8)
 				++nThatStart;
-			size_t nThatLen = nStrLen - nThatStart;
+			const size_t nThatLen = nStrLen - nThatStart;
 
 			nCompareRtn = StringCompare8(m_sz + nThisStart, nThisLen, szExt + nThatStart, nThatLen, bCaseInsensitive);
 		}
@@ -793,7 +793,7 @@ CStr8 CFilePathSegment8::GetBase(void) const
 		str.Assign(m_sz);
 
 		// Remove the extension if there is one
-		size_t nPos = str.ReverseFind(g_chPeriod8);
+		const size_t nPos = str.ReverseFind(g_chPeriod8);
 		if(nPos != CStr8::not_found)
 			str.Delete(nPos, CStr8::end);
 	}
@@ -808,7 +808,7 @@ CStr8 CFilePathSegment8::GetExtension(void) const
 
 	if(m_nStrLen)
 	{
-		size_t nPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
+		const size_t nPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
 		if(nPos != not_found)
 			str.Assign(m_sz + nPos + 1);
 	}
@@ -822,11 +822,11 @@ bool CFilePathSegment8::SetBase(const CStr8 &strBase)
 	bool bSet = false;
 
 	size_t nExtLen = 0;
-	size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
+	const size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
 	if(nExtPos != not_found)
 		nExtLen = m_nStrLen - nExtPos;
 
-	size_t nNewLen = strBase.GetLength() + nExtLen;
+	const size_t nNewLen = strBase.GetLength() + nExtLen;
 	if(nNewLen)
 	{
 		auto szTemp = std::make_unique<char[]>(nNewLen + 1);
@@ -857,12 +857,12 @@ bool CFilePathSegment8::SetBase(PCSTR szBase)
 	bool bSet = false;
 
 	size_t nExtLen = 0;
-	size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
+	const size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
 	if(nExtPos != not_found)
 		nExtLen = m_nStrLen - nExtPos;
 
-	size_t nBaseLen = StringGetLength(szBase);
-	size_t nNewLen = nBaseLen + nExtLen;
+	const size_t nBaseLen = StringGetLength(szBase);
+	const size_t nNewLen = nBaseLen + nExtLen;
 	if(nNewLen)
 	{
 		auto szTemp = std::make_unique<char[]>(nNewLen + 1);
@@ -893,7 +893,7 @@ bool CFilePathSegment8::SetExtension(const CStr8 &strExt)
 	bool bSet = false;
 
 	size_t nBaseLen = m_nStrLen;
-	size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
+	const size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
 	if(nExtPos != not_found)
 		nBaseLen = nExtPos;
 
@@ -901,7 +901,7 @@ bool CFilePathSegment8::SetExtension(const CStr8 &strExt)
 	if(nExtLen && strExt[0] != g_chPeriod8)
 		++nExtLen;
 
-	size_t nNewLen = nBaseLen + nExtLen;
+	const size_t nNewLen = nBaseLen + nExtLen;
 	if(nNewLen)
 	{
 		auto szTemp = std::make_unique<char[]>(nNewLen + 1);
@@ -940,7 +940,7 @@ bool CFilePathSegment8::SetExtension(PCSTR szExt)
 	bool bSet = false;
 
 	size_t nBaseLen = m_nStrLen;
-	size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
+	const size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
 	if(nExtPos != not_found)
 		nBaseLen = nExtPos;
 
@@ -948,7 +948,7 @@ bool CFilePathSegment8::SetExtension(PCSTR szExt)
 	if(nExtLen && szExt[0] != g_chPeriod8)
 		++nExtLen;
 
-	size_t nNewLen = nBaseLen + nExtLen;
+	const size_t nNewLen = nBaseLen + nExtLen;
 	if(nNewLen)
 	{
 		auto szTemp = std::make_unique<char[]>(nNewLen + 1);
@@ -992,7 +992,7 @@ bool CFilePathSegment8::AddExtension(const CStr8 &strExt)
 		if(strExt[0] != g_chPeriod8)
 			++nExtLen;
 
-		size_t nNewLen = m_nStrLen + nExtLen;
+		const size_t nNewLen = m_nStrLen + nExtLen;
 		auto szTemp = std::make_unique<char[]>(nNewLen + 1);
 		if(m_nStrLen)
 			std::memcpy(szTemp.get(), m_sz, m_nStrLen);
@@ -1031,7 +1031,7 @@ bool CFilePathSegment8::AddExtension(PCSTR szExt)
 		if(szExt[0] != g_chPeriod8)
 			++nExtLen;
 
-		size_t nNewLen = m_nStrLen + nExtLen;
+		const size_t nNewLen = m_nStrLen + nExtLen;
 		auto szTemp = std::make_unique<char[]>(nNewLen + 1);
 		if(m_nStrLen)
 			std::memcpy(szTemp.get(), m_sz, m_nStrLen);
@@ -1062,7 +1062,7 @@ bool CFilePathSegment8::AddExtension(PCSTR szExt)
 //#################################################################################################
 void CFilePathSegment8::RemoveExtension(void)
 {
-	size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
+	const size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriod8, m_nStrLen);
 	if(nExtPos != not_found)
 	{
 		m_sz[nExtPos] = g_chNull8;
@@ -1081,7 +1081,7 @@ bool CFilePathSegment8::IsValidSegment(const CStr8 &strSegment)
 	// and can contain any character except '/'
 
 	// Length between 1 and MAX_PATH
-	size_t nStrLen = strSegment.GetLength();
+	const size_t nStrLen = strSegment.GetLength();
 	if(nStrLen == 0 || nStrLen > MAX_PATH)
 		return false;
 
@@ -1113,7 +1113,7 @@ bool CFilePathSegment8::IsValidSegment(PCSTR szSegment)
 		return false;
 
 	// Length between 1 and MAX_PATH
-	size_t nStrLen = StringGetLength(szSegment);
+	const size_t nStrLen = StringGetLength(szSegment);
 	if(nStrLen == 0 || nStrLen > MAX_PATH)
 		return false;
 
@@ -1574,7 +1574,7 @@ ERRCODE CFilePathSegmentW::Assign(PCWSTR sz)
 
 	if(IsValidSegment(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::wmemcpy(m_sz, sz, nStrLen);
@@ -1603,7 +1603,7 @@ ERRCODE CFilePathSegmentW::Assign(PCSTR sz)
 
 	if(CFilePathSegment8::IsValidSegment(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(Utf8ToWide(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = Utf8ToWide(sz, nStrLen, m_sz, m_nBufLen);
@@ -1881,7 +1881,7 @@ int CFilePathSegmentW::CompareBase(PCWSTR szBase, const bool bCaseInsensitive) c
 	if(nThisLen == not_found)
 		nThisLen = m_nStrLen;
 
-	size_t nStrLen = StringGetLength(szBase);
+	const size_t nStrLen = StringGetLength(szBase);
 	if(nStrLen)
 	{
 		size_t nThatLen = nStrLen;
@@ -1904,12 +1904,12 @@ int CFilePathSegmentW::CompareExtension(const CStrW &strExt, const bool bCaseIns
 	size_t nThisStart = ReverseFind(m_sz, m_nStrLen, g_chPeriodW);
 	if(nThisStart != not_found)
 	{
-		size_t nThisLen = m_nStrLen - ++nThisStart;
+		const size_t nThisLen = m_nStrLen - ++nThisStart;
 		size_t nThatStart = 0;
 
 		if(strExt.GetFirst() == g_chPeriodW)
 			++nThatStart;
-		size_t nThatLen = strExt.GetLength() - nThatStart;
+		const size_t nThatLen = strExt.GetLength() - nThatStart;
 
 		nCompareRtn = StringCompareW(m_sz + nThisStart, nThisLen, (PCWSTR)strExt + nThatStart, nThatLen, bCaseInsensitive);
 	}
@@ -1924,19 +1924,19 @@ int CFilePathSegmentW::CompareExtension(PCWSTR szExt, const bool bCaseInsensitiv
 {
 	int nCompareRtn = 0;
 
-	size_t nStrLen = StringGetLength(szExt);
+	const size_t nStrLen = StringGetLength(szExt);
 
 	size_t nThisStart = ReverseFind(m_sz, m_nStrLen, g_chPeriodW);
 	if(nThisStart != not_found)
 	{
-		size_t nThisLen = m_nStrLen - ++nThisStart;
+		const size_t nThisLen = m_nStrLen - ++nThisStart;
 
 		if(nStrLen)
 		{
 			size_t nThatStart = 0;
 			if(szExt[0] == g_chPeriodW)
 				++nThatStart;
-			size_t nThatLen = nStrLen - nThatStart;
+			const size_t nThatLen = nStrLen - nThatStart;
 
 			nCompareRtn = StringCompareW(m_sz + nThisStart, nThisLen, szExt + nThatStart, nThatLen, bCaseInsensitive);
 		}
@@ -1959,7 +1959,7 @@ CStrW CFilePathSegmentW::GetBase(void) const
 		str.Assign(m_sz);
 
 		// Remove the extension if there is one
-		size_t nPos = str.ReverseFind(g_chPeriodW);
+		const size_t nPos = str.ReverseFind(g_chPeriodW);
 		if(nPos != CStrW::not_found)
 			str.Delete(nPos, CStrW::end);
 	}
@@ -1974,7 +1974,7 @@ CStrW CFilePathSegmentW::GetExtension(void) const
 
 	if(m_nStrLen)
 	{
-		size_t nPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
+		const size_t nPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
 		if(nPos != not_found)
 			str.Assign(m_sz + nPos + 1);
 	}
@@ -1988,11 +1988,11 @@ bool CFilePathSegmentW::SetBase(const CStrW &strBase)
 	bool bSet = false;
 
 	size_t nExtLen = 0;
-	size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
+	const size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
 	if(nExtPos != not_found)
 		nExtLen = m_nStrLen - nExtPos;
 
-	size_t nNewLen = strBase.GetLength() + nExtLen;
+	const size_t nNewLen = strBase.GetLength() + nExtLen;
 	if(nNewLen)
 	{
 		auto szTemp = std::make_unique<wchar_t[]>(nNewLen + 1);
@@ -2023,12 +2023,12 @@ bool CFilePathSegmentW::SetBase(PCWSTR szBase)
 	bool bSet = false;
 
 	size_t nExtLen = 0;
-	size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
+	const size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
 	if(nExtPos != not_found)
 		nExtLen = m_nStrLen - nExtPos;
 
-	size_t nBaseLen = StringGetLength(szBase);
-	size_t nNewLen = nBaseLen + nExtLen;
+	const size_t nBaseLen = StringGetLength(szBase);
+	const size_t nNewLen = nBaseLen + nExtLen;
 	if(nNewLen)
 	{
 		auto szTemp = std::make_unique<wchar_t[]>(nNewLen + 1);
@@ -2059,7 +2059,7 @@ bool CFilePathSegmentW::SetExtension(const CStrW &strExt)
 	bool bSet = false;
 
 	size_t nBaseLen = m_nStrLen;
-	size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
+	const size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
 	if(nExtPos != not_found)
 		nBaseLen = nExtPos;
 
@@ -2067,7 +2067,7 @@ bool CFilePathSegmentW::SetExtension(const CStrW &strExt)
 	if(nExtLen && strExt[0] != g_chPeriodW)
 		++nExtLen;
 
-	size_t nNewLen = nBaseLen + nExtLen;
+	const size_t nNewLen = nBaseLen + nExtLen;
 	if(nNewLen)
 	{
 		auto szTemp = std::make_unique<wchar_t[]>(nNewLen + 1);
@@ -2106,7 +2106,7 @@ bool CFilePathSegmentW::SetExtension(PCWSTR szExt)
 	bool bSet = false;
 
 	size_t nBaseLen = m_nStrLen;
-	size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
+	const size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
 	if(nExtPos != not_found)
 		nBaseLen = nExtPos;
 
@@ -2114,7 +2114,7 @@ bool CFilePathSegmentW::SetExtension(PCWSTR szExt)
 	if(nExtLen && szExt[0] != g_chPeriodW)
 		++nExtLen;
 
-	size_t nNewLen = nBaseLen + nExtLen;
+	const size_t nNewLen = nBaseLen + nExtLen;
 	if(nNewLen)
 	{
 		auto szTemp = std::make_unique<wchar_t[]>(nNewLen + 1);
@@ -2158,7 +2158,7 @@ bool CFilePathSegmentW::AddExtension(const CStrW &strExt)
 		if(strExt[0] != g_chPeriodW)
 			++nExtLen;
 
-		size_t nNewLen = m_nStrLen + nExtLen;
+		const size_t nNewLen = m_nStrLen + nExtLen;
 		auto szTemp = std::make_unique<wchar_t[]>(nNewLen + 1);
 		if(m_nStrLen)
 			std::wmemcpy(szTemp.get(), m_sz, m_nStrLen);
@@ -2197,7 +2197,7 @@ bool CFilePathSegmentW::AddExtension(PCWSTR szExt)
 		if(szExt[0] != g_chPeriodW)
 			++nExtLen;
 
-		size_t nNewLen = m_nStrLen + nExtLen;
+		const size_t nNewLen = m_nStrLen + nExtLen;
 		auto szTemp = std::make_unique<wchar_t[]>(nNewLen + 1);
 		if(m_nStrLen)
 			std::wmemcpy(szTemp.get(), m_sz, m_nStrLen);
@@ -2228,7 +2228,7 @@ bool CFilePathSegmentW::AddExtension(PCWSTR szExt)
 //#################################################################################################
 void CFilePathSegmentW::RemoveExtension(void)
 {
-	size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
+	const size_t nExtPos = ReverseFind(m_sz, m_nStrLen, g_chPeriodW, m_nStrLen);
 	if(nExtPos != not_found)
 	{
 		m_sz[nExtPos] = g_chNullW;
@@ -2247,7 +2247,7 @@ bool CFilePathSegmentW::IsValidSegment(const CStrW &strSegment)
 	// and can contain any character except '/'
 
 	// Length between 1 and MAX_PATH
-	size_t nStrLen = strSegment.GetLength();
+	const size_t nStrLen = strSegment.GetLength();
 	if(nStrLen == 0 || nStrLen > MAX_PATH)
 		return false;
 
@@ -2279,7 +2279,7 @@ bool CFilePathSegmentW::IsValidSegment(PCWSTR szSegment)
 		return false;
 
 	// Length between 1 and MAX_PATH
-	size_t nStrLen = StringGetLength(szSegment);
+	const size_t nStrLen = StringGetLength(szSegment);
 	if(nStrLen == 0 || nStrLen > MAX_PATH)
 		return false;
 
@@ -2598,7 +2598,7 @@ ERRCODE CMachineName8::Assign(PCSTR sz)
 
 	if(IsValidMachineName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::memcpy(m_sz, sz, nStrLen);
@@ -2627,7 +2627,7 @@ ERRCODE CMachineName8::Assign(PCWSTR sz)
 
 	if(CMachineNameW::IsValidMachineName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(WideToUtf8(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = WideToUtf8(sz, nStrLen, m_sz, m_nBufLen);
@@ -2710,7 +2710,7 @@ bool CMachineName8::IsValidMachineName(const CStr8 &strMachineName)
 	// Also, first and last character cannot be a hyphen or period.
 
 	// Length between 1 and 63
-	size_t nStrLen = strMachineName.GetLength();
+	const size_t nStrLen = strMachineName.GetLength();
 	if(nStrLen == 0 || nStrLen > 63)
 		return false;
 
@@ -2740,7 +2740,7 @@ bool CMachineName8::IsValidMachineName(PCSTR szMachineName)
 		return false;
 
 	// Length between 1 and 63
-	size_t nStrLen = StringGetLength(szMachineName);
+	const size_t nStrLen = StringGetLength(szMachineName);
 	if(nStrLen == 0 || nStrLen > 63)
 		return false;
 
@@ -3014,7 +3014,7 @@ ERRCODE CMachineNameW::Assign(PCWSTR sz)
 
 	if(IsValidMachineName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::wmemcpy(m_sz, sz, nStrLen);
@@ -3043,7 +3043,7 @@ ERRCODE CMachineNameW::Assign(PCSTR sz)
 
 	if(CMachineName8::IsValidMachineName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(Utf8ToWide(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = Utf8ToWide(sz, nStrLen, m_sz, m_nBufLen);
@@ -3126,7 +3126,7 @@ bool CMachineNameW::IsValidMachineName(const CStrW &strMachineName)
 	// Also, first and last character cannot be a hyphen or period.
 
 	// Length between 1 and 63
-	size_t nStrLen = strMachineName.GetLength();
+	const size_t nStrLen = strMachineName.GetLength();
 	if(nStrLen == 0 || nStrLen > 63)
 		return false;
 
@@ -3156,7 +3156,7 @@ bool CMachineNameW::IsValidMachineName(PCWSTR szMachineName)
 		return false;
 
 	// Length between 1 and 63
-	size_t nStrLen = StringGetLength(szMachineName);
+	const size_t nStrLen = StringGetLength(szMachineName);
 	if(nStrLen == 0 || nStrLen > 63)
 		return false;
 
@@ -4656,7 +4656,8 @@ bool CFilePath8::SimplifyDots(void)
 				bSimplified = true;
 				continue;
 			}
-			else if(**itr == g_szDoublePeriod8)
+
+			if(**itr == g_szDoublePeriod8)
 			{
 				if(itr == pathTmp.m_vecSegments.begin() || (IsDrive() && nSegment <= 1) || (IsUNC() && nSegment <= 2))
 				{
@@ -4746,7 +4747,7 @@ bool CFilePath8::HasExtension(void) const
 
 	if(!m_vecSegments.empty())
 	{
-		CStr8 str(m_vecSegments.back()->Get());
+		const CStr8 str(m_vecSegments.back()->Get());
 		if(str.Contains(g_chPeriod8))
 			bExt = true;
 	}
@@ -7164,7 +7165,8 @@ bool CFilePathW::SimplifyDots(void)
 				bSimplified = true;
 				continue;
 			}
-			else if(**itr == g_szDoublePeriodW)
+
+			if(**itr == g_szDoublePeriodW)
 			{
 				if(itr == pathTmp.m_vecSegments.begin() || (IsDrive() && nSegment <= 1) || (IsUNC() && nSegment <= 2))
 				{
@@ -7254,7 +7256,7 @@ bool CFilePathW::HasExtension(void) const
 
 	if(!m_vecSegments.empty())
 	{
-		CStrW str(m_vecSegments.back()->Get());
+		const CStrW str(m_vecSegments.back()->Get());
 		if(str.Contains(g_chPeriodW))
 			bExt = true;
 	}

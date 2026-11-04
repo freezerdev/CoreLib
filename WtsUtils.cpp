@@ -149,7 +149,7 @@ bool WtsGetRemoteAddress(CStrW &strAddress, const uint32_t nSessionId)
 		PWTS_CLIENT_ADDRESS pWCA = (PWTS_CLIENT_ADDRESS)pBuffer;
 		if(pWCA->AddressFamily == AF_INET)
 		{
-			size_t nLength = 16;
+			const size_t nLength = 16;
 			auto szIP = std::make_unique<char[]>(nLength);
 			if(inet_ntop(AF_INET, pWCA->Address + 2, szIP.get(), nLength))
 			{
@@ -159,7 +159,7 @@ bool WtsGetRemoteAddress(CStrW &strAddress, const uint32_t nSessionId)
 		}
 		else if(pWCA->AddressFamily == AF_INET6)
 		{
-			size_t nLength = 46;
+			const size_t nLength = 46;
 			auto szIP = std::make_unique<char[]>(nLength);
 			if(inet_ntop(AF_INET6, pWCA->Address, szIP.get(), nLength))
 			{

@@ -25,7 +25,7 @@ CStr GetUsername(const uint32_t nSessionId)
 {
 	CStr strUsername;
 
-	static CStr strMachineName = GetMachineName();
+	static const CStr strMachineName = GetMachineName();
 
 	CStr strDomain;
 	CStr strUser;
@@ -49,7 +49,7 @@ CStr SidToAccountName(const CStr &strSid)
 
 	CStr strAccountName;
 
-	static CStr strMachineName = GetMachineName();
+	static const CStr strMachineName = GetMachineName();
 
 	PSID pSid = nullptr;
 	if(ConvertStringSidToSidW(strSid, &pSid))

@@ -364,7 +364,7 @@ ERRCODE CDomainName8::Assign(PCSTR sz)
 
 	if(IsValidDomainName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::memcpy(m_sz, sz, nStrLen);
@@ -393,7 +393,7 @@ ERRCODE CDomainName8::Assign(PCWSTR sz)
 
 	if(CDomainNameW::IsValidDomainName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(WideToUtf8(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = WideToUtf8(sz, nStrLen, m_sz, m_nBufLen);
@@ -651,7 +651,7 @@ bool CDomainName8::IsValidDomainName(const CStr8 &strDomainName)
 	// Also, first and last character cannot be a hyphen or period.
 
 	// Length between 1 and 63
-	size_t nStrLen = strDomainName.GetLength();
+	const size_t nStrLen = strDomainName.GetLength();
 	if(nStrLen == 0 || nStrLen > 63)
 		return false;
 
@@ -681,7 +681,7 @@ bool CDomainName8::IsValidDomainName(PCSTR szDomainName)
 		return false;
 
 	// Length between 1 and 63
-	size_t nStrLen = StringGetLength(szDomainName);
+	const size_t nStrLen = StringGetLength(szDomainName);
 	if(nStrLen == 0 || nStrLen > 63)
 		return false;
 
@@ -1101,7 +1101,7 @@ ERRCODE CDomainNameW::Assign(PCWSTR sz)
 
 	if(IsValidDomainName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::wmemcpy(m_sz, sz, nStrLen);
@@ -1130,7 +1130,7 @@ ERRCODE CDomainNameW::Assign(PCSTR sz)
 
 	if(CDomainName8::IsValidDomainName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(Utf8ToWide(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = Utf8ToWide(sz, nStrLen, m_sz, m_nBufLen);
@@ -1388,7 +1388,7 @@ bool CDomainNameW::IsValidDomainName(const CStrW &strDomainName)
 	// Also, first and last character cannot be a hyphen or period.
 
 	// Length between 1 and 63
-	size_t nStrLen = strDomainName.GetLength();
+	const size_t nStrLen = strDomainName.GetLength();
 	if(nStrLen == 0 || nStrLen > 63)
 		return false;
 
@@ -1418,7 +1418,7 @@ bool CDomainNameW::IsValidDomainName(PCWSTR szDomainName)
 		return false;
 
 	// Length between 1 and 63
-	size_t nStrLen = StringGetLength(szDomainName);
+	const size_t nStrLen = StringGetLength(szDomainName);
 	if(nStrLen == 0 || nStrLen > 63)
 		return false;
 
@@ -2142,7 +2142,7 @@ bool CUrlPathSegment8::IsValidSegment(const CStr8 &strSegment)
 	// and can contain any character except '/'
 
 	// Length greater than 1
-	size_t nStrLen = strSegment.GetLength();
+	const size_t nStrLen = strSegment.GetLength();
 	if(nStrLen == 0)
 		return false;
 
@@ -2163,7 +2163,7 @@ bool CUrlPathSegment8::IsValidSegment(PCSTR szSegment)
 		return false;
 
 	// Length greater than 1
-	size_t nStrLen = StringGetLength(szSegment);
+	const size_t nStrLen = StringGetLength(szSegment);
 	if(nStrLen == 0)
 		return false;
 
@@ -2844,7 +2844,7 @@ bool CUrlPathSegmentW::IsValidSegment(const CStrW &strSegment)
 	// and can contain any character except '/'
 
 	// Length greater than 1
-	size_t nStrLen = strSegment.GetLength();
+	const size_t nStrLen = strSegment.GetLength();
 	if(nStrLen == 0)
 		return false;
 
@@ -2865,7 +2865,7 @@ bool CUrlPathSegmentW::IsValidSegment(PCWSTR szSegment)
 		return false;
 
 	// Length greater than 1
-	size_t nStrLen = StringGetLength(szSegment);
+	const size_t nStrLen = StringGetLength(szSegment);
 	if(nStrLen == 0)
 		return false;
 
@@ -4026,7 +4026,7 @@ bool CUrlParameter8::IsValidParameter(const CStr8 &strParam)
 	//   / ? & #
 
 	// Length greater than 1
-	size_t nStrLen = strParam.GetLength();
+	const size_t nStrLen = strParam.GetLength();
 	if(nStrLen == 0)
 		return false;
 
@@ -4059,7 +4059,7 @@ bool CUrlParameter8::IsValidParameter(PCSTR szParam)
 		return false;
 
 	// Length greater than 1
-	size_t nStrLen = StringGetLength(szParam);
+	const size_t nStrLen = StringGetLength(szParam);
 	if(nStrLen == 0)
 		return false;
 
@@ -5286,7 +5286,7 @@ bool CUrlParameterW::IsValidParameter(const CStrW &strParam)
 	//   / ? & #
 
 	// Length greater than 1
-	size_t nStrLen = strParam.GetLength();
+	const size_t nStrLen = strParam.GetLength();
 	if(nStrLen == 0)
 		return false;
 
@@ -5319,7 +5319,7 @@ bool CUrlParameterW::IsValidParameter(PCWSTR szParam)
 		return false;
 
 	// Length greater than 1
-	size_t nStrLen = StringGetLength(szParam);
+	const size_t nStrLen = StringGetLength(szParam);
 	if(nStrLen == 0)
 		return false;
 
@@ -6757,7 +6757,7 @@ ERRCODE CUrl8::AppendPath(const CStr8 &strPath)
 {
 	ERRCODE nErrorCode;
 
-	size_t nPos = strPath.FindFirstOf(g_szPathSeparators8);
+	const size_t nPos = strPath.FindFirstOf(g_szPathSeparators8);
 	if(nPos == CStr8::not_found)
 		nErrorCode = ParsePath(strPath);
 	else
@@ -6799,7 +6799,7 @@ ERRCODE CUrl8::AppendParameters(const CStr8 &strParams)
 {
 	ERRCODE nErrorCode;
 
-	size_t nPos = strParams.Find(g_chHash8);
+	const size_t nPos = strParams.Find(g_chHash8);
 	if(nPos == CStr8::not_found)
 		nErrorCode = ParseParams(strParams);
 	else
@@ -6846,7 +6846,6 @@ ERRCODE CUrl8::ParseUrl(const CStr8 &strUrl)
 		nStartPos = nEndPos + g_nSchemeSeparatorLen;
 	}
 
-	CStr8 strDomain;
 	if((nEndPos = strUrl.FindFirstOf(g_szDomainSeparators8, nStartPos)) == CStr8::not_found)
 	{
 		nErrorCode = ParseDomain(strUrl.GetMid(nStartPos));
@@ -6946,7 +6945,7 @@ ERRCODE CUrl8::ParseDomain(const CStr8 &strDomain)
 		{
 			nErrorCode = m_domain.Assign(strDomain.GetMid(nStartPos, nColonPos - nStartPos));
 
-			CStr8 strPort(strDomain, nColonPos + 1, CStr8::end);
+			const CStr8 strPort(strDomain, nColonPos + 1, CStr8::end);
 			if(IsDigitString8(strPort))
 			{
 				m_nPort = StringToInteger8<uint32_t>(strPort);
@@ -7009,7 +7008,7 @@ ERRCODE CUrl8::ParseParams(const CStr8 &strParams)
 		strToken.Assign(strParams.Tokenize(g_chAmpersand8, nStart));
 		while(nStart != CStr8::not_found)
 		{
-			size_t nPos = strToken.Find(g_chEqual8);
+			const size_t nPos = strToken.Find(g_chEqual8);
 			if(nPos == CStr8::not_found)
 			{
 				strName.Assign(strToken);
@@ -8437,7 +8436,7 @@ ERRCODE CUrlW::AppendPath(const CStrW &strPath)
 {
 	ERRCODE nErrorCode;
 
-	size_t nPos = strPath.FindFirstOf(g_szPathSeparatorsW);
+	const size_t nPos = strPath.FindFirstOf(g_szPathSeparatorsW);
 	if(nPos == CStrW::not_found)
 		nErrorCode = ParsePath(strPath);
 	else
@@ -8479,7 +8478,7 @@ ERRCODE CUrlW::AppendParameters(const CStrW &strParams)
 {
 	ERRCODE nErrorCode;
 
-	size_t nPos = strParams.Find(g_chHashW);
+	const size_t nPos = strParams.Find(g_chHashW);
 	if(nPos == CStrW::not_found)
 		nErrorCode = ParseParams(strParams);
 	else
@@ -8527,7 +8526,6 @@ ERRCODE CUrlW::ParseUrl(const CStrW &strUrl)
 		nStartPos = nEndPos + g_nSchemeSeparatorLen;
 	}
 
-	CStrW strDomain;
 	if((nEndPos = strUrl.FindFirstOf(g_szDomainSeparatorsW, nStartPos)) == CStrW::not_found)
 	{
 		nErrorCode = ParseDomain(strUrl.GetMid(nStartPos));
@@ -8627,7 +8625,7 @@ ERRCODE CUrlW::ParseDomain(const CStrW &strDomain)
 		{
 			nErrorCode = m_domain.Assign(strDomain.GetMid(nStartPos, nColonPos - nStartPos));
 
-			CStrW strPort(strDomain, nColonPos + 1, CStrW::end);
+			const CStrW strPort(strDomain, nColonPos + 1, CStrW::end);
 			if(IsDigitStringW(strPort))
 			{
 				m_nPort = StringToIntegerW<uint32_t>(strPort);
@@ -8690,7 +8688,7 @@ ERRCODE CUrlW::ParseParams(const CStrW &strParams)
 		strToken.Assign(strParams.Tokenize(g_chAmpersandW, nStart));
 		while(nStart != CStrW::not_found)
 		{
-			size_t nPos = strToken.Find(g_chEqualW);
+			const size_t nPos = strToken.Find(g_chEqualW);
 			if(nPos == CStrW::not_found)
 			{
 				strName.Assign(strToken);

@@ -164,7 +164,7 @@ size_t CStr8::GetCount(const bool bIncludeNullTerm) const noexcept
 
 	while(*szScan != g_chNull8)
 	{
-		size_t nSize = GetMultiByteCharSize(szScan, nRemaining);
+		const size_t nSize = GetMultiByteCharSize(szScan, nRemaining);
 		szScan += nSize;
 		nRemaining -= nSize;
 		++nCount;
@@ -402,7 +402,7 @@ void CStr8::Assign(const CStr16 &str)
 //#################################################################################################
 void CStr8::Assign(const std::string &str)
 {
-	if(str.length())
+	if(!str.empty())
 	{	// Alloc and copy
 		if(Alloc(str.length() + 1))
 		{
@@ -420,7 +420,7 @@ void CStr8::Assign(const std::string &str)
 //#################################################################################################
 void CStr8::Assign(const std::wstring &str)
 {
-	if(str.length())
+	if(!str.empty())
 	{	// Alloc and copy
 		if(Alloc(WideToUtf8(str.c_str(), str.length(), nullptr, 0) + 1))
 		{
@@ -439,7 +439,7 @@ void CStr8::Assign(PCSTR sz)
 {
 	if(sz && *sz != g_chNull8)
 	{	// Alloc and copy
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::memcpy(m_sz, sz, nStrLen);
@@ -458,7 +458,7 @@ void CStr8::Assign(PCWSTR sz)
 {
 	if(sz && *sz != g_chNullW)
 	{	// Alloc and copy
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(WideToUtf8(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = WideToUtf8(sz, nStrLen, m_sz, m_nBufLen);
@@ -545,7 +545,7 @@ void CStr8::Assign(const CStrW &str, const size_t nStart, const size_t nLen)
 		else
 		{
 			nLenW = MIN(nLen, str.m_nStrLen - nStart);
-			size_t nNewLen8 = WideToUtf8(str.m_sz + nStart, nLenW, nullptr, 0);
+			const size_t nNewLen8 = WideToUtf8(str.m_sz + nStart, nLenW, nullptr, 0);
 			nNewLen = MIN(nLen, nNewLen8);
 		}
 
@@ -567,7 +567,7 @@ void CStr8::Assign(PCSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNull8 && nLen)
 	{	// Alloc and copy
-		size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nNewLen;
@@ -597,7 +597,7 @@ void CStr8::Assign(PCWSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNullW && nLen)
 	{	// Alloc and copy
-		size_t nStrLen = (nLen == CStrW::end) ? StringGetLength(sz) : CStrW::GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == CStrW::end) ? StringGetLength(sz) : CStrW::GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nLenW;
@@ -610,7 +610,7 @@ void CStr8::Assign(PCWSTR sz, const size_t nStart, const size_t nLen)
 			else
 			{
 				nLenW = MIN(nLen, nStrLen - nStart);
-				size_t nNewLenW = WideToUtf8(sz + nStart, nLenW, nullptr, 0);
+				const size_t nNewLenW = WideToUtf8(sz + nStart, nLenW, nullptr, 0);
 				nNewLen = MIN(nLen, nNewLenW);
 			}
 
@@ -677,7 +677,7 @@ void CStr8::Prepend(const CStr8 &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
+		const size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -695,8 +695,8 @@ void CStr8::Prepend(const CStrW &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nStrLen = WideToUtf8(str.m_sz, str.m_nStrLen, nullptr, 0);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = WideToUtf8(str.m_sz, str.m_nStrLen, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -714,8 +714,8 @@ void CStr8::Prepend(PCSTR sz)
 {
 	if(sz && *sz != g_chNull8)
 	{
-		size_t nStrLen = StringGetLength(sz);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = StringGetLength(sz);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -733,9 +733,9 @@ void CStr8::Prepend(PCWSTR sz)
 {
 	if(sz && *sz != g_chNullW)
 	{
-		size_t nStrLenW = StringGetLength(sz);
-		size_t nStrLen8 = WideToUtf8(sz, nStrLenW, nullptr, 0);
-		size_t nNewStrLen = m_nStrLen + nStrLen8;
+		const size_t nStrLenW = StringGetLength(sz);
+		const size_t nStrLen8 = WideToUtf8(sz, nStrLenW, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + nStrLen8;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -753,7 +753,7 @@ void CStr8::Prepend(const char ch)
 {
 	if(ch != g_chNull8)
 	{
-		size_t nNewStrLen = m_nStrLen + 1;
+		const size_t nNewStrLen = m_nStrLen + 1;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -771,8 +771,8 @@ void CStr8::Prepend(const wchar_t ch)
 {
 	if(ch != g_chNullW)
 	{
-		size_t nStrLen = WideToUtf8(&ch, 1, nullptr, 0);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = WideToUtf8(&ch, 1, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -796,7 +796,7 @@ void CStr8::Prepend(const CStr8 &str, const size_t nStart, const size_t nLen)
 		else
 			nPrependLen = MIN(nLen, str.m_nStrLen - nStart);
 
-		size_t nNewStrLen = m_nStrLen + nPrependLen;
+		const size_t nNewStrLen = m_nStrLen + nPrependLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -825,11 +825,11 @@ void CStr8::Prepend(const CStrW &str, const size_t nStart, const size_t nLen)
 		else
 		{
 			nPrependLenW = MIN(nLen, str.m_nStrLen - nStart);
-			size_t nConvertLen8 = WideToUtf8(str.m_sz + nStart, nPrependLenW, nullptr, 0);
+			const size_t nConvertLen8 = WideToUtf8(str.m_sz + nStart, nPrependLenW, nullptr, 0);
 			nPrependLen8 = MIN(nLen, nConvertLen8);
 		}
 
-		size_t nNewStrLen = m_nStrLen + nPrependLen8;
+		const size_t nNewStrLen = m_nStrLen + nPrependLen8;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -847,7 +847,7 @@ void CStr8::Prepend(PCSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNull8 && nLen)
 	{
-		size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nPrependLen;
@@ -856,7 +856,7 @@ void CStr8::Prepend(PCSTR sz, const size_t nStart, const size_t nLen)
 			else
 				nPrependLen = MIN(nLen, nStrLen - nStart);
 
-			size_t nNewStrLen = m_nStrLen + nPrependLen;
+			const size_t nNewStrLen = m_nStrLen + nPrependLen;
 			if(Alloc(nNewStrLen + 1))
 			{
 				if(m_nStrLen)
@@ -875,7 +875,7 @@ void CStr8::Prepend(PCWSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNullW && nLen)
 	{
-		size_t nStrLenW = (nLen == CStrW::end) ? StringGetLength(sz) : CStrW::GetLength(sz, nStart + nLen);
+		const size_t nStrLenW = (nLen == CStrW::end) ? StringGetLength(sz) : CStrW::GetLength(sz, nStart + nLen);
 		if(nStart < nStrLenW)
 		{
 			size_t nPrependLenW;
@@ -889,11 +889,11 @@ void CStr8::Prepend(PCWSTR sz, const size_t nStart, const size_t nLen)
 			else
 			{
 				nPrependLenW = MIN(nLen, nStrLenW - nStart);
-				size_t nConvertLen8 = WideToUtf8(sz + nStart, nPrependLenW, nullptr, 0);
+				const size_t nConvertLen8 = WideToUtf8(sz + nStart, nPrependLenW, nullptr, 0);
 				nPrependLen8 = MIN(nLen, nConvertLen8);
 			}
 
-			size_t nNewStrLen = m_nStrLen + nPrependLen8;
+			const size_t nNewStrLen = m_nStrLen + nPrependLen8;
 			if(Alloc(nNewStrLen + 1))
 			{
 				if(m_nStrLen)
@@ -912,7 +912,7 @@ void CStr8::Append(const CStr8 &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
+		const size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::memcpy(m_sz + m_nStrLen, str.m_sz, str.m_nStrLen);
@@ -927,7 +927,7 @@ void CStr8::Append(const CStrW &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nNewStrLen = m_nStrLen + WideToUtf8(str.m_sz, str.m_nStrLen, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + WideToUtf8(str.m_sz, str.m_nStrLen, nullptr, 0);
 		if(Alloc(nNewStrLen + 1))
 		{
 			WideToUtf8(str.m_sz, str.m_nStrLen, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -942,8 +942,8 @@ void CStr8::Append(PCSTR sz)
 {
 	if(sz && *sz != g_chNull8)
 	{
-		size_t nStrLen = StringGetLength(sz);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = StringGetLength(sz);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::memcpy(m_sz + m_nStrLen, sz, nStrLen);
@@ -958,8 +958,8 @@ void CStr8::Append(PCWSTR sz)
 {
 	if(sz && *sz != g_chNullW)
 	{
-		size_t nStrLenW = StringGetLength(sz);
-		size_t nNewStrLen = m_nStrLen + WideToUtf8(sz, nStrLenW, nullptr, 0);
+		const size_t nStrLenW = StringGetLength(sz);
+		const size_t nNewStrLen = m_nStrLen + WideToUtf8(sz, nStrLenW, nullptr, 0);
 		if(Alloc(nNewStrLen + 1))
 		{
 			WideToUtf8(sz, nStrLenW, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -974,7 +974,7 @@ void CStr8::Append(const char ch)
 {
 	if(ch != g_chNull8)
 	{
-		size_t nNewStrLen = m_nStrLen + 1;
+		const size_t nNewStrLen = m_nStrLen + 1;
 		if(Alloc(nNewStrLen + 1))
 		{
 			m_sz[m_nStrLen] = ch;
@@ -989,7 +989,7 @@ void CStr8::Append(const wchar_t ch)
 {
 	if(ch != g_chNullW)
 	{
-		size_t nNewStrLen = m_nStrLen + WideToUtf8(&ch, 1, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + WideToUtf8(&ch, 1, nullptr, 0);
 		if(Alloc(nNewStrLen + 1))
 		{
 			WideToUtf8(&ch, 1, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -1010,7 +1010,7 @@ void CStr8::Append(const CStr8 &str, const size_t nStart, const size_t nLen)
 		else
 			nAppendLen = MIN(nLen, str.m_nStrLen - nStart);
 
-		size_t nNewStrLen = m_nStrLen + nAppendLen;
+		const size_t nNewStrLen = m_nStrLen + nAppendLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::memcpy(m_sz + m_nStrLen, str.m_sz + nStart, nAppendLen);
@@ -1036,11 +1036,11 @@ void CStr8::Append(const CStrW &str, const size_t nStart, const size_t nLen)
 		else
 		{
 			nAppendLenW = MIN(nLen, str.m_nStrLen - nStart);
-			size_t nConvertLen8 = WideToUtf8(str.m_sz + nStart, nAppendLenW, nullptr, 0);
+			const size_t nConvertLen8 = WideToUtf8(str.m_sz + nStart, nAppendLenW, nullptr, 0);
 			nAppendLen8 = MIN(nLen, nConvertLen8);
 		}
 
-		size_t nNewStrLen = m_nStrLen + nAppendLen8;
+		const size_t nNewStrLen = m_nStrLen + nAppendLen8;
 		if(Alloc(nNewStrLen + 1))
 		{
 			WideToUtf8(str.m_sz + nStart, nAppendLenW, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -1055,7 +1055,7 @@ void CStr8::Append(PCSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNull8 && nLen)
 	{
-		size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nAppendLen;
@@ -1064,7 +1064,7 @@ void CStr8::Append(PCSTR sz, const size_t nStart, const size_t nLen)
 			else
 				nAppendLen = MIN(nLen, nStrLen - nStart);
 
-			size_t nNewStrLen = m_nStrLen + nAppendLen;
+			const size_t nNewStrLen = m_nStrLen + nAppendLen;
 			if(Alloc(nNewStrLen + 1))
 			{
 				std::memcpy(m_sz + m_nStrLen, sz + nStart, nAppendLen);
@@ -1080,7 +1080,7 @@ void CStr8::Append(PCWSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNullW && nLen)
 	{
-		size_t nStrLenW = (nLen == CStrW::end) ? StringGetLength(sz) : CStrW::GetLength(sz, nStart + nLen);
+		const size_t nStrLenW = (nLen == CStrW::end) ? StringGetLength(sz) : CStrW::GetLength(sz, nStart + nLen);
 		if(nStart < nStrLenW)
 		{
 			size_t nAppendLenW;
@@ -1094,11 +1094,11 @@ void CStr8::Append(PCWSTR sz, const size_t nStart, const size_t nLen)
 			else
 			{
 				nAppendLenW = MIN(nLen, nStrLenW - nStart);
-				size_t nConvertLen8 = WideToUtf8(sz + nStart, nAppendLenW, nullptr, 0);
+				const size_t nConvertLen8 = WideToUtf8(sz + nStart, nAppendLenW, nullptr, 0);
 				nAppendLen8 = MIN(nLen, nConvertLen8);
 			}
 
-			size_t nNewStrLen = m_nStrLen + nAppendLen8;
+			const size_t nNewStrLen = m_nStrLen + nAppendLen8;
 			if(Alloc(nNewStrLen + 1))
 			{
 				WideToUtf8(sz + nStart, nAppendLenW, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -1421,8 +1421,8 @@ int CStr8::CompareAlphaNum(const CStr8 &str, const bool bCaseInsensitive) const
 		bool bNum1 = false;
 		bool bNum2 = false;
 
-		char ch1 = GetAt(nPos1);
-		char ch2 = str.GetAt(nPos2);
+		const char ch1 = GetAt(nPos1);
+		const char ch2 = str.GetAt(nPos2);
 		if(ch1 == g_chNull8 && ch2 == g_chNull8)
 			break;
 
@@ -1446,8 +1446,8 @@ int CStr8::CompareAlphaNum(const CStr8 &str, const bool bCaseInsensitive) const
 
 		if(bNum1 && bNum2)
 		{
-			uint64_t n1 = StringToInteger8<uint64_t>(strChunk1);
-			uint64_t n2 = StringToInteger8<uint64_t>(strChunk2);
+			const uint64_t n1 = StringToInteger8<uint64_t>(strChunk1);
+			const uint64_t n2 = StringToInteger8<uint64_t>(strChunk2);
 
 			if(n1 < n2)
 				nCompareRtn = -1;
@@ -1468,24 +1468,18 @@ int CStr8::CompareAlphaNum(const CStr8 &str, const bool bCaseInsensitive) const
 //#################################################################################################
 int CStr8::CompareMid(const CStr8 &str, const size_t nStart, const size_t nCount, const bool bCaseInsensitive) const
 {
-	int nCompareRtn = 0;
+	const size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
 
-	size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
-	nCompareRtn = StringCompare8(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), str.m_sz, MIN(str.m_nStrLen, nCount), bCaseInsensitive);
-
-	return nCompareRtn;
+	return StringCompare8(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), str.m_sz, MIN(str.m_nStrLen, nCount), bCaseInsensitive);
 }
 
 //#################################################################################################
 int CStr8::CompareMid(PCSTR sz, const size_t nStart, const size_t nCount, const bool bCaseInsensitive) const
 {
-	int nCompareRtn = 0;
+	const size_t nStrLen = GetLength(sz, nCount);
+	const size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
 
-	size_t nStrLen = GetLength(sz, nCount);
-	size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
-	nCompareRtn = StringCompare8(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), sz, nStrLen, bCaseInsensitive);
-
-	return nCompareRtn;
+	return StringCompare8(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), sz, nStrLen, bCaseInsensitive);
 }
 
 //#################################################################################################
@@ -1495,7 +1489,7 @@ int CStr8::CompareMid(const char ch, const size_t nStart, const bool bCaseInsens
 
 	if(ch != g_chNull8)
 	{
-		size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
+		const size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
 		nCompareRtn = StringCompare8(m_sz + nOffset, MIN(m_nStrLen - nOffset, 1), &ch, 1, bCaseInsensitive);
 	}
 
@@ -1528,8 +1522,8 @@ int CStr8::CompareLeft(const char ch, const bool bCaseInsensitive) const
 //#################################################################################################
 int CStr8::CompareRight(const CStr8 &str, const size_t nCount, const bool bCaseInsensitive) const
 {
-	size_t nStrLen1 = MIN(m_nStrLen, nCount);
-	size_t nStrLen2 = MIN(str.m_nStrLen, nCount);
+	const size_t nStrLen1 = MIN(m_nStrLen, nCount);
+	const size_t nStrLen2 = MIN(str.m_nStrLen, nCount);
 
 	return StringCompare8(m_sz + (m_nStrLen - nStrLen1), nStrLen1, str.m_sz + (str.m_nStrLen - nStrLen2), nStrLen2, bCaseInsensitive);
 }
@@ -1537,14 +1531,11 @@ int CStr8::CompareRight(const CStr8 &str, const size_t nCount, const bool bCaseI
 //#################################################################################################
 int CStr8::CompareRight(PCSTR sz, const size_t nCount, const bool bCaseInsensitive) const
 {
-	int nCompareRtn = 0;
+	const size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen1 = MIN(m_nStrLen, nCount);
+	const size_t nStrLen2 = MIN(nStrLen, nCount);
 
-	size_t nStrLen = StringGetLength(sz);
-	size_t nStrLen1 = MIN(m_nStrLen, nCount);
-	size_t nStrLen2 = MIN(nStrLen, nCount);
-	nCompareRtn = StringCompare8(m_sz + (m_nStrLen - nStrLen1), nStrLen1, sz + (nStrLen - nStrLen2), nStrLen2, bCaseInsensitive);
-
-	return nCompareRtn;
+	return StringCompare8(m_sz + (m_nStrLen - nStrLen1), nStrLen1, sz + (nStrLen - nStrLen2), nStrLen2, bCaseInsensitive);
 }
 
 //#################################################################################################
@@ -1554,7 +1545,7 @@ int CStr8::CompareRight(const char ch, const bool bCaseInsensitive) const
 
 	if(ch != g_chNull8)
 	{
-		size_t nStrLen1 = MIN(m_nStrLen, 1);
+		const size_t nStrLen1 = MIN(m_nStrLen, 1);
 
 		nCompareRtn = StringCompare8(m_sz + (m_nStrLen - nStrLen1), nStrLen1, &ch, 1, bCaseInsensitive);
 	}
@@ -1571,7 +1562,7 @@ size_t CStr8::Count(const char chFind, const size_t nStart, const bool bCaseInse
 	{
 		if(bCaseInsensitive)
 		{
-			char chLower = CharToLower(chFind);
+			const char chLower = CharToLower(chFind);
 			for(size_t n = nStart; n < m_nStrLen; ++n)
 			{
 				if(CharToLower(m_sz[n]) == chLower)
@@ -1696,7 +1687,8 @@ bool CStr8::Contains(const CStr8 &strFind, const size_t nStart, const bool bCase
 {
 	if(nStart >= m_nStrLen)
 		return false;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return true;	// Null string always matches
 
 	size_t nPos;
@@ -1714,7 +1706,7 @@ bool CStr8::Contains(PCSTR szFind, const size_t nStart, const bool bCaseInsensit
 	if(nStart >= m_nStrLen)
 		return false;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return true;	// Null string always matches
 
@@ -1747,7 +1739,8 @@ bool CStr8::ContainsOneOf(const CStr8 &strFind, const size_t nStart, const bool 
 {
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return false;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return true;	// Null string always matches
 
 	if(bCaseInsensitive)
@@ -1776,7 +1769,7 @@ bool CStr8::ContainsOneOf(PCSTR szFind, const size_t nStart, const bool bCaseIns
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return false;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return true;	// Null string always matches
 
@@ -1805,7 +1798,8 @@ size_t CStr8::Find(const CStr8 &strFind, const size_t nStart, const bool bCaseIn
 {
 	if(nStart >= m_nStrLen)
 		return not_found;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return nStart;	// Null string always matches
 
 	size_t nPos;
@@ -1823,7 +1817,7 @@ size_t CStr8::Find(PCSTR szFind, const size_t nStart, const bool bCaseInsensitiv
 	if(nStart >= m_nStrLen)
 		return not_found;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return nStart;	// Null string always matches
 
@@ -1897,7 +1891,7 @@ size_t CStr8::ReverseFind(PCSTR szFind, const size_t nStart, const bool bCaseIns
 {
 	if(m_nStrLen && nStart)
 	{
-		size_t nFindLen = StringGetLength(szFind);
+		const size_t nFindLen = StringGetLength(szFind);
 		if(nFindLen == 0)
 			return nStart;	// Null string always matches
 
@@ -1947,7 +1941,7 @@ size_t CStr8::ReverseFind(const char chFind, const size_t nStart, const bool bCa
 
 		if(bCaseInsensitive)
 		{
-			char chLower = CharToLower(chFind);
+			const char chLower = CharToLower(chFind);
 			do{
 				if(CharToLower(m_sz[nIndex]) == chLower)
 					return nIndex;
@@ -1970,7 +1964,8 @@ size_t CStr8::FindFirstOf(const CStr8 &strFind, const size_t nStart, const bool 
 {
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return not_found;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return nStart;	// Null string always matches
 
 	if(bCaseInsensitive)
@@ -1999,7 +1994,7 @@ size_t CStr8::FindFirstOf(PCSTR szFind, const size_t nStart, const bool bCaseIns
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return not_found;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return nStart;	// Null string always matches
 
@@ -2028,7 +2023,8 @@ size_t CStr8::FindFirstNotOf(const CStr8 &strFind, const size_t nStart, const bo
 {
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return not_found;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return nStart;	// Null string always matches
 
 	if(bCaseInsensitive)
@@ -2057,7 +2053,7 @@ size_t CStr8::FindFirstNotOf(PCSTR szFind, const size_t nStart, const bool bCase
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return not_found;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return nStart;	// Null string always matches
 
@@ -2086,7 +2082,8 @@ size_t CStr8::FindLastOf(const CStr8 &strFind, const size_t nStart, const bool b
 {
 	if(m_nStrLen == 0 || nStart == 0)
 		return not_found;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return nStart;	// Null string always matches
 
 	size_t nIndex;
@@ -2119,7 +2116,7 @@ size_t CStr8::FindLastOf(PCSTR szFind, const size_t nStart, const bool bCaseInse
 	if(m_nStrLen == 0 || nStart == 0)
 		return not_found;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return nStart;	// Null string always matches
 
@@ -2152,7 +2149,8 @@ size_t CStr8::FindLastNotOf(const CStr8 &strFind, const size_t nStart, const boo
 {
 	if(m_nStrLen == 0 || nStart == 0)
 		return not_found;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return nStart;	// Null string always matches
 
 	size_t nIndex;
@@ -2185,7 +2183,7 @@ size_t CStr8::FindLastNotOf(PCSTR szFind, const size_t nStart, const bool bCaseI
 	if(m_nStrLen == 0 || nStart == 0)
 		return not_found;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return nStart;	// Null string always matches
 
@@ -2216,28 +2214,28 @@ size_t CStr8::FindLastNotOf(PCSTR szFind, const size_t nStart, const bool bCaseI
 //#################################################################################################
 CStr8 CStr8::SpanIncluding(const CStr8 &strFind, const size_t nStart, const bool bCaseInsensitive) const
 {
-	size_t nPos = FindFirstNotOf(strFind, nStart, bCaseInsensitive);
+	const size_t nPos = FindFirstNotOf(strFind, nStart, bCaseInsensitive);
 	return GetMid(nStart, (nPos == not_found) ? end : nPos - nStart);
 }
 
 //#################################################################################################
 CStr8 CStr8::SpanIncluding(PCSTR szFind, const size_t nStart, const bool bCaseInsensitive) const
 {
-	size_t nPos = FindFirstNotOf(szFind, nStart, bCaseInsensitive);
+	const size_t nPos = FindFirstNotOf(szFind, nStart, bCaseInsensitive);
 	return GetMid(nStart, (nPos == not_found) ? end : nPos - nStart);
 }
 
 //#################################################################################################
 CStr8 CStr8::SpanExcluding(const CStr8 &strFind, const size_t nStart, const bool bCaseInsensitive) const
 {
-	size_t nPos = FindFirstOf(strFind, nStart, bCaseInsensitive);
+	const size_t nPos = FindFirstOf(strFind, nStart, bCaseInsensitive);
 	return GetMid(nStart, (nPos == not_found) ? end : nPos - nStart);
 }
 
 //#################################################################################################
 CStr8 CStr8::SpanExcluding(PCSTR szFind, const size_t nStart, const bool bCaseInsensitive) const
 {
-	size_t nPos = FindFirstOf(szFind, nStart, bCaseInsensitive);
+	const size_t nPos = FindFirstOf(szFind, nStart, bCaseInsensitive);
 	return GetMid(nStart, (nPos == not_found) ? end : nPos - nStart);
 }
 
@@ -2248,7 +2246,7 @@ size_t CStr8::Insert(const size_t nIndex, const CStr8 &strInsert)
 		Append(strInsert);
 	else if(strInsert.m_nStrLen != 0)
 	{
-		size_t nNewStrLen = m_nStrLen + strInsert.m_nStrLen;
+		const size_t nNewStrLen = m_nStrLen + strInsert.m_nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::memmove(m_sz + nIndex + strInsert.m_nStrLen, m_sz + nIndex, m_nStrLen + 1 - nIndex);
@@ -2267,8 +2265,8 @@ size_t CStr8::Insert(const size_t nIndex, PCSTR szInsert)
 		Append(szInsert);
 	else if(szInsert != nullptr && *szInsert != g_chNull8)
 	{
-		size_t nStrLen = StringGetLength(szInsert);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = StringGetLength(szInsert);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::memmove(m_sz + nIndex + nStrLen, m_sz + nIndex, m_nStrLen + 1 - nIndex);
@@ -2287,7 +2285,7 @@ size_t CStr8::Insert(const size_t nIndex, const char chInsert)
 		Append(chInsert);
 	else if(chInsert != g_chNull8)
 	{
-		size_t nNewStrLen = m_nStrLen + 1;
+		const size_t nNewStrLen = m_nStrLen + 1;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::memmove(m_sz + nIndex + 1, m_sz + nIndex, m_nStrLen + 1 - nIndex);
@@ -2362,7 +2360,7 @@ size_t CStr8::Remove(PCSTR szRemove, const bool bCaseInsensitive)
 {
 	size_t nCount = 0;
 
-	size_t nRemoveLen = StringGetLength(szRemove);
+	const size_t nRemoveLen = StringGetLength(szRemove);
 	if(m_nStrLen && nRemoveLen)
 	{
 		if(bCaseInsensitive)
@@ -2406,7 +2404,7 @@ size_t CStr8::Remove(const char chRemove, const bool bCaseInsensitive)
 
 		if(bCaseInsensitive)
 		{
-			char chLower = CharToLower(chRemove);
+			const char chLower = CharToLower(chRemove);
 			while(*szScan != g_chNull8)
 			{
 				if(CharToLower(*szScan) != chLower)
@@ -2485,7 +2483,7 @@ size_t CStr8::RemoveAllOf(PCSTR szRemove, const bool bCaseInsensitive)
 	if(m_nStrLen == 0 || szRemove == nullptr || *szRemove == g_chNull8)
 		return nCount;
 
-	size_t nRemoveLen = StringGetLength(szRemove);
+	const size_t nRemoveLen = StringGetLength(szRemove);
 	PSTR szWrite = m_sz;
 	PSTR szScan = m_sz;
 	if(bCaseInsensitive)
@@ -2584,7 +2582,7 @@ size_t CStr8::KeepAllOf(PCSTR szKeep, const bool bCaseInsensitive)
 		return nCount;
 	}
 
-	size_t nKeepLen = StringGetLength(szKeep);
+	const size_t nKeepLen = StringGetLength(szKeep);
 	PSTR szWrite = m_sz;
 	PSTR szScan = m_sz;
 	if(bCaseInsensitive)
@@ -2645,7 +2643,7 @@ size_t CStr8::Replace(const CStr8 &strOld, const CStr8 &strNew, const bool bCase
 
 		auto szTemp = std::make_unique<char[]>(m_nStrLen);
 		std::memcpy(szTemp.get(), m_sz, m_nStrLen);
-		size_t nStrLen = m_nStrLen;
+		const size_t nStrLen = m_nStrLen;
 
 		if(Alloc(nNewStrLen + 1))
 		{
@@ -2708,8 +2706,8 @@ size_t CStr8::Replace(PCSTR szOld, PCSTR szNew, const bool bCaseInsensitive)
 	using PFNFIND = PSTR(*)(PCSTR, size_t, PCSTR, size_t);
 	PFNFIND pfnFind = bCaseInsensitive ? FindStrPtrI : FindStrPtr;
 
-	size_t nOldLen = StringGetLength(szOld);
-	size_t nNewLen = StringGetLength(szNew);
+	const size_t nOldLen = StringGetLength(szOld);
+	const size_t nNewLen = StringGetLength(szNew);
 	if(nOldLen != nNewLen)
 	{	// The length of the string is changing
 		size_t nNewStrLen = m_nStrLen;
@@ -2723,7 +2721,7 @@ size_t CStr8::Replace(PCSTR szOld, PCSTR szNew, const bool bCaseInsensitive)
 
 		auto szTemp = std::make_unique<char[]>(m_nStrLen);
 		std::memcpy(szTemp.get(), m_sz, m_nStrLen);
-		size_t nStrLen = m_nStrLen;
+		const size_t nStrLen = m_nStrLen;
 
 		if(Alloc(nNewStrLen + 1))
 		{
@@ -2786,7 +2784,7 @@ size_t CStr8::Replace(const char chOld, const char chNew, const bool bCaseInsens
 
 		if(bCaseInsensitive)
 		{
-			char chLower = CharToLower(chOld);
+			const char chLower = CharToLower(chOld);
 			while(*szScan != g_chNull8)
 			{
 				if(CharToLower(*szScan) == chLower)
@@ -2829,7 +2827,7 @@ CStr8 CStr8::GetMid(const size_t nStart, const size_t nCount) const
 
 	if(nStart < m_nStrLen)
 	{	// Copy nCount chars, unless nCount is zero or nStart + nCount is too much
-		size_t nStrLen = (nCount == end || nStart + nCount > m_nStrLen) ? m_nStrLen - nStart : nCount;
+		const size_t nStrLen = (nCount == end || nStart + nCount > m_nStrLen) ? m_nStrLen - nStart : nCount;
 		if(str.Alloc(nStrLen + 1))
 		{
 			std::memcpy(str.m_sz, m_sz + nStart, nStrLen);
@@ -2949,7 +2947,7 @@ CStr8 &CStr8::TrimLeft(PCSTR szTrim, const bool bCaseInsensitive)
 	if(m_nStrLen == 0 || szTrim == nullptr || *szTrim == g_chNull8)
 		return *this;
 
-	size_t nTrimLen = StringGetLength(szTrim);
+	const size_t nTrimLen = StringGetLength(szTrim);
 
 	// Find first non-matching character
 	PCSTR szScan = m_sz;
@@ -2985,7 +2983,7 @@ CStr8 &CStr8::TrimLeft(const char chTrim, const bool bCaseInsensitive)
 	PCSTR szScan = m_sz;
 	if(bCaseInsensitive)
 	{
-		char chLower = CharToLower(chTrim);
+		const char chLower = CharToLower(chTrim);
 		while(*szScan != g_chNull8 && CharToLower(*szScan) == chLower)
 			++szScan;
 	}
@@ -3064,7 +3062,7 @@ CStr8 &CStr8::TrimRight(PCSTR szTrim, const bool bCaseInsensitive)
 	if(m_nStrLen == 0 || szTrim == nullptr || *szTrim == g_chNull8)
 		return *this;
 
-	size_t nTrimLen = StringGetLength(szTrim);
+	const size_t nTrimLen = StringGetLength(szTrim);
 
 	// Find last non-matching starting at the end
 	PSTR szScan = m_sz + m_nStrLen;
@@ -3100,7 +3098,7 @@ CStr8 &CStr8::TrimRight(const char chTrim, const bool bCaseInsensitive)
 	PSTR szScan = m_sz + m_nStrLen;
 	if(bCaseInsensitive)
 	{
-		char chLower = CharToLower(chTrim);
+		const char chLower = CharToLower(chTrim);
 		while(szScan != m_sz && CharToLower(*(szScan - 1)) == chLower)
 			--szScan;
 	}
@@ -3303,7 +3301,7 @@ CStr8 CStr8::Tokenize(PCSTR szTokens, size_t &nStart, const bool bCaseInsensitiv
 
 	if(nStart < m_nStrLen)
 	{
-		size_t nTokenLen = StringGetLength(szTokens);
+		const size_t nTokenLen = StringGetLength(szTokens);
 		size_t nBegin = nStart;
 		if(bCaseInsensitive)
 		{
@@ -3367,7 +3365,7 @@ CStr8 CStr8::Tokenize(const char chToken, size_t &nStart, const bool bCaseInsens
 		size_t nBegin = nStart;
 		if(bCaseInsensitive)
 		{
-			char chLower = CharToLower(chToken);
+			const char chLower = CharToLower(chToken);
 			while(nBegin < m_nStrLen)
 			{
 				if(CharToLower(m_sz[nBegin]) != chLower)
@@ -3390,7 +3388,7 @@ CStr8 CStr8::Tokenize(const char chToken, size_t &nStart, const bool bCaseInsens
 			size_t nEnd = nBegin + 1;
 			if(bCaseInsensitive)
 			{
-				char chLower = CharToLower(chToken);
+				const char chLower = CharToLower(chToken);
 				while(nEnd < m_nStrLen)
 				{
 					if(CharToLower(m_sz[nEnd]) == chLower)
@@ -3442,7 +3440,7 @@ bool CStr8::PrintfV(PCSTR szFormat, va_list vaArgs)
 		va_list vaBegin;
 		va_copy(vaBegin, vaArgs);
 
-		int nResult = std::vsnprintf(GetBuffer(nStrLen), nStrLen, szFormat, vaBegin);
+		const int nResult = std::vsnprintf(GetBuffer(nStrLen), nStrLen, szFormat, vaBegin);
 		va_end(vaBegin);
 		if(nResult < 0)
 		{
@@ -3474,7 +3472,7 @@ bool CStr8::ReserveBuffer(const size_t nBufLen)
 {
 	bool bAllocated;
 
-	bool bPrevAllocated = (m_nBufLen != 0);
+	const bool bPrevAllocated = (m_nBufLen != 0);
 	bAllocated = Alloc(nBufLen);
 	if(!bPrevAllocated && bAllocated)
 	{
@@ -3696,7 +3694,7 @@ size_t CStr8::FindStrIndexI(PCSTR sz, const size_t nStrLen, PCSTR szFind, const 
 		PCSTR szScan1 = sz;
 		PCSTR szScan2;
 		nRemaining -= nFindLen - 1;
-		while((szScan2 = (PCSTR)memchri(szScan1, *szFind, nRemaining)) != nullptr)
+		while((szScan2 = memchri(szScan1, *szFind, nRemaining)) != nullptr)
 		{
 			if(memcmpi(szScan2, szFind, nFindLen) == 0)
 				return (size_t)(szScan2 - sz);
@@ -3717,7 +3715,7 @@ PCSTR CStr8::memchri(PCSTR sz, const char ch, const size_t nLen)
 		PCSTR szScan = sz;
 		size_t nCount = 0;
 
-		char chLower = CharToLower(ch);
+		const char chLower = CharToLower(ch);
 		do{
 			if(CharToLower(*szScan) == chLower)
 				return szScan;
@@ -4143,7 +4141,7 @@ void CStrW::Assign(const CStr16 &str)
 //#################################################################################################
 void CStrW::Assign(const std::wstring &str)
 {
-	if(str.length())
+	if(!str.empty())
 	{	// Alloc and copy
 		if(Alloc(str.length() + 1))
 		{
@@ -4161,7 +4159,7 @@ void CStrW::Assign(const std::wstring &str)
 //#################################################################################################
 void CStrW::Assign(const std::string &str)
 {
-	if(str.length())
+	if(!str.empty())
 	{	// Alloc and copy
 		if(Alloc(Utf8ToWide(str.c_str(), str.length(), nullptr, 0) + 1))
 		{
@@ -4180,7 +4178,7 @@ void CStrW::Assign(PCWSTR sz)
 {
 	if(sz && *sz != g_chNullW)
 	{	// Alloc and copy
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::wmemcpy(m_sz, sz, nStrLen);
@@ -4199,7 +4197,7 @@ void CStrW::Assign(PCSTR sz)
 {
 	if(sz && *sz != g_chNull8)
 	{	// Alloc and copy
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(Utf8ToWide(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = Utf8ToWide(sz, nStrLen, m_sz, m_nBufLen);
@@ -4286,7 +4284,7 @@ void CStrW::Assign(const CStr8 &str, const size_t nStart, const size_t nLen)
 		else
 		{
 			nLen8 = MIN(nLen, str.m_nStrLen - nStart);
-			size_t nNewLenW = Utf8ToWide(str.m_sz + nStart, nLen8, nullptr, 0);
+			const size_t nNewLenW = Utf8ToWide(str.m_sz + nStart, nLen8, nullptr, 0);
 			nNewLen = MIN(nLen, nNewLenW);
 		}
 
@@ -4308,7 +4306,7 @@ void CStrW::Assign(PCWSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNullW && nLen)
 	{	// Alloc and copy
-		size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nNewLen;
@@ -4338,7 +4336,7 @@ void CStrW::Assign(PCSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNull8 && nLen)
 	{	// Alloc and copy
-		size_t nStrLen = (nLen == CStr8::end) ? StringGetLength(sz) : CStr8::GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == CStr8::end) ? StringGetLength(sz) : CStr8::GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nLen8;
@@ -4351,7 +4349,7 @@ void CStrW::Assign(PCSTR sz, const size_t nStart, const size_t nLen)
 			else
 			{
 				nLen8 = MIN(nLen, nStrLen - nStart);
-				size_t nNewLen8 = Utf8ToWide(sz + nStart, nLen8, nullptr, 0);
+				const size_t nNewLen8 = Utf8ToWide(sz + nStart, nLen8, nullptr, 0);
 				nNewLen = MIN(nLen, nNewLen8);
 			}
 
@@ -4418,7 +4416,7 @@ void CStrW::Prepend(const CStrW &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
+		const size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -4436,8 +4434,8 @@ void CStrW::Prepend(const CStr8 &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nStrLen = Utf8ToWide(str.m_sz, str.m_nStrLen, nullptr, 0);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = Utf8ToWide(str.m_sz, str.m_nStrLen, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -4455,8 +4453,8 @@ void CStrW::Prepend(PCWSTR sz)
 {
 	if(sz && *sz != g_chNullW)
 	{
-		size_t nStrLen = StringGetLength(sz);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = StringGetLength(sz);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -4474,9 +4472,9 @@ void CStrW::Prepend(PCSTR sz)
 {
 	if(sz && *sz != g_chNull8)
 	{
-		size_t nStrLen8 = StringGetLength(sz);
-		size_t nStrLenW = Utf8ToWide(sz, nStrLen8, nullptr, 0);
-		size_t nNewStrLen = m_nStrLen + nStrLenW;
+		const size_t nStrLen8 = StringGetLength(sz);
+		const size_t nStrLenW = Utf8ToWide(sz, nStrLen8, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + nStrLenW;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -4494,7 +4492,7 @@ void CStrW::Prepend(const wchar_t ch)
 {
 	if(ch != g_chNullW)
 	{
-		size_t nNewStrLen = m_nStrLen + 1;
+		const size_t nNewStrLen = m_nStrLen + 1;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -4512,8 +4510,8 @@ void CStrW::Prepend(const char ch)
 {
 	if(ch != g_chNull8)
 	{
-		size_t nStrLen = Utf8ToWide(&ch, 1, nullptr, 0);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = Utf8ToWide(&ch, 1, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -4537,7 +4535,7 @@ void CStrW::Prepend(const CStrW &str, const size_t nStart, const size_t nLen)
 		else
 			nPrependLen = MIN(nLen, str.m_nStrLen - nStart);
 
-		size_t nNewStrLen = m_nStrLen + nPrependLen;
+		const size_t nNewStrLen = m_nStrLen + nPrependLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -4566,11 +4564,11 @@ void CStrW::Prepend(const CStr8 &str, const size_t nStart, const size_t nLen)
 		else
 		{
 			nPrependLen8 = MIN(nLen, str.m_nStrLen - nStart);
-			size_t nConvertLenW = Utf8ToWide(str.m_sz + nStart, nPrependLen8, nullptr, 0);
+			const size_t nConvertLenW = Utf8ToWide(str.m_sz + nStart, nPrependLen8, nullptr, 0);
 			nPrependLenW = MIN(nLen, nConvertLenW);
 		}
 
-		size_t nNewStrLen = m_nStrLen + nPrependLenW;
+		const size_t nNewStrLen = m_nStrLen + nPrependLenW;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -4588,7 +4586,7 @@ void CStrW::Prepend(PCWSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNullW && nLen)
 	{
-		size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nPrependLen;
@@ -4597,7 +4595,7 @@ void CStrW::Prepend(PCWSTR sz, const size_t nStart, const size_t nLen)
 			else
 				nPrependLen = MIN(nLen, nStrLen - nStart);
 
-			size_t nNewStrLen = m_nStrLen + nPrependLen;
+			const size_t nNewStrLen = m_nStrLen + nPrependLen;
 			if(Alloc(nNewStrLen + 1))
 			{
 				if(m_nStrLen)
@@ -4616,7 +4614,7 @@ void CStrW::Prepend(PCSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNull8 && nLen)
 	{
-		size_t nStrLen8 = (nLen == CStr8::end) ? StringGetLength(sz) : CStr8::GetLength(sz, nStart + nLen);
+		const size_t nStrLen8 = (nLen == CStr8::end) ? StringGetLength(sz) : CStr8::GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen8)
 		{
 			size_t nPrependLen8;
@@ -4630,11 +4628,11 @@ void CStrW::Prepend(PCSTR sz, const size_t nStart, const size_t nLen)
 			else
 			{
 				nPrependLen8 = MIN(nLen, nStrLen8 - nStart);
-				size_t nConvertLenW = Utf8ToWide(sz + nStart, nPrependLen8, nullptr, 0);
+				const size_t nConvertLenW = Utf8ToWide(sz + nStart, nPrependLen8, nullptr, 0);
 				nPrependLenW = MIN(nLen, nConvertLenW);
 			}
 
-			size_t nNewStrLen = m_nStrLen + nPrependLenW;
+			const size_t nNewStrLen = m_nStrLen + nPrependLenW;
 			if(Alloc(nNewStrLen + 1))
 			{
 				if(m_nStrLen)
@@ -4653,7 +4651,7 @@ void CStrW::Append(const CStrW &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
+		const size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::wmemcpy(m_sz + m_nStrLen, str.m_sz, str.m_nStrLen);
@@ -4668,7 +4666,7 @@ void CStrW::Append(const CStr8 &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nNewStrLen = m_nStrLen + Utf8ToWide(str.m_sz, str.m_nStrLen, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + Utf8ToWide(str.m_sz, str.m_nStrLen, nullptr, 0);
 		if(Alloc(nNewStrLen + 1))
 		{
 			Utf8ToWide(str.m_sz, str.m_nStrLen, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -4683,8 +4681,8 @@ void CStrW::Append(PCWSTR sz)
 {
 	if(sz && *sz != g_chNullW)
 	{
-		size_t nStrLen = StringGetLength(sz);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = StringGetLength(sz);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::wmemcpy(m_sz + m_nStrLen, sz, nStrLen);
@@ -4699,8 +4697,8 @@ void CStrW::Append(PCSTR sz)
 {
 	if(sz && *sz != g_chNull8)
 	{
-		size_t nStrLen8 = StringGetLength(sz);
-		size_t nNewStrLen = m_nStrLen + Utf8ToWide(sz, nStrLen8, nullptr, 0);
+		const size_t nStrLen8 = StringGetLength(sz);
+		const size_t nNewStrLen = m_nStrLen + Utf8ToWide(sz, nStrLen8, nullptr, 0);
 		if(Alloc(nNewStrLen + 1))
 		{
 			Utf8ToWide(sz, nStrLen8, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -4715,7 +4713,7 @@ void CStrW::Append(const wchar_t ch)
 {
 	if(ch != g_chNullW)
 	{
-		size_t nNewStrLen = m_nStrLen + 1;
+		const size_t nNewStrLen = m_nStrLen + 1;
 		if(Alloc(nNewStrLen + 1))
 		{
 			m_sz[m_nStrLen] = ch;
@@ -4730,7 +4728,7 @@ void CStrW::Append(const char ch)
 {
 	if(ch != g_chNull8)
 	{
-		size_t nNewStrLen = m_nStrLen + Utf8ToWide(&ch, 1, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + Utf8ToWide(&ch, 1, nullptr, 0);
 		if(Alloc(nNewStrLen + 1))
 		{
 			Utf8ToWide(&ch, 1, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -4751,7 +4749,7 @@ void CStrW::Append(const CStrW &str, const size_t nStart, const size_t nLen)
 		else
 			nAppendLen = MIN(nLen, str.m_nStrLen - nStart);
 
-		size_t nNewStrLen = m_nStrLen + nAppendLen;
+		const size_t nNewStrLen = m_nStrLen + nAppendLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::wmemcpy(m_sz + m_nStrLen, str.m_sz + nStart, nAppendLen);
@@ -4777,11 +4775,11 @@ void CStrW::Append(const CStr8 &str, const size_t nStart, const size_t nLen)
 		else
 		{
 			nAppendLen8 = MIN(nLen, str.m_nStrLen - nStart);
-			size_t nConvertLenW = Utf8ToWide(str.m_sz + nStart, nAppendLen8, nullptr, 0);
+			const size_t nConvertLenW = Utf8ToWide(str.m_sz + nStart, nAppendLen8, nullptr, 0);
 			nAppendLenW = MIN(nLen, nConvertLenW);
 		}
 
-		size_t nNewStrLen = m_nStrLen + nAppendLenW;
+		const size_t nNewStrLen = m_nStrLen + nAppendLenW;
 		if(Alloc(nNewStrLen + 1))
 		{
 			Utf8ToWide(str.m_sz + nStart, nAppendLen8, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -4796,7 +4794,7 @@ void CStrW::Append(PCWSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNullW && nLen)
 	{
-		size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nAppendLen;
@@ -4805,7 +4803,7 @@ void CStrW::Append(PCWSTR sz, const size_t nStart, const size_t nLen)
 			else
 				nAppendLen = MIN(nLen, nStrLen - nStart);
 
-			size_t nNewStrLen = m_nStrLen + nAppendLen;
+			const size_t nNewStrLen = m_nStrLen + nAppendLen;
 			if(Alloc(nNewStrLen + 1))
 			{
 				std::wmemcpy(m_sz + m_nStrLen, sz + nStart, nAppendLen);
@@ -4821,7 +4819,7 @@ void CStrW::Append(PCSTR sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNull8 && nLen)
 	{
-		size_t nStrLen8 = (nLen == CStr8::end) ? StringGetLength(sz) : CStr8::GetLength(sz, nStart + nLen);
+		const size_t nStrLen8 = (nLen == CStr8::end) ? StringGetLength(sz) : CStr8::GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen8)
 		{
 			size_t nAppendLen8;
@@ -4835,11 +4833,11 @@ void CStrW::Append(PCSTR sz, const size_t nStart, const size_t nLen)
 			else
 			{
 				nAppendLen8 = MIN(nLen, nStrLen8 - nStart);
-				size_t nConvertLenW = Utf8ToWide(sz + nStart, nAppendLen8, nullptr, 0);
+				const size_t nConvertLenW = Utf8ToWide(sz + nStart, nAppendLen8, nullptr, 0);
 				nAppendLenW = MIN(nLen, nConvertLenW);
 			}
 
-			size_t nNewStrLen = m_nStrLen + nAppendLenW;
+			const size_t nNewStrLen = m_nStrLen + nAppendLenW;
 			if(Alloc(nNewStrLen + 1))
 			{
 				Utf8ToWide(sz + nStart, nAppendLen8, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -5162,8 +5160,8 @@ int CStrW::CompareAlphaNum(const CStrW &str, const bool bCaseInsensitive) const
 		bool bNum1 = false;
 		bool bNum2 = false;
 
-		wchar_t ch1 = GetAt(nPos1);
-		wchar_t ch2 = str.GetAt(nPos2);
+		const wchar_t ch1 = GetAt(nPos1);
+		const wchar_t ch2 = str.GetAt(nPos2);
 		if(ch1 == g_chNullW && ch2 == g_chNullW)
 			break;
 
@@ -5187,8 +5185,8 @@ int CStrW::CompareAlphaNum(const CStrW &str, const bool bCaseInsensitive) const
 
 		if(bNum1 && bNum2)
 		{
-			uint64_t n1 = StringToIntegerW<uint64_t>(strChunk1);
-			uint64_t n2 = StringToIntegerW<uint64_t>(strChunk2);
+			const uint64_t n1 = StringToIntegerW<uint64_t>(strChunk1);
+			const uint64_t n2 = StringToIntegerW<uint64_t>(strChunk2);
 
 			if(n1 < n2)
 				nCompareRtn = -1;
@@ -5209,24 +5207,18 @@ int CStrW::CompareAlphaNum(const CStrW &str, const bool bCaseInsensitive) const
 //#################################################################################################
 int CStrW::CompareMid(const CStrW &str, const size_t nStart, const size_t nCount, const bool bCaseInsensitive) const
 {
-	int nCompareRtn = 0;
+	const size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
 
-	size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
-	nCompareRtn = StringCompareW(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), str.m_sz, MIN(str.m_nStrLen, nCount), bCaseInsensitive);
-
-	return nCompareRtn;
+	return StringCompareW(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), str.m_sz, MIN(str.m_nStrLen, nCount), bCaseInsensitive);
 }
 
 //#################################################################################################
 int CStrW::CompareMid(PCWSTR sz, const size_t nStart, const size_t nCount, const bool bCaseInsensitive) const
 {
-	int nCompareRtn = 0;
+	const size_t nStrLen = GetLength(sz, nCount);
+	const size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
 
-	size_t nStrLen = GetLength(sz, nCount);
-	size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
-	nCompareRtn = StringCompareW(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), sz, nStrLen, bCaseInsensitive);
-
-	return nCompareRtn;
+	return StringCompareW(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), sz, nStrLen, bCaseInsensitive);
 }
 
 //#################################################################################################
@@ -5236,7 +5228,7 @@ int CStrW::CompareMid(const wchar_t ch, const size_t nStart, const bool bCaseIns
 
 	if(ch != g_chNullW)
 	{
-		size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
+		const size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
 		nCompareRtn = StringCompareW(m_sz + nOffset, MIN(m_nStrLen - nOffset, 1), &ch, 1, bCaseInsensitive);
 	}
 
@@ -5269,8 +5261,8 @@ int CStrW::CompareLeft(const wchar_t ch, const bool bCaseInsensitive) const
 //#################################################################################################
 int CStrW::CompareRight(const CStrW &str, const size_t nCount, const bool bCaseInsensitive) const
 {
-	size_t nStrLen1 = MIN(m_nStrLen, nCount);
-	size_t nStrLen2 = MIN(str.m_nStrLen, nCount);
+	const size_t nStrLen1 = MIN(m_nStrLen, nCount);
+	const size_t nStrLen2 = MIN(str.m_nStrLen, nCount);
 
 	return StringCompareW(m_sz + (m_nStrLen - nStrLen1), nStrLen1, str.m_sz + (str.m_nStrLen - nStrLen2), nStrLen2, bCaseInsensitive);
 }
@@ -5278,14 +5270,11 @@ int CStrW::CompareRight(const CStrW &str, const size_t nCount, const bool bCaseI
 //#################################################################################################
 int CStrW::CompareRight(PCWSTR sz, const size_t nCount, const bool bCaseInsensitive) const
 {
-	int nCompareRtn = 0;
+	const size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen1 = MIN(m_nStrLen, nCount);
+	const size_t nStrLen2 = MIN(nStrLen, nCount);
 
-	size_t nStrLen = StringGetLength(sz);
-	size_t nStrLen1 = MIN(m_nStrLen, nCount);
-	size_t nStrLen2 = MIN(nStrLen, nCount);
-	nCompareRtn = StringCompareW(m_sz + (m_nStrLen - nStrLen1), nStrLen1, sz + (nStrLen - nStrLen2), nStrLen2, bCaseInsensitive);
-
-	return nCompareRtn;
+	return StringCompareW(m_sz + (m_nStrLen - nStrLen1), nStrLen1, sz + (nStrLen - nStrLen2), nStrLen2, bCaseInsensitive);
 }
 
 //#################################################################################################
@@ -5295,7 +5284,7 @@ int CStrW::CompareRight(const wchar_t ch, const bool bCaseInsensitive) const
 
 	if(ch != g_chNullW)
 	{
-		size_t nStrLen1 = MIN(m_nStrLen, 1);
+		const size_t nStrLen1 = MIN(m_nStrLen, 1);
 
 		nCompareRtn = StringCompareW(m_sz + (m_nStrLen - nStrLen1), nStrLen1, &ch, 1, bCaseInsensitive);
 	}
@@ -5312,7 +5301,7 @@ size_t CStrW::Count(const wchar_t chFind, const size_t nStart, const bool bCaseI
 	{
 		if(bCaseInsensitive)
 		{
-			wchar_t chLower = CharToLower(chFind);
+			const wchar_t chLower = CharToLower(chFind);
 			for(size_t n = nStart; n < m_nStrLen; ++n)
 			{
 				if(CharToLower(m_sz[n]) == chLower)
@@ -5437,7 +5426,8 @@ bool CStrW::Contains(const CStrW &strFind, const size_t nStart, const bool bCase
 {
 	if(nStart >= m_nStrLen)
 		return false;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return true;	// Null string always matches
 
 	size_t nPos;
@@ -5455,7 +5445,7 @@ bool CStrW::Contains(PCWSTR szFind, const size_t nStart, const bool bCaseInsensi
 	if(nStart >= m_nStrLen)
 		return false;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return true;	// Null string always matches
 
@@ -5488,7 +5478,8 @@ bool CStrW::ContainsOneOf(const CStrW &strFind, const size_t nStart, const bool 
 {
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return false;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return true;	// Null string always matches
 
 	if(bCaseInsensitive)
@@ -5517,7 +5508,7 @@ bool CStrW::ContainsOneOf(PCWSTR szFind, const size_t nStart, const bool bCaseIn
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return false;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return true;	// Null string always matches
 
@@ -5546,7 +5537,8 @@ size_t CStrW::Find(const CStrW &strFind, const size_t nStart, const bool bCaseIn
 {
 	if(nStart >= m_nStrLen)
 		return not_found;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return nStart;	// Null string always matches
 
 	size_t nPos;
@@ -5564,7 +5556,7 @@ size_t CStrW::Find(PCWSTR szFind, const size_t nStart, const bool bCaseInsensiti
 	if(nStart >= m_nStrLen)
 		return not_found;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return nStart;	// Null string always matches
 
@@ -5638,7 +5630,7 @@ size_t CStrW::ReverseFind(PCWSTR szFind, const size_t nStart, const bool bCaseIn
 {
 	if(m_nStrLen && nStart)
 	{
-		size_t nFindLen = StringGetLength(szFind);
+		const size_t nFindLen = StringGetLength(szFind);
 		if(nFindLen == 0)
 			return nStart;	// Null string always matches
 
@@ -5688,7 +5680,7 @@ size_t CStrW::ReverseFind(const wchar_t chFind, const size_t nStart, const bool 
 
 		if(bCaseInsensitive)
 		{
-			wchar_t chLower = CharToLower(chFind);
+			const wchar_t chLower = CharToLower(chFind);
 			do{
 				if(CharToLower(m_sz[nIndex]) == chLower)
 					return nIndex;
@@ -5711,7 +5703,8 @@ size_t CStrW::FindFirstOf(const CStrW &strFind, const size_t nStart, const bool 
 {
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return not_found;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return nStart;	// Null string always matches
 
 	if(bCaseInsensitive)
@@ -5740,7 +5733,7 @@ size_t CStrW::FindFirstOf(PCWSTR szFind, const size_t nStart, const bool bCaseIn
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return not_found;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return nStart;	// Null string always matches
 
@@ -5769,7 +5762,8 @@ size_t CStrW::FindFirstNotOf(const CStrW &strFind, const size_t nStart, const bo
 {
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return not_found;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return nStart;	// Null string always matches
 
 	if(bCaseInsensitive)
@@ -5798,7 +5792,7 @@ size_t CStrW::FindFirstNotOf(PCWSTR szFind, const size_t nStart, const bool bCas
 	if(m_nStrLen == 0 || nStart >= m_nStrLen)
 		return not_found;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return nStart;	// Null string always matches
 
@@ -5827,7 +5821,8 @@ size_t CStrW::FindLastOf(const CStrW &strFind, const size_t nStart, const bool b
 {
 	if(m_nStrLen == 0 || nStart == 0)
 		return not_found;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return nStart;	// Null string always matches
 
 	size_t nIndex;
@@ -5860,7 +5855,7 @@ size_t CStrW::FindLastOf(PCWSTR szFind, const size_t nStart, const bool bCaseIns
 	if(m_nStrLen == 0 || nStart == 0)
 		return not_found;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return nStart;	// Null string always matches
 
@@ -5893,7 +5888,8 @@ size_t CStrW::FindLastNotOf(const CStrW &strFind, const size_t nStart, const boo
 {
 	if(m_nStrLen == 0 || nStart == 0)
 		return not_found;
-	else if(strFind.m_nStrLen == 0)
+
+	if(strFind.m_nStrLen == 0)
 		return nStart;	// Null string always matches
 
 	size_t nIndex;
@@ -5926,7 +5922,7 @@ size_t CStrW::FindLastNotOf(PCWSTR szFind, const size_t nStart, const bool bCase
 	if(m_nStrLen == 0 || nStart == 0)
 		return not_found;
 
-	size_t nFindLen = StringGetLength(szFind);
+	const size_t nFindLen = StringGetLength(szFind);
 	if(nFindLen == 0)
 		return nStart;	// Null string always matches
 
@@ -5985,7 +5981,7 @@ size_t CStrW::Insert(const size_t nIndex, const CStrW &strInsert)
 		Append(strInsert);
 	else if(strInsert.m_nStrLen != 0)
 	{
-		size_t nNewStrLen = m_nStrLen + strInsert.m_nStrLen;
+		const size_t nNewStrLen = m_nStrLen + strInsert.m_nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::wmemmove(m_sz + nIndex + strInsert.m_nStrLen, m_sz + nIndex, m_nStrLen + 1 - nIndex);
@@ -6004,8 +6000,8 @@ size_t CStrW::Insert(const size_t nIndex, PCWSTR szInsert)
 		Append(szInsert);
 	else if(szInsert != nullptr && *szInsert != g_chNullW)
 	{
-		size_t nStrLen = StringGetLength(szInsert);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = StringGetLength(szInsert);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::wmemmove(m_sz + nIndex + nStrLen, m_sz + nIndex, m_nStrLen + 1 - nIndex);
@@ -6024,7 +6020,7 @@ size_t CStrW::Insert(const size_t nIndex, const wchar_t chInsert)
 		Append(chInsert);
 	else if(chInsert != g_chNullW)
 	{
-		size_t nNewStrLen = m_nStrLen + 1;
+		const size_t nNewStrLen = m_nStrLen + 1;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::wmemmove(m_sz + nIndex + 1, m_sz + nIndex, m_nStrLen + 1 - nIndex);
@@ -6099,7 +6095,7 @@ size_t CStrW::Remove(PCWSTR szRemove, const bool bCaseInsensitive)
 {
 	size_t nCount = 0;
 
-	size_t nRemoveLen = StringGetLength(szRemove);
+	const size_t nRemoveLen = StringGetLength(szRemove);
 	if(m_nStrLen && nRemoveLen)
 	{
 		if(bCaseInsensitive)
@@ -6143,7 +6139,7 @@ size_t CStrW::Remove(const wchar_t chRemove, const bool bCaseInsensitive)
 
 		if(bCaseInsensitive)
 		{
-			wchar_t chLower = CharToLower(chRemove);
+			const wchar_t chLower = CharToLower(chRemove);
 			while(*szScan != g_chNullW)
 			{
 				if(CharToLower(*szScan) != chLower)
@@ -6222,7 +6218,7 @@ size_t CStrW::RemoveAllOf(PCWSTR szRemove, const bool bCaseInsensitive)
 	if(m_nStrLen == 0 || szRemove == nullptr || *szRemove == g_chNullW)
 		return nCount;
 
-	size_t nRemoveLen = StringGetLength(szRemove);
+	const size_t nRemoveLen = StringGetLength(szRemove);
 	PWSTR szWrite = m_sz;
 	PWSTR szScan = m_sz;
 	if(bCaseInsensitive)
@@ -6321,7 +6317,7 @@ size_t CStrW::KeepAllOf(PCWSTR szKeep, const bool bCaseInsensitive)
 		return nCount;
 	}
 
-	size_t nKeepLen = StringGetLength(szKeep);
+	const size_t nKeepLen = StringGetLength(szKeep);
 	PWSTR szWrite = m_sz;
 	PWSTR szScan = m_sz;
 	if(bCaseInsensitive)
@@ -6382,7 +6378,7 @@ size_t CStrW::Replace(const CStrW &strOld, const CStrW &strNew, const bool bCase
 
 		auto szTemp = std::make_unique<wchar_t[]>(m_nStrLen);
 		std::wmemcpy(szTemp.get(), m_sz, m_nStrLen);
-		size_t nStrLen = m_nStrLen;
+		const size_t nStrLen = m_nStrLen;
 
 		if(Alloc(nNewStrLen + 1))
 		{
@@ -6445,8 +6441,8 @@ size_t CStrW::Replace(PCWSTR szOld, PCWSTR szNew, const bool bCaseInsensitive)
 	using PFNFIND = PWSTR(*)(PCWSTR, size_t, PCWSTR, size_t);
 	PFNFIND pfnFind = bCaseInsensitive ? FindStrPtrI : FindStrPtr;
 
-	size_t nOldLen = StringGetLength(szOld);
-	size_t nNewLen = StringGetLength(szNew);
+	const size_t nOldLen = StringGetLength(szOld);
+	const size_t nNewLen = StringGetLength(szNew);
 	if(nOldLen != nNewLen)
 	{	// The length of the string is changing
 		size_t nNewStrLen = m_nStrLen;
@@ -6460,7 +6456,7 @@ size_t CStrW::Replace(PCWSTR szOld, PCWSTR szNew, const bool bCaseInsensitive)
 
 		auto szTemp = std::make_unique<wchar_t[]>(m_nStrLen);
 		std::wmemcpy(szTemp.get(), m_sz, m_nStrLen);
-		size_t nStrLen = m_nStrLen;
+		const size_t nStrLen = m_nStrLen;
 
 		if(Alloc(nNewStrLen + 1))
 		{
@@ -6523,7 +6519,7 @@ size_t CStrW::Replace(const wchar_t chOld, const wchar_t chNew, const bool bCase
 
 		if(bCaseInsensitive)
 		{
-			wchar_t chLower = CharToLower(chOld);
+			const wchar_t chLower = CharToLower(chOld);
 			while(*szScan != g_chNullW)
 			{
 				if(CharToLower(*szScan) == chLower)
@@ -6566,7 +6562,7 @@ CStrW CStrW::GetMid(const size_t nStart, const size_t nCount) const
 
 	if(nStart < m_nStrLen)
 	{	// Copy nCount chars, unless nCount is zero or nStart + nCount is too much
-		size_t nStrLen = (nCount == end || nStart + nCount > m_nStrLen) ? m_nStrLen - nStart : nCount;
+		const size_t nStrLen = (nCount == end || nStart + nCount > m_nStrLen) ? m_nStrLen - nStart : nCount;
 		if(str.Alloc(nStrLen + 1))
 		{
 			std::wmemcpy(str.m_sz, m_sz + nStart, nStrLen);
@@ -6686,7 +6682,7 @@ CStrW &CStrW::TrimLeft(PCWSTR szTrim, const bool bCaseInsensitive)
 	if(m_nStrLen == 0 || szTrim == nullptr || *szTrim == g_chNullW)
 		return *this;
 
-	size_t nTrimLen = StringGetLength(szTrim);
+	const size_t nTrimLen = StringGetLength(szTrim);
 
 	// Find first non-matching character
 	PCWSTR szScan = m_sz;
@@ -6722,7 +6718,7 @@ CStrW &CStrW::TrimLeft(const wchar_t chTrim, const bool bCaseInsensitive)
 	PCWSTR szScan = m_sz;
 	if(bCaseInsensitive)
 	{
-		wchar_t chLower = CharToLower(chTrim);
+		const wchar_t chLower = CharToLower(chTrim);
 		while(*szScan != g_chNullW && CharToLower(*szScan) == chLower)
 			++szScan;
 	}
@@ -6801,7 +6797,7 @@ CStrW &CStrW::TrimRight(PCWSTR szTrim, const bool bCaseInsensitive)
 	if(m_nStrLen == 0 || szTrim == nullptr || *szTrim == g_chNullW)
 		return *this;
 
-	size_t nTrimLen = StringGetLength(szTrim);
+	const size_t nTrimLen = StringGetLength(szTrim);
 
 	// Find last non-matching starting at the end
 	PWSTR szScan = m_sz + m_nStrLen;
@@ -6837,7 +6833,7 @@ CStrW &CStrW::TrimRight(const wchar_t chTrim, const bool bCaseInsensitive)
 	PWSTR szScan = m_sz + m_nStrLen;
 	if(bCaseInsensitive)
 	{
-		wchar_t chLower = CharToLower(chTrim);
+		const wchar_t chLower = CharToLower(chTrim);
 		while(szScan != m_sz && CharToLower(*(szScan - 1)) == chLower)
 			--szScan;
 	}
@@ -7040,7 +7036,7 @@ CStrW CStrW::Tokenize(PCWSTR szTokens, size_t &nStart, const bool bCaseInsensiti
 
 	if(nStart < m_nStrLen)
 	{
-		size_t nTokenLen = StringGetLength(szTokens);
+		const size_t nTokenLen = StringGetLength(szTokens);
 		size_t nBegin = nStart;
 		if(bCaseInsensitive)
 		{
@@ -7104,7 +7100,7 @@ CStrW CStrW::Tokenize(const wchar_t chToken, size_t &nStart, const bool bCaseIns
 		size_t nBegin = nStart;
 		if(bCaseInsensitive)
 		{
-			wchar_t chLower = CharToLower(chToken);
+			const wchar_t chLower = CharToLower(chToken);
 			while(nBegin < m_nStrLen)
 			{
 				if(CharToLower(m_sz[nBegin]) != chLower)
@@ -7127,7 +7123,7 @@ CStrW CStrW::Tokenize(const wchar_t chToken, size_t &nStart, const bool bCaseIns
 			size_t nEnd = nBegin + 1;
 			if(bCaseInsensitive)
 			{
-				wchar_t chLower = CharToLower(chToken);
+				const wchar_t chLower = CharToLower(chToken);
 				while(nEnd < m_nStrLen)
 				{
 					if(CharToLower(m_sz[nEnd]) == chLower)
@@ -7162,7 +7158,7 @@ bool CStrW::LoadString(const UINT nId)
 	bool bResult = false;
 
 	PWSTR sz = nullptr;
-	int nResult = LoadStringW(GetApplicationInstance(), nId, (PWSTR)&sz, 0);
+	const int nResult = LoadStringW(GetApplicationInstance(), nId, (PWSTR)&sz, 0);
 	if(nResult)
 	{
 		Assign(sz, 0, nResult);
@@ -7202,8 +7198,8 @@ bool CStrW::PrintfV(PCWSTR szFormat, va_list vaArgs)
 
 	if(szFormat)
 	{
-		size_t nStrLen = 256;
-		int nResult = std::vswprintf(GetBuffer(nStrLen), nStrLen, szFormat, vaArgs);
+		const size_t nStrLen = 256;
+		const int nResult = std::vswprintf(GetBuffer(nStrLen), nStrLen, szFormat, vaArgs);
 		if(nResult < 0)
 		{
 			Empty();
@@ -7226,7 +7222,7 @@ bool CStrW::ReserveBuffer(const size_t nBufLen)
 {
 	bool bAllocated;
 
-	bool bPrevAllocated = (m_nBufLen != 0);
+	const bool bPrevAllocated = (m_nBufLen != 0);
 	bAllocated = Alloc(nBufLen);
 	if(!bPrevAllocated && bAllocated)
 	{
@@ -7453,7 +7449,7 @@ size_t CStrW::FindStrIndexI(PCWSTR sz, const size_t nStrLen, PCWSTR szFind, cons
 		PCWSTR szScan1 = sz;
 		PCWSTR szScan2;
 		nRemaining -= nFindLen - 1;
-		while((szScan2 = (PCWSTR)wmemchri(szScan1, *szFind, nRemaining)) != nullptr)
+		while((szScan2 = wmemchri(szScan1, *szFind, nRemaining)) != nullptr)
 		{
 			if(wmemcmpi(szScan2, szFind, nFindLen) == 0)
 				return (size_t)(szScan2 - sz);
@@ -7474,7 +7470,7 @@ PCWSTR CStrW::wmemchri(PCWSTR sz, const wchar_t ch, const size_t nLen)
 		PCWSTR szScan = sz;
 		size_t nCount = 0;
 
-		wchar_t chLower = CharToLower(ch);
+		const wchar_t chLower = CharToLower(ch);
 		do{
 			if(CharToLower(*szScan) == chLower)
 				return szScan;
@@ -7828,7 +7824,7 @@ void CStr16::Assign(const char16_t *sz)
 {
 	if(sz && *sz != g_chNull16)
 	{	// Alloc and copy
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::memcpy(m_sz, sz, nStrLen * sizeof(char16_t));
@@ -7889,7 +7885,7 @@ void CStr16::Assign(const char16_t *sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNull16 && nLen)
 	{	// Alloc and copy
-		size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nNewLen;
@@ -7954,7 +7950,7 @@ void CStr16::Prepend(const CStr16 &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
+		const size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -7972,8 +7968,8 @@ void CStr16::Prepend(const CStr8 &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nStrLen = Utf8ToUtf16(str.m_sz, str.m_nStrLen, nullptr, 0);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = Utf8ToUtf16(str.m_sz, str.m_nStrLen, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -7991,8 +7987,8 @@ void CStr16::Prepend(const CStrW &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nStrLen = WideToUtf16(str.m_sz, str.m_nStrLen, nullptr, 0);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = WideToUtf16(str.m_sz, str.m_nStrLen, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -8010,8 +8006,8 @@ void CStr16::Prepend(const char16_t *sz)
 {
 	if(sz && *sz != g_chNull16)
 	{
-		size_t nStrLen = StringGetLength(sz);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = StringGetLength(sz);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -8029,7 +8025,7 @@ void CStr16::Prepend(const char16_t ch)
 {
 	if(ch != g_chNull16)
 	{
-		size_t nNewStrLen = m_nStrLen + 1;
+		const size_t nNewStrLen = m_nStrLen + 1;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -8053,7 +8049,7 @@ void CStr16::Prepend(const CStr16 &str, const size_t nStart, const size_t nLen)
 		else
 			nPrependLen = MIN(nLen, str.m_nStrLen - nStart);
 
-		size_t nNewStrLen = m_nStrLen + nPrependLen;
+		const size_t nNewStrLen = m_nStrLen + nPrependLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			if(m_nStrLen)
@@ -8071,7 +8067,7 @@ void CStr16::Prepend(const char16_t *sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNull16 && nLen)
 	{
-		size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nPrependLen;
@@ -8080,7 +8076,7 @@ void CStr16::Prepend(const char16_t *sz, const size_t nStart, const size_t nLen)
 			else
 				nPrependLen = MIN(nLen, nStrLen - nStart);
 
-			size_t nNewStrLen = m_nStrLen + nPrependLen;
+			const size_t nNewStrLen = m_nStrLen + nPrependLen;
 			if(Alloc(nNewStrLen + 1))
 			{
 				if(m_nStrLen)
@@ -8099,7 +8095,7 @@ void CStr16::Append(const CStr16 &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
+		const size_t nNewStrLen = m_nStrLen + str.m_nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::memcpy(m_sz + m_nStrLen, str.m_sz, str.m_nStrLen * sizeof(char16_t));
@@ -8114,7 +8110,7 @@ void CStr16::Append(const CStr8 &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nNewStrLen = m_nStrLen + Utf8ToUtf16(str.m_sz, str.m_nStrLen, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + Utf8ToUtf16(str.m_sz, str.m_nStrLen, nullptr, 0);
 		if(Alloc(nNewStrLen + 1))
 		{
 			Utf8ToUtf16(str.m_sz, str.m_nStrLen, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -8129,7 +8125,7 @@ void CStr16::Append(const CStrW &str)
 {
 	if(str.m_nStrLen)
 	{
-		size_t nNewStrLen = m_nStrLen + WideToUtf16(str.m_sz, str.m_nStrLen, nullptr, 0);
+		const size_t nNewStrLen = m_nStrLen + WideToUtf16(str.m_sz, str.m_nStrLen, nullptr, 0);
 		if(Alloc(nNewStrLen + 1))
 		{
 			WideToUtf16(str.m_sz, str.m_nStrLen, m_sz + m_nStrLen, m_nBufLen - m_nStrLen);
@@ -8144,8 +8140,8 @@ void CStr16::Append(const char16_t *sz)
 {
 	if(sz && *sz != g_chNull16)
 	{
-		size_t nStrLen = StringGetLength(sz);
-		size_t nNewStrLen = m_nStrLen + nStrLen;
+		const size_t nStrLen = StringGetLength(sz);
+		const size_t nNewStrLen = m_nStrLen + nStrLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::memcpy(m_sz + m_nStrLen, sz, nStrLen * sizeof(char16_t));
@@ -8160,7 +8156,7 @@ void CStr16::Append(const char16_t ch)
 {
 	if(ch != g_chNull16)
 	{
-		size_t nNewStrLen = m_nStrLen + 1;
+		const size_t nNewStrLen = m_nStrLen + 1;
 		if(Alloc(nNewStrLen + 1))
 		{
 			m_sz[m_nStrLen] = ch;
@@ -8181,7 +8177,7 @@ void CStr16::Append(const CStr16 &str, const size_t nStart, const size_t nLen)
 		else
 			nAppendLen = MIN(nLen, str.m_nStrLen - nStart);
 
-		size_t nNewStrLen = m_nStrLen + nAppendLen;
+		const size_t nNewStrLen = m_nStrLen + nAppendLen;
 		if(Alloc(nNewStrLen + 1))
 		{
 			std::memcpy(m_sz + m_nStrLen, str.m_sz + nStart, nAppendLen * sizeof(char16_t));
@@ -8196,7 +8192,7 @@ void CStr16::Append(const char16_t *sz, const size_t nStart, const size_t nLen)
 {
 	if(sz && *sz != g_chNull16 && nLen)
 	{
-		size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
+		const size_t nStrLen = (nLen == end) ? StringGetLength(sz) : GetLength(sz, nStart + nLen);
 		if(nStart < nStrLen)
 		{
 			size_t nAppendLen;
@@ -8205,7 +8201,7 @@ void CStr16::Append(const char16_t *sz, const size_t nStart, const size_t nLen)
 			else
 				nAppendLen = MIN(nLen, nStrLen - nStart);
 
-			size_t nNewStrLen = m_nStrLen + nAppendLen;
+			const size_t nNewStrLen = m_nStrLen + nAppendLen;
 			if(Alloc(nNewStrLen + 1))
 			{
 				std::memcpy(m_sz + m_nStrLen, sz + nStart, nAppendLen * sizeof(char16_t));
@@ -8345,24 +8341,18 @@ int CStr16::Compare(const char16_t ch, const bool bCaseInsensitive) const
 //#################################################################################################
 int CStr16::CompareMid(const CStr16 &str, const size_t nStart, const size_t nCount, const bool bCaseInsensitive) const
 {
-	int nCompareRtn = 0;
+	const size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
 
-	size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
-	nCompareRtn = StringCompare16(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), str.m_sz, MIN(str.m_nStrLen, nCount), bCaseInsensitive);
-
-	return nCompareRtn;
+	return StringCompare16(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), str.m_sz, MIN(str.m_nStrLen, nCount), bCaseInsensitive);
 }
 
 //#################################################################################################
 int CStr16::CompareMid(const char16_t *sz, const size_t nStart, const size_t nCount, const bool bCaseInsensitive) const
 {
-	int nCompareRtn = 0;
+	const size_t nStrLen = GetLength(sz, nCount);
+	const size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
 
-	size_t nStrLen = GetLength(sz, nCount);
-	size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
-	nCompareRtn = StringCompare16(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), sz, nStrLen, bCaseInsensitive);
-
-	return nCompareRtn;
+	return StringCompare16(m_sz + nOffset, MIN(m_nStrLen - nOffset, nCount), sz, nStrLen, bCaseInsensitive);
 }
 
 //#################################################################################################
@@ -8372,7 +8362,7 @@ int CStr16::CompareMid(const char16_t ch, const size_t nStart, const bool bCaseI
 
 	if(ch != g_chNull16)
 	{
-		size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
+		const size_t nOffset = (nStart > m_nStrLen) ? m_nStrLen : nStart;
 		nCompareRtn = StringCompare16(m_sz + nOffset, MIN(m_nStrLen - nOffset, 1), &ch, 1, bCaseInsensitive);
 	}
 
@@ -8405,8 +8395,8 @@ int CStr16::CompareLeft(const char16_t ch, const bool bCaseInsensitive) const
 //#################################################################################################
 int CStr16::CompareRight(const CStr16 &str, const size_t nCount, const bool bCaseInsensitive) const
 {
-	size_t nStrLen1 = MIN(m_nStrLen, nCount);
-	size_t nStrLen2 = MIN(str.m_nStrLen, nCount);
+	const size_t nStrLen1 = MIN(m_nStrLen, nCount);
+	const size_t nStrLen2 = MIN(str.m_nStrLen, nCount);
 
 	return StringCompare16(m_sz + (m_nStrLen - nStrLen1), nStrLen1, str.m_sz + (str.m_nStrLen - nStrLen2), nStrLen2, bCaseInsensitive);
 }
@@ -8414,14 +8404,11 @@ int CStr16::CompareRight(const CStr16 &str, const size_t nCount, const bool bCas
 //#################################################################################################
 int CStr16::CompareRight(const char16_t *sz, const size_t nCount, const bool bCaseInsensitive) const
 {
-	int nCompareRtn = 0;
+	const size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen1 = MIN(m_nStrLen, nCount);
+	const size_t nStrLen2 = MIN(nStrLen, nCount);
 
-	size_t nStrLen = StringGetLength(sz);
-	size_t nStrLen1 = MIN(m_nStrLen, nCount);
-	size_t nStrLen2 = MIN(nStrLen, nCount);
-	nCompareRtn = StringCompare16(m_sz + (m_nStrLen - nStrLen1), nStrLen1, sz + (nStrLen - nStrLen2), nStrLen2, bCaseInsensitive);
-
-	return nCompareRtn;
+	return StringCompare16(m_sz + (m_nStrLen - nStrLen1), nStrLen1, sz + (nStrLen - nStrLen2), nStrLen2, bCaseInsensitive);
 }
 
 //#################################################################################################
@@ -8431,7 +8418,7 @@ int CStr16::CompareRight(const char16_t ch, const bool bCaseInsensitive) const
 
 	if(ch != g_chNull16)
 	{
-		size_t nStrLen1 = MIN(m_nStrLen, 1);
+		const size_t nStrLen1 = MIN(m_nStrLen, 1);
 
 		nCompareRtn = StringCompare16(m_sz + (m_nStrLen - nStrLen1), nStrLen1, &ch, 1, bCaseInsensitive);
 	}
@@ -8454,7 +8441,7 @@ CStr16 CStr16::GetMid(const size_t nStart, const size_t nCount) const
 
 	if(nStart < m_nStrLen)
 	{	// Copy nCount chars, unless nCount is zero or nStart + nCount is too much
-		size_t nStrLen = (nCount == end || nStart + nCount > m_nStrLen) ? m_nStrLen - nStart : nCount;
+		const size_t nStrLen = (nCount == end || nStart + nCount > m_nStrLen) ? m_nStrLen - nStart : nCount;
 		if(str.Alloc(nStrLen + 1))
 		{
 			std::memcpy(str.m_sz, m_sz + nStart, nStrLen * sizeof(char16_t));
@@ -8655,7 +8642,7 @@ bool CStr16::ReserveBuffer(const size_t nBufLen)
 {
 	bool bAllocated;
 
-	bool bPrevAllocated = (m_nBufLen != 0);
+	const bool bPrevAllocated = (m_nBufLen != 0);
 	bAllocated = Alloc(nBufLen);
 	if(!bPrevAllocated && bAllocated)
 	{

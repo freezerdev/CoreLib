@@ -84,7 +84,7 @@ void GetExceptionPointers(const DWORD dwExceptionCode, EXCEPTION_POINTERS &ep)
 
 #ifdef _M_X64
 	RtlCaptureContext(&ctx);
-	DWORD64 nControlPc = ctx.Rip;
+	const DWORD64 nControlPc = ctx.Rip;
 	DWORD64 nImageBase;
 	PRUNTIME_FUNCTION FunctionEntry = RtlLookupFunctionEntry(nControlPc, &nImageBase, nullptr);
 	if(FunctionEntry)
@@ -264,7 +264,7 @@ void CreateMiniDump(PEXCEPTION_POINTERS pep)
 		return;
 
 	CFilePathW pathDumpFile;
-	CStrW strFilename = GetExecutablePath().GetBase() + L'_' + GetFormattedTime(GetCurrentUtcTime(), true, L'-', L'-', L'_') + L".dmp";
+	const CStrW strFilename = GetExecutablePath().GetBase() + L'_' + GetFormattedTime(GetCurrentUtcTime(), true, L'-', L'-', L'_') + L".dmp";
 	if(g_pPathDumpFolder && !g_pPathDumpFolder->IsEmpty())
 	{
 		pathDumpFile = *g_pPathDumpFolder;

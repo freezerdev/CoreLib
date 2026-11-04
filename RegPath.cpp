@@ -357,7 +357,7 @@ ERRCODE CRegPathSegment8::Assign(PCSTR sz)
 
 	if(IsValidSegment(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::memcpy(m_sz, sz, nStrLen);
@@ -386,7 +386,7 @@ ERRCODE CRegPathSegment8::Assign(PCWSTR sz)
 
 	if(CRegPathSegmentW::IsValidSegment(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(WideToUtf8(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = WideToUtf8(sz, nStrLen, m_sz, m_nBufLen);
@@ -652,7 +652,7 @@ bool CRegPathSegment8::IsValidSegment(PCSTR szSegment)
 		return false;
 
 	// Length greater than 0
-	size_t nStrLen = StringGetLength(szSegment);
+	const size_t nStrLen = StringGetLength(szSegment);
 	if(nStrLen == 0)
 		return false;
 
@@ -1020,7 +1020,7 @@ ERRCODE CRegPathSegmentW::Assign(PCWSTR sz)
 
 	if(IsValidSegment(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::wmemcpy(m_sz, sz, nStrLen);
@@ -1049,7 +1049,7 @@ ERRCODE CRegPathSegmentW::Assign(PCSTR sz)
 
 	if(CRegPathSegment8::IsValidSegment(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(Utf8ToWide(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = Utf8ToWide(sz, nStrLen, m_sz, m_nBufLen);
@@ -1315,7 +1315,7 @@ bool CRegPathSegmentW::IsValidSegment(PCWSTR szSegment)
 		return false;
 
 	// Length greater than 0
-	size_t nStrLen = StringGetLength(szSegment);
+	const size_t nStrLen = StringGetLength(szSegment);
 	if(nStrLen == 0)
 		return false;
 
@@ -1629,7 +1629,7 @@ ERRCODE CHiveName8::Assign(PCSTR sz)
 
 	if(IsValidHiveName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::memcpy(m_sz, sz, nStrLen);
@@ -1658,7 +1658,7 @@ ERRCODE CHiveName8::Assign(PCWSTR sz)
 
 	if(CHiveNameW::IsValidHiveName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(WideToUtf8(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = WideToUtf8(sz, nStrLen, m_sz, m_nBufLen);
@@ -2051,7 +2051,7 @@ int CHiveName8::Compare(PCSTR sz) const
 {
 	int nCompareRtn = 0;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	int n;
 
 	if(StringCompare8(m_sz, m_nStrLen, g_szHKCR8, g_nHKCRLen, true) == 0)
@@ -2217,7 +2217,7 @@ PCSTR CHiveName8::GetLongName(PCSTR sz)
 {
 	PCSTR szHive = nullptr;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	if(StringCompare8(sz, nStrLen, g_szHKCR8, g_nHKCRLen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCRShort8, g_nHKCRShortLen, true) == 0)
 		szHive = g_szHKCR8;
 	else if(StringCompare8(sz, nStrLen, g_szHKCU8, g_nHKCULen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCUShort8, g_nHKCUShortLen, true) == 0)
@@ -2237,7 +2237,7 @@ PCSTR CHiveName8::GetLongName(PCWSTR sz)
 {
 	PCSTR szHive = nullptr;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	if(StringCompareW(sz, nStrLen, g_szHKCRW, g_nHKCRLen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCRShortW, g_nHKCRShortLen, true) == 0)
 		szHive = g_szHKCR8;
 	else if(StringCompareW(sz, nStrLen, g_szHKCUW, g_nHKCULen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCUShortW, g_nHKCUShortLen, true) == 0)
@@ -2314,7 +2314,7 @@ PCSTR CHiveName8::GetShortName(PCSTR sz)
 {
 	PCSTR szHive = nullptr;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	if(StringCompare8(sz, nStrLen, g_szHKCR8, g_nHKCRLen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCRShort8, g_nHKCRShortLen, true) == 0)
 		szHive = g_szHKCRShort8;
 	else if(StringCompare8(sz, nStrLen, g_szHKCU8, g_nHKCULen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCUShort8, g_nHKCUShortLen, true) == 0)
@@ -2334,7 +2334,7 @@ PCSTR CHiveName8::GetShortName(PCWSTR sz)
 {
 	PCSTR szHive = nullptr;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	if(StringCompareW(sz, nStrLen, g_szHKCRW, g_nHKCRLen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCRShortW, g_nHKCRShortLen, true) == 0)
 		szHive = g_szHKCRShort8;
 	else if(StringCompareW(sz, nStrLen, g_szHKCUW, g_nHKCULen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCUShortW, g_nHKCUShortLen, true) == 0)
@@ -2392,7 +2392,7 @@ HKEY CHiveName8::GetHive(PCSTR sz)
 {
 	HKEY hHive = nullptr;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	if(StringCompare8(sz, nStrLen, g_szHKCR8, g_nHKCRLen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCRShort8, g_nHKCRShortLen, true) == 0)
 		hHive = HKEY_CLASSES_ROOT;
 	else if(StringCompare8(sz, nStrLen, g_szHKCU8, g_nHKCULen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCUShort8, g_nHKCUShortLen, true) == 0)
@@ -2420,7 +2420,7 @@ bool CHiveName8::IsValidHiveName(const CStr8 &str)
 //#################################################################################################
 bool CHiveName8::IsValidHiveName(PCSTR sz)
 {
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	return (StringCompare8(sz, nStrLen, g_szHKCR8, g_nHKCRLen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCRShort8, g_nHKCRShortLen, true) == 0 ||
 		StringCompare8(sz, nStrLen, g_szHKCU8, g_nHKCULen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCUShort8, g_nHKCUShortLen, true) == 0 ||
 		StringCompare8(sz, nStrLen, g_szHKLM8, g_nHKLMLen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKLMShort8, g_nHKLMShortLen, true) == 0 ||
@@ -2690,7 +2690,7 @@ ERRCODE CHiveNameW::Assign(PCWSTR sz)
 
 	if(IsValidHiveName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(nStrLen + 1))
 		{
 			std::wmemcpy(m_sz, sz, nStrLen);
@@ -2719,7 +2719,7 @@ ERRCODE CHiveNameW::Assign(PCSTR sz)
 
 	if(CHiveName8::IsValidHiveName(sz))
 	{
-		size_t nStrLen = StringGetLength(sz);
+		const size_t nStrLen = StringGetLength(sz);
 		if(Alloc(Utf8ToWide(sz, nStrLen, nullptr, 0) + 1))
 		{
 			m_nStrLen = Utf8ToWide(sz, nStrLen, m_sz, m_nBufLen);
@@ -3112,7 +3112,7 @@ int CHiveNameW::Compare(PCWSTR sz) const
 {
 	int nCompareRtn = 0;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	int n;
 
 	if(StringCompareW(m_sz, m_nStrLen, g_szHKCRW, g_nHKCRLen, true) == 0)
@@ -3278,7 +3278,7 @@ PCWSTR CHiveNameW::GetLongName(PCWSTR sz)
 {
 	PCWSTR szHive = nullptr;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	if(StringCompareW(sz, nStrLen, g_szHKCRW, g_nHKCRLen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCRShortW, g_nHKCRShortLen, true) == 0)
 		szHive = g_szHKCRW;
 	else if(StringCompareW(sz, nStrLen, g_szHKCUW, g_nHKCULen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCUShortW, g_nHKCUShortLen, true) == 0)
@@ -3298,7 +3298,7 @@ PCWSTR CHiveNameW::GetLongName(PCSTR sz)
 {
 	PCWSTR szHive = nullptr;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	if(StringCompare8(sz, nStrLen, g_szHKCR8, g_nHKCRLen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCRShort8, g_nHKCRShortLen, true) == 0)
 		szHive = g_szHKCRW;
 	else if(StringCompare8(sz, nStrLen, g_szHKCU8, g_nHKCULen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCUShort8, g_nHKCUShortLen, true) == 0)
@@ -3375,7 +3375,7 @@ PCWSTR CHiveNameW::GetShortName(PCWSTR sz)
 {
 	PCWSTR szHive = nullptr;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	if(StringCompareW(sz, nStrLen, g_szHKCRW, g_nHKCRLen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCRShortW, g_nHKCRShortLen, true) == 0)
 		szHive = g_szHKCRShortW;
 	else if(StringCompareW(sz, nStrLen, g_szHKCUW, g_nHKCULen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCUShortW, g_nHKCUShortLen, true) == 0)
@@ -3395,7 +3395,7 @@ PCWSTR CHiveNameW::GetShortName(PCSTR sz)
 {
 	PCWSTR szHive = nullptr;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	if(StringCompare8(sz, nStrLen, g_szHKCR8, g_nHKCRLen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCRShort8, g_nHKCRShortLen, true) == 0)
 		szHive = g_szHKCRShortW;
 	else if(StringCompare8(sz, nStrLen, g_szHKCU8, g_nHKCULen, true) == 0 || StringCompare8(sz, nStrLen, g_szHKCUShort8, g_nHKCUShortLen, true) == 0)
@@ -3453,7 +3453,7 @@ HKEY CHiveNameW::GetHive(PCWSTR sz)
 {
 	HKEY hHive = nullptr;
 
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	if(StringCompareW(sz, nStrLen, g_szHKCRW, g_nHKCRLen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCRShortW, g_nHKCRShortLen, true) == 0)
 		hHive = HKEY_CLASSES_ROOT;
 	else if(StringCompareW(sz, nStrLen, g_szHKCUW, g_nHKCULen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCUShortW, g_nHKCUShortLen, true) == 0)
@@ -3481,7 +3481,7 @@ bool CHiveNameW::IsValidHiveName(const CStrW &str)
 //#################################################################################################
 bool CHiveNameW::IsValidHiveName(PCWSTR sz)
 {
-	size_t nStrLen = StringGetLength(sz);
+	const size_t nStrLen = StringGetLength(sz);
 	return (StringCompareW(sz, nStrLen, g_szHKCRW, g_nHKCRLen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCRShortW, g_nHKCRShortLen, true) == 0 ||
 		StringCompareW(sz, nStrLen, g_szHKCUW, g_nHKCULen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKCUShortW, g_nHKCUShortLen, true) == 0 ||
 		StringCompareW(sz, nStrLen, g_szHKLMW, g_nHKLMLen, true) == 0 || StringCompareW(sz, nStrLen, g_szHKLMShortW, g_nHKLMShortLen, true) == 0 ||

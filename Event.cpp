@@ -27,7 +27,7 @@ void CEvent::Signal(void)
 //#################################################################################################
 void CEvent::Reset(void)
 {
-	std::lock_guard<std::mutex> lock(m_mutex);
+	const std::lock_guard<std::mutex> lock(m_mutex);
 	m_bSignaled = false;
 }
 

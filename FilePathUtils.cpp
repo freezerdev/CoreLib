@@ -58,7 +58,7 @@ CFilePathW GetCurrentFolder(const CFilePathSegmentW &drive)
 
 	if(drive.IsDrive())
 	{
-		DWORD dwLen = GetFullPathNameW(drive.Get(), 0, nullptr, nullptr);
+		const DWORD dwLen = GetFullPathNameW(drive.Get(), 0, nullptr, nullptr);
 		if(dwLen)
 		{
 			auto szPath = std::make_unique<wchar_t[]>(dwLen);
@@ -169,10 +169,11 @@ bool ConvertToLong(CStrW &str)
 		if(strTemp.IsEmpty())
 			break;
 
-		DWORD dwResult = GetLongPathNameW(strTemp, szLong, MAX_PATH);
+		const DWORD dwResult = GetLongPathNameW(strTemp, szLong, MAX_PATH);
 		if(dwResult > MAX_PATH)
 			break;
-		else if(dwResult)
+
+		if(dwResult)
 		{
 			if(str.CompareLeft(szLong, strTemp.GetLength(), true) != 0)
 			{
@@ -182,17 +183,15 @@ bool ConvertToLong(CStrW &str)
 			}
 			break;
 		}
-		else
-			dwErrorCode = GetLastError();
 
-		size_t nPos = strTemp.ReverseFind(L'\\', nStart);
+		dwErrorCode = GetLastError();
+
+		const size_t nPos = strTemp.ReverseFind(L'\\', nStart);
 		if(nPos == 0 || nPos == CStrW::not_found)
 			break;
-		else
-		{
-			strTemp.CropLeft(nPos);
-			nStart = nPos;
-		}
+
+		strTemp.CropLeft(nPos);
+		nStart = nPos;
 	}while(dwErrorCode == ERROR_FILE_NOT_FOUND || dwErrorCode == ERROR_PATH_NOT_FOUND);
 
 	return bConverted;
@@ -212,13 +211,13 @@ bool ConvertToLong(CFilePathW &path)
 		if(pathTemp.IsEmpty())
 			break;
 
-		DWORD dwLen = GetLongPathNameW(pathTemp.Get(), nullptr, 0);
+		const DWORD dwLen = GetLongPathNameW(pathTemp.Get(), nullptr, 0);
 		if(dwLen)
 		{
 			auto szLong = std::make_unique<wchar_t[]>(dwLen);
 			if(GetLongPathNameW(pathTemp.Get(), szLong.get(), dwLen))
 			{
-				CFilePathW pathNew(szLong.get());
+				const CFilePathW pathNew(szLong.get());
 				if(!path.CompareLeft(pathNew, nSegmentCount))
 				{
 					path.TrimLeft(nSegmentCount);
@@ -227,8 +226,8 @@ bool ConvertToLong(CFilePathW &path)
 				}
 				break;
 			}
-			else
-				dwErrorCode = GetLastError();
+
+			dwErrorCode = GetLastError();
 		}
 		else
 			dwErrorCode = GetLastError();
@@ -254,10 +253,11 @@ bool ConvertToShort(CStrW &str)
 		if(strTemp.IsEmpty())
 			break;
 
-		DWORD dwResult = GetShortPathNameW(strTemp, szShort, MAX_PATH);
+		const DWORD dwResult = GetShortPathNameW(strTemp, szShort, MAX_PATH);
 		if(dwResult > MAX_PATH)
 			break;
-		else if(dwResult)
+
+		if(dwResult)
 		{
 			if(str.CompareLeft(szShort, strTemp.GetLength(), true) != 0)
 			{
@@ -267,17 +267,15 @@ bool ConvertToShort(CStrW &str)
 			}
 			break;
 		}
-		else
-			dwErrorCode = GetLastError();
 
-		size_t nPos = strTemp.ReverseFind(L'\\', nStart);
+		dwErrorCode = GetLastError();
+
+		const size_t nPos = strTemp.ReverseFind(L'\\', nStart);
 		if(nPos == 0 || nPos == CStrW::not_found)
 			break;
-		else
-		{
-			strTemp.CropLeft(nPos);
-			nStart = nPos;
-		}
+
+		strTemp.CropLeft(nPos);
+		nStart = nPos;
 	}while(dwErrorCode == ERROR_FILE_NOT_FOUND || dwErrorCode == ERROR_PATH_NOT_FOUND);
 
 	return bConverted;
@@ -297,7 +295,7 @@ bool ConvertToShort(CFilePathW &path)
 		if(pathTemp.IsEmpty())
 			break;
 
-		DWORD dwLen = GetShortPathNameW(pathTemp.Get(), nullptr, 0);
+		const DWORD dwLen = GetShortPathNameW(pathTemp.Get(), nullptr, 0);
 		if(dwLen)
 		{
 			auto szShort = std::make_unique<wchar_t[]>(dwLen);
@@ -308,8 +306,8 @@ bool ConvertToShort(CFilePathW &path)
 				bConverted = true;
 				break;
 			}
-			else
-				dwErrorCode = GetLastError();
+
+			dwErrorCode = GetLastError();
 		}
 		else
 			dwErrorCode = GetLastError();
@@ -329,10 +327,9 @@ bool CanonicalizeLocalUNC(CFilePathW &path)
 	if(path.IsUNC() && (path.GetMachine() == GetMachineName() || path.GetMachine() == L"localhost" || path.GetMachine() == L"127.0.0.1"))
 	{
 		PSHARE_INFO_2 psi2 = nullptr;
-		NET_API_STATUS status;
 
 		// Convert machine and share to a canonical path
-		status = NetShareGetInfo(nullptr, (PWSTR)path.GetShare().Get(), 2, (PBYTE*)&psi2);
+		NET_API_STATUS status = NetShareGetInfo(nullptr, (PWSTR)path.GetShare().Get(), 2, (PBYTE*)&psi2);
 		if(status == NERR_Success)
 		{
 			DEFER(NetApiBufferFree(psi2));
@@ -421,16 +418,17 @@ bool CanonicalizeLink(CFilePath &path)
 						{
 							if(pReparse->ReparseTag == IO_REPARSE_TAG_MOUNT_POINT)
 							{
-								strPath.Assign(pReparse->MountPointReparseBuffer.PathBuffer + pReparse->MountPointReparseBuffer.PrintNameOffset / sizeof(wchar_t), 0, pReparse->MountPointReparseBuffer.PrintNameLength / sizeof(wchar_t));
+								strPath.Assign(pReparse->MountPointReparseBuffer.PathBuffer + (pReparse->MountPointReparseBuffer.PrintNameOffset / sizeof(wchar_t)), 0, pReparse->MountPointReparseBuffer.PrintNameLength / sizeof(wchar_t));
 								path.TrimLeft(nCurrentSegment);
 								path.Prepend(CFilePathW(strPath));
 								nCurrentSegment = 1;
 								bConverted = true;
 								continue;
 							}
-							else if(pReparse->ReparseTag == IO_REPARSE_TAG_SYMLINK)
+
+							if(pReparse->ReparseTag == IO_REPARSE_TAG_SYMLINK)
 							{
-								strPath.Assign(pReparse->SymbolicLinkReparseBuffer.PathBuffer + pReparse->SymbolicLinkReparseBuffer.PrintNameOffset / sizeof(wchar_t), 0, pReparse->SymbolicLinkReparseBuffer.PrintNameLength / sizeof(wchar_t));
+								strPath.Assign(pReparse->SymbolicLinkReparseBuffer.PathBuffer + (pReparse->SymbolicLinkReparseBuffer.PrintNameOffset / sizeof(wchar_t)), 0, pReparse->SymbolicLinkReparseBuffer.PrintNameLength / sizeof(wchar_t));
 								path.TrimLeft(nCurrentSegment);
 								path.Prepend(CFilePathW(strPath));
 								nCurrentSegment = 1;
@@ -520,7 +518,7 @@ bool CanonicalizeRelative(CFilePath &path)
 	}
 	else if(path.IsDrive())
 	{	// A drive-relative path like 'd:temp'
-		CFilePathSegmentW drive = path.GetDrive();
+		const CFilePathSegmentW drive = path.GetDrive();
 		path.TrimLeft();
 		if(path.Prepend(GetCurrentFolder(drive)) == FW_NO_ERROR)
 			bConverted = true;
